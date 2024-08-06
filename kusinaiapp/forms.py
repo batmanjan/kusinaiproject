@@ -15,7 +15,7 @@ class SignUpForm(forms.Form):
     )
     phone = forms.CharField(
         max_length=20,
-        widget=forms.TextInput(attrs={'placeholder': 'Valid PH number'}),
+        widget=forms.TextInput(attrs={'id': 'phone', 'placeholder': 'Enter your phone number'}),
         help_text='Enter your phone number for verification.'
     )
     password = forms.CharField(
@@ -174,6 +174,26 @@ class ProfileUpdateForm(forms.ModelForm):
             'username': forms.TextInput(attrs={'placeholder': 'Enter your username'}),
             'phone_number': forms.TextInput(attrs={'placeholder': 'Valid PH number'}),
         }
+
+    def __init__(self, *args, **kwargs):
+        # Initialize the form with any existing data
+        super().__init__(*args, **kwargs)
+        
+        # If the form has initial data for the phone_number field, remove the prefix for display
+        if self.initial and 'phone_number' in self.initial:
+            self.initial['phone_number'] = self.remove_prefix(self.initial['phone_number'])
+
+    def remove_prefix(self, phone_number):
+        # Remove +63 prefix if present
+        if phone_number.startswith('+63'):
+            return phone_number[3:]  # Remove the +63 prefix
+        return phone_number
+
+    def clean_phone_number(self):
+        phone_number = self.cleaned_data.get('phone_number', '')
+        if not phone_number.startswith('+63'):
+            phone_number = '+63' + phone_number.lstrip('0')  # Add prefix and remove leading zero if present
+        return phone_number
 
     def clean(self):
         cleaned_data = super().clean()

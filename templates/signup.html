@@ -6,6 +6,40 @@
     <title>Sign Up</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .form-group {
+            margin-bottom: 1em;
+        }
+        .phone-wrapper {
+            display: flex;
+            align-items: center;
+        }
+        .phone-prefix {
+            display: inline-block;
+            padding: 0.5em;
+            background: #f1f1f1;
+            border: 1px solid #ccc;
+            border-radius: 5px 0 0 5px;
+            box-sizing: border-box;
+            font-size: 1em;
+            line-height: 1.5;
+            color: #333;
+            width: 3em; /* Adjust width to fit your prefix */
+            text-align: center;
+            margin-right: -1px; /* Remove the gap between prefix and input */
+        }
+        .phone-input {
+            flex: 1; /* Take up the remaining space */
+            padding: 0.5em;
+            border: 1px solid #ccc;
+            border-radius: 0 5px 5px 0;
+            box-sizing: border-box;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5em; /* Space between label and input */
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -21,7 +55,29 @@
         <h1>Sign Up</h1>
         <form method="post">
             {% csrf_token %}
-            {{ form.as_p }}
+            <div class="form-group">
+                {{ form.name.label_tag }}
+                {{ form.name }}
+            </div>
+            <div class="form-group">
+                {{ form.username.label_tag }}
+                {{ form.username }}
+            </div>
+            <div class="form-group">
+                {{ form.phone.label_tag }}
+                <div class="phone-wrapper">
+                    <span class="phone-prefix">+63</span>
+                    <input type="text" name="{{ form.phone.html_name }}" id="{{ form.phone.id_for_label }}" class="phone-input" value="{{ form.phone.value|default_if_none:'' }}" placeholder="{{ form.phone.field.widget.attrs.placeholder }}">
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form.password.label_tag }}
+                {{ form.password }}
+            </div>
+            <div class="form-group">
+                {{ form.repassword.label_tag }}
+                {{ form.repassword }}
+            </div>
             <button type="submit">Sign Up</button>
         </form>
     </main>

@@ -41,7 +41,7 @@ def signup(request):
         if form.is_valid():
             name = form.cleaned_data['name']
             username = form.cleaned_data['username']
-            phone = form.cleaned_data['phone']
+            phone = '+63' + form.cleaned_data['phone']
             password = form.cleaned_data['password']
             
             if AppUser.objects.filter(phone_number=phone).exists():
@@ -167,6 +167,7 @@ def edit_profile(request):
         form = ProfileUpdateForm(instance=user_profile)
 
     return render(request, 'editprofile.html', {'form': form})
+
 
 
 
@@ -596,7 +597,12 @@ def forgetpass(request):
         print("Phone form data:", request.POST)
         
         if phone_form.is_valid():
-            phone = phone_form.cleaned_data['phone']
+            phone = request.POST.get('phone', '')
+            if phone.startswith('63'):
+                phone = '+' + phone
+            else:
+                phone = '+63' + phone
+            
             print("Phone number from form:", phone)
             
             # Check if the phone number exists in the database
@@ -637,6 +643,7 @@ def forgetpass(request):
         'show_code_form': show_code_form,
         'show_new_password_form': show_new_password_form
     })
+
 def verifyforgetpass(request):
     code_form = VerificationCodeForm(request.POST or None)
 
