@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cooked Dishes</title>
+    {% load static %}
+    {% load custom_filters %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        .rating {
+            display: flex;
+            align-items: center;
+        }
+
+        .star {
+            font-size: 1.5em;
+            color: gray;
+            cursor: pointer;
+            transition: color 0.2s;
+        }
+
+        .star.filled {
+            color: gold;
+        }
+
+        .rating-btn {
+            background: none;
+            border: none;
+            padding: 0;
+            margin: 0;
+            cursor: pointer;
+        }
+
+        .rating-btn:hover .star {
+            color: gold;
+        }
+
+        /* Style for the dish images */
+        .passport-size {
+            width: 2in; /* Set width to 2 inches */
+            height: 2in; /* Set height to 2 inches */
+            object-fit: cover; /* Ensure the image covers the element without distortion */
+            border-radius: 4px; /* Optional: Adds rounded corners */
+            border: 1px solid #ddd; /* Optional: Adds a border around the image */
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">kusinAIready</div>
+            <div class="nav-menu">
+                <button class="burger-menu">☰</button>
+                <div class="nav-links">
+                    <a href="{% url 'home' %}">Home</a>
+                    <a href="{% url 'saved' %}">Saved</a>
+                    <a href="{% url 'cooked' %}">Cooked</a>
+                    <a href="{% url 'settings' %}">Settings</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <h1>Cooked Dishes</h1>
+        
+        <section class="cooked-dishes">
+            {% for cooked_dish in cooked_dishes %}
+                <div class="dish-card" id="dish-card-{{ cooked_dish.id }}">
+                    <img src="{{ cooked_dish.dish.dish_image.url }}" alt="{{ cooked_dish.dish.name }}" class="passport-size">
+                    <h3>{{ cooked_dish.dish.dish_name }}</h3>
+                    <p>Preparation Time: {{ cooked_dish.dish.preparation_time }}</p>
+                    <p>Cost: {{ cooked_dish.dish.cost }}</p>
+                    <button type="button" onclick="handleAction('delete', '{{ cooked_dish.id }}')">Delete</button>
+                    <div class="rating" id="rating-{{ cooked_dish.id }}">
+                        <!-- Display rating buttons -->
+                        {% for rating in ratings %}
+                            <button type="button" class="rating-btn" onclick="handleAction('rate', '{{ cooked_dish.id }}', '{{ rating }}')">
+                                <span class="star {% if rating <= cooked_dish.rating %}filled{% endif %}" data-rating="{{ rating }}">&#9733;</span>
+                            </button>
+                        {% endfor %}
+                    </div>
+                </div>
+            {% empty %}
+                <p>No cooked dishes to display.</p>
+            {% endfor %}
+        </section>
+    </main>
+
+    <script>
+        function handleAction(action, id, rating = null) {
+            fetch("{% url 'cooked' %}", {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: new URLSearchParams({
+                    'action': action,
+                    'id': id,
+                    'rating': rating
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (action === 'delete') {
+                        document.getElementById(`dish-card-${id}`).remove();
+                    } else if (action === 'rate') {
+                        // Update the rating stars
+                        document.querySelectorAll(`#rating-${id} .star`).forEach(star => {
+                            if (parseInt(star.dataset.rating) <= rating) {
+                                star.classList.add('filled');
+                            } else {
+                                star.classList.remove('filled');
+                            }
+                        });
+                    }
+                } else {
+                    alert(data.error);
+                }
+            })
+            .catch(error => {
+                alert('An error occurred: ' + error);
+            });
+        }
+    </script>
+</body>
+</html>

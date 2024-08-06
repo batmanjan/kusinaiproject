@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Saved Dish Details</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">kusinAIready</div>
+            <div class="nav-menu">
+                <button class="burger-menu">☰</button>
+                <div class="nav-links">
+                    <a href="{% url 'home' %}">Home</a>
+                    <a href="{% url 'saved' %}">Saved</a>
+                    <a href="{% url 'cooked' %}">Cooked</a>
+                    <a href="{% url 'settings' %}">Settings</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <main>
+        <button class="back-button" onclick="window.history.back()">Back</button>
+        <div class="dish-details">
+            <img src="{{ dish.dish_image.url }}" alt="{{ dish.dish_name }}">
+            <h1>{{ dish.dish_name }}</h1>
+            <p>Preparation Time: {{ dish.preparation_time }}</p>
+            <p>Family Size: {{ dish.number_of_servings }}</p>
+            <p>Cost: {{ dish.cost }}</p>
+            <p>Cooking Skill: {{ dish.skills_needed }}</p>
+            <p>Age Range: {{ dish.age_range_that_can_eat }}</p>
+
+            <div class="card">
+                <h2>Ingredients</h2>
+                <p>{{ dish.ingredient_list }}</p>
+            </div>
+            <div class="card">
+                <h2>Procedure</h2>
+                <p>{{ dish.procedure }}</p>
+            </div>
+            <div class="card">
+                <h2>Nutritional Guide</h2>
+                <p>{{ dish.nutritional_guide }}</p>
+            </div>
+
+            <form id="dish-form" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="dish_plan_id" value="{{ dish_plan_id }}">
+                <button type="button" onclick="handleAction('delete')">Delete</button>
+                <button type="button" onclick="handleAction('done')">Done</button>
+            </form>
+        </div>
+    </main>
+    <footer>
+        <div class="footer-left">kusinAIready</div>
+        <div class="footer-right">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'saved' %}">Saved</a>
+            <a href="{% url 'about' %}">About Us</a>
+            <a href="{% url 'settings' %}">Settings</a>
+            <a href="{% url 'faqs' %}">FAQs</a>
+            <a href="{% url 'terms' %}">Terms of Use</a>
+        </div>
+    </footer>
+    <script>
+        function handleAction(action) {
+            const form = document.getElementById('dish-form');
+            const dishPlanId = form.querySelector('input[name="dish_plan_id"]').value;
+            
+            fetch('{% url "saveddish" dish.id %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: new URLSearchParams({
+                    'action': action,
+                    'dish_plan_id': dishPlanId
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = "{% url 'saved' %}";
+                } else {
+                    alert(data.error || 'Error performing action');
+                    window.location.href = "{% url 'saved' %}";
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error performing action');
+                window.location.href = "{% url 'saved' %}";
+            });
+        }
+    </script>
+    
+</body>
+</html>

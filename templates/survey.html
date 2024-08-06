@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <main>
+        <h1>Survey</h1>
+        <form method="post">
+            {% csrf_token %}
+            <fieldset>
+                <legend>Family Size?</legend>
+                {{ form.family_size }}
+            </fieldset>
+
+            <fieldset>
+                <legend>Age Range?</legend>
+                {{ form.age_range }}
+            </fieldset>
+
+            <fieldset>
+                <legend>Meal Preference?</legend>
+                {{ form.meal_preference }}
+            </fieldset>
+
+            <fieldset>
+                <legend>Allergies?</legend>
+                {{ form.allergies }}
+                <textarea id="other_allergies" name="other_allergies" placeholder="Specify other allergies, if you have 2 or more, separate each with a comma"></textarea>
+            </fieldset>
+
+            <fieldset>
+                <legend>Cooking Skills?</legend>
+                {{ form.cooking_skills }}
+            </fieldset>
+
+            <button type="submit">Get Started</button>
+        </form>
+    </main>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const noneCheckbox = document.querySelector('input[name="allergies"][value="none"]');
+            const otherCheckboxes = document.querySelectorAll('input[name="allergies"]:not([value="none"])');
+            const otherAllergiesTextArea = document.getElementById('other_allergies');
+
+            function updateAllergies() {
+                if (noneCheckbox.checked) {
+                    otherCheckboxes.forEach(checkbox => checkbox.checked = false);
+                    otherAllergiesTextArea.value = '';  // Clear the text area
+                }
+            }
+
+            // Update on page load based on the form's current state
+            updateAllergies();
+
+            noneCheckbox.addEventListener('change', function() {
+                updateAllergies();
+            });
+
+            otherCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    if (noneCheckbox.checked) {
+                        noneCheckbox.checked = false;
+                        otherAllergiesTextArea.value = '';  // Clear the text area
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

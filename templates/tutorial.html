@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tutorial</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <main>
+        <h1>Tutorial</h1>
+        <video controls>
+            <source src="{% static 'videos/tutorial.mp4' %}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+        <button type="button">Skip</button>
+    </main>
+</body>
+</html>
