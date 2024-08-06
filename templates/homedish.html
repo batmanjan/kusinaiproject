@@ -6,7 +6,6 @@
     <title>Dish Details</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    
 </head>
 <body>
     <header>
@@ -33,7 +32,7 @@
             <p>Cost: {{ dish.cost }}</p>
             <p>Cooking Skill: {{ dish.skills_needed }}</p>
             <p>Age Range: {{ dish.age_range_that_can_eat }}</p>
-            
+
             <div class="card">
                 <h2>Ingredients</h2>
                 <p>{{ dish.ingredient_list }}</p>
@@ -58,7 +57,6 @@
             <a href="{% url 'about' %}">About Us</a>
             <a href="{% url 'settings' %}">Settings</a>
             <a href="{% url 'faqs' %}">FAQs</a>
-            <a href="{% url 'terms' %}">Terms of Use</a>
         </div>
     </footer>
 
@@ -67,10 +65,13 @@
         <div class="modal-content">
             <span class="close" onclick="closeModal()">&times;</span>
             <h2>Select Category</h2>
-            <form id="categoryForm" method="POST" action="{% url 'save_to_saved' %}" onsubmit="return handleCategorySubmit()">
+            <form id="categoryForm" method="POST" action="{% url 'save_dish' %}">
                 {% csrf_token %}
                 <input type="hidden" name="dish_id" id="dish_id">
                 <input type="hidden" name="category" id="category">
+                <input type="hidden" name="meal_type" value="{{ request.GET.meal_type }}">
+                <input type="hidden" name="budget" value="{{ request.GET.budget }}">
+                <input type="hidden" name="referrer" value="{{ request.META.HTTP_REFERER }}"> <!-- Capture referrer -->
                 <div class="category-buttons">
                     <button type="button" onclick="setCategory('Breakfast')">Breakfast</button>
                     <button type="button" onclick="setCategory('Lunch')">Lunch</button>
@@ -81,24 +82,18 @@
     </div>
 
     <script>
-        function setCategory(category) {
-            document.getElementById('category').value = category;
-            document.getElementById('categoryForm').submit(); // Automatically submit the form
-        }
-        
         function openModal(dishId) {
             document.getElementById('dish_id').value = dishId;
             document.getElementById('myModal').style.display = "block";
         }
-        
+
         function closeModal() {
             document.getElementById('myModal').style.display = "none";
         }
-        
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('myModal')) {
-                document.getElementById('myModal').style.display = "none";
-            }
+
+        function setCategory(category) {
+            document.getElementById('category').value = category;
+            document.getElementById('categoryForm').submit();
         }
     </script>
 </body>

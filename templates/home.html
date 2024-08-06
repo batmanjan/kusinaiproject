@@ -6,9 +6,6 @@
     <title>Home</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <style>
-        
-    </style>
 </head>
 <body>
     <header>
@@ -28,6 +25,7 @@
     <main>
         <section class="budget">
             <form method="GET" action="{% url 'home' %}">
+                <input type="hidden" name="meal_type" value="{{ selected_meal_type }}">
                 <label for="budget">Enter Budget:</label>
                 <select id="budget" name="budget" onchange="this.form.submit()">
                     <option value="">All</option>
@@ -38,20 +36,20 @@
                     <option value="900-1000" {% if selected_budget == '900-1000' %}selected{% endif %}>900-1000</option>
                 </select>
             </form>
-        </section>        
+        </section>
 
         <section class="recommend">
-            <h2>Recommended Dishes{% if selected_meal_type %} - {{ selected_meal_type }}{% endif %}</h2>
+            <h2>Recommended Dishes{% if selected_meal_type and selected_meal_type != 'Recommended Dishes' %} - {{ selected_meal_type }}{% endif %}</h2>
             {% for dish in dishes %}
-                <div class="dish-card" onclick="window.location.href='{% url 'homedish' dish.id %}'">
-                    <img src="{{ dish.dish_image.url }}" alt="{{ dish.dish_name }}" class="passport-size">
-                    <h3>{{ dish.dish_name }}</h3>
-                    <p>Preparation Time: {{ dish.preparation_time }}</p>
-                    <p>Cost: {{ dish.cost }}</p>
-                    <button type="button" onclick="event.stopPropagation(); openModal('{{ dish.id }}')">Add</button>
-                </div>
+            <div class="dish-card" onclick="window.location.href='{% url 'homedish' dish.id %}?referrer={{ request.get_full_path }}'">
+                <img src="{{ dish.dish_image.url }}" alt="{{ dish.dish_name }}" class="passport-size">
+                <h3>{{ dish.dish_name }}</h3>
+                <p>Preparation Time: {{ dish.preparation_time }}</p>
+                <p>Cost: {{ dish.cost }}</p>
+                <button type="button" onclick="event.stopPropagation(); openModal('{{ dish.id }}', '{{ selected_meal_type }}', '{{ selected_budget }}')">Add</button>
+            </div>
             {% empty %}
-                <p>No dishes available.</p>
+            <p>No dishes available.</p>
             {% endfor %}
         </section>
 
@@ -60,10 +58,12 @@
             <div class="modal-content">
                 <span class="close" onclick="closeModal()">&times;</span>
                 <h2>Select Category</h2>
-                <form id="categoryForm" method="POST" action="{% url 'save_to_saved' %}" onsubmit="return handleCategorySubmit()">
+                <form id="categoryForm" method="POST" action="{% url 'save_to_saved' %}">
                     {% csrf_token %}
                     <input type="hidden" name="dish_id" id="dish_id">
                     <input type="hidden" name="category" id="category">
+                    <input type="hidden" name="meal_type" id="meal_type" value="{{ selected_meal_type }}">
+                    <input type="hidden" name="budget" id="budget" value="{{ selected_budget }}">
                     <div class="category-buttons">
                         <button type="button" onclick="setCategory('Breakfast')">Breakfast</button>
                         <button type="button" onclick="setCategory('Lunch')">Lunch</button>
@@ -76,6 +76,7 @@
         <section class="what-to-cook">
             <h2>What to Cook</h2>
             <form method="GET" action="{% url 'home' %}">
+                <input type="hidden" name="budget" value="{{ selected_budget }}">
                 <button type="submit" name="meal_type" value="Appetizer" {% if selected_meal_type == 'Appetizer' %}class="selected"{% endif %}>Appetizer</button>
                 <button type="submit" name="meal_type" value="Soup" {% if selected_meal_type == 'Soup' %}class="selected"{% endif %}>Soup</button>
                 <button type="submit" name="meal_type" value="Dessert" {% if selected_meal_type == 'Dessert' %}class="selected"{% endif %}>Dessert</button>
@@ -93,24 +94,25 @@
             <a href="{% url 'about' %}">About Us</a>
             <a href="{% url 'settings' %}">Settings</a>
             <a href="{% url 'faqs' %}">FAQs</a>
-            <a href="{% url 'terms' %}">Terms of Use</a>
         </div>
     </footer>
     <script>
-        function setCategory(category) {
-            document.getElementById('category').value = category;
-            document.getElementById('categoryForm').submit(); // Automatically submit the form
-        }
-        
-        function openModal(dishId) {
+        function openModal(dishId, mealType, budget) {
             document.getElementById('dish_id').value = dishId;
+            document.getElementById('meal_type').value = mealType;
+            document.getElementById('budget').value = budget;
             document.getElementById('myModal').style.display = "block";
         }
-        
+
         function closeModal() {
             document.getElementById('myModal').style.display = "none";
         }
-        
+
+        function setCategory(category) {
+            document.getElementById('category').value = category;
+            document.getElementById('categoryForm').submit();
+        }
+
         window.onclick = function(event) {
             if (event.target == document.getElementById('myModal')) {
                 document.getElementById('myModal').style.display = "none";

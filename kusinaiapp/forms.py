@@ -1,4 +1,6 @@
 from django import forms
+from django.contrib.auth.models import User
+from .models import AppUser
 
 class SignUpForm(forms.Form):
     name = forms.CharField(
@@ -150,3 +152,35 @@ class SurveyForm(forms.Form):
         widget=forms.RadioSelect,
         required=False
     )
+
+    
+class ProfileUpdateForm(forms.ModelForm):
+    password = forms.CharField(
+        widget=forms.PasswordInput(attrs={'placeholder': 'Enter your new password (leave blank to keep current)'}),
+        required=False,
+        help_text='Leave blank to keep the current password.'
+    )
+    repassword = forms.CharField(
+        widget=forms.PasswordInput(attrs={'placeholder': 'Re-enter your new password'}),
+        required=False,
+        help_text='Re-enter your new password for confirmation.'
+    )
+
+    class Meta:
+        model = AppUser
+        fields = ['name', 'username', 'phone_number']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Enter your name'}),
+            'username': forms.TextInput(attrs={'placeholder': 'Enter your username'}),
+            'phone_number': forms.TextInput(attrs={'placeholder': 'Valid PH number'}),
+        }
+
+    def clean(self):
+        cleaned_data = super().clean()
+        password = cleaned_data.get("password")
+        repassword = cleaned_data.get("repassword")
+
+        if password and repassword and password != repassword:
+            self.add_error('repassword', 'Passwords do not match.')
+
+        return cleaned_data

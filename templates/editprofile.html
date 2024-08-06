@@ -24,28 +24,12 @@
     </header>
     <main>
         <h1>Edit Profile</h1>
-        {% if error %}
-            <p style="color: red;">{{ error }}</p>
+        {% if form.errors %}
+            <p style="color: red;">Please correct the errors below.</p>
         {% endif %}
         <form method="post">
             {% csrf_token %}
-            
-            <label for="name">Name:</label>
-            <input type="text" id="name" name="name" value="{{ userprofile.name }}" required>
-
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" value="{{ userprofile.username }}" required>
-
-            <label for="phone">Phone Number:</label>
-            <input type="tel" id="phone" name="phone" value="{{ userprofile.phone_number }}" placeholder="Valid PH number" required>
-
-
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" placeholder="Leave blank to keep current password">
-
-            <label for="repassword">Re-enter Password:</label>
-            <input type="password" id="repassword" name="repassword" placeholder="Re-enter new password">
-
+            {{ form.as_p }}
             <button type="button" onclick="window.history.back()">Cancel</button>
             <button type="submit">Save</button>
         </form>
