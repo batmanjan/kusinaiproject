@@ -7,32 +7,34 @@ body, h1, h2, h3, p, button {
 
 /* Basic styling for body */
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Montserrat', sans-serif;
     line-height: 1.6;
     color: #333;
-    background-color: #f4f4f4;
+    background-color: #D8EFC8;
     padding-bottom: 60px; /* Ensure there's space for the footer */
+    margin: 0 auto; /* Center the content horizontally */
+    max-width: 1200px; /* Maximum width for larger screens */
 }
-
 /* Header and navigation */
 header {
     background-color: #228540;
     color: #fff;
-    padding: 10px 0;
+    padding: 10px 20px; /* Padding around header content */
     width: 100%;
     position: fixed;
     top: 0;
     left: 0;
+    z-index: 1000; /* Ensure header is above other content */
 }
 
 header .logo {
     font-size: 24px;
-    padding: 0 20px;
     display: inline-block;
 }
 
 header .nav-menu {
-    float: right;
+    position: relative;
+    display: inline-block;
 }
 
 header .burger-menu {
@@ -41,6 +43,12 @@ header .burger-menu {
     color: #fcfcfc;
     font-size: 24px;
     cursor: pointer;
+    display: none; /* Hidden by default */
+    transition: color 0.3s ease;
+}
+
+header .burger-menu:hover {
+    color: #66BB6A; /* Color change on hover */
 }
 
 header .nav-links {
@@ -52,98 +60,245 @@ header .nav-links a {
     color: #fff;
     text-decoration: none;
     padding: 0 15px;
+    display: inline-block;
+    transition: color 0.3s ease;
 }
 
 header .nav-links a:hover {
     text-decoration: underline;
+    color: #66BB6A;
 }
 
-/* Main content */
+/* Responsive Navigation */
+@media (max-width: 768px) {
+    header .burger-menu {
+        display: inline-block; /* Show burger menu on small screens */
+    }
+    header .nav-links {
+        display: none; /* Hide navigation links by default */
+        position: absolute;
+        top: 50px;
+        left: 0;
+        width: 100%;
+        background-color: #228540;
+        flex-direction: column;
+        align-items: center; /* Center the links */
+        opacity: 0;
+        transition: opacity 0.3s ease;
+    }
+    header .nav-links.active {
+        display: flex; /* Show navigation links when active */
+        opacity: 1;
+    }
+    header .nav-links a {
+        padding: 10px 0; /* Ensure consistent padding */
+        text-align: center;
+        width: 100%;
+    }
+}
+
 main {
-    padding: 20px;
-    padding-top: 60px; /* Ensure content isn't hidden behind the fixed header */
+    padding: 80px 20px 20px; /* Add top padding to account for fixed header */
 }
 
-/* Form styling */
-form {
-    max-width: 600px;
-    margin: 0 auto;
+
+/* Section for budget selection */
+.budget {
+    margin: 40px auto; /* Center the section and add margin */
+    padding: 0 20px; /* Add padding for better spacing */
+    max-width: 800px; /* Maximum width for the section */
 }
 
-form label {
-    display: block;
-    margin: 10px 0 5px;
+.budget-header {
+    text-align: center; /* Center title and description text */
+    margin-bottom: 20px; /* Space between header and form */
 }
 
-form input, form select, form button {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0 15px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
+.budget-header h1 {
+    font-size: 36px;
+    margin-bottom: 10px; /* Space between title and description */
 }
 
-form button {
-    background-color: #333;
-    color: #fff;
-    border: none;
-    cursor: pointer;
+.budget-header p {
+    font-size: 16px;
+    color: #666; /* Slightly lighter color for description */
+    margin-bottom: 30px;
 }
 
-form button:hover {
-    background-color: #555;
+.budget form {
+    display: flex;
+    justify-content: center; /* Center the form horizontally */
+    align-items: center; /* Center the form elements vertically */
 }
 
-/* Dish cards */
+.budget-form-group {
+    display: flex;
+    align-items: center; /* Align label and select box vertically */
+    gap: 10px; /* Space between label and select box */
+}
+
+.budget label {
+    font-weight: bold;
+}
+
+.budget select {
+    padding: 5px;
+    width: 150px; /* Adjust width as needed */
+}
+
+/* Section for recommended dishes */
+.recommend {
+    margin: 40px auto; /* Center the section and add margin */
+    padding: 0 20px; /* Add padding for better spacing */
+    max-width: 900px; /* Maximum width for the section */
+}
+
+.recommend h2 {
+    margin-top: 0;
+    margin-bottom: 40px; /* Space between title and content */
+    text-align: center;
+    color: #228540;
+    font-size: 30px;
+}
+
+.dish-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
+    grid-template-rows: repeat(3, auto); /* 3 rows */
+    gap: 20px; /* Space between items */
+    justify-content: center; /* Center the grid */
+}
+
 .dish-card {
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 15px;
-    margin: 10px 0;
+    padding: 10px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     text-align: center;
+    position: relative; /* Ensure button can be positioned relative to card */
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.dish-card img {
-    max-width: 100%;
-    border-radius: 8px;
+.dish-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+}
+
+.image-container {
+    width: 100%;
+    height: 200px; /* Set a fixed height for images */
+    overflow: hidden; /* Hide overflow to maintain size */
+}
+
+.image-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* Ensure images cover the container without distortion */
 }
 
 .dish-card h3 {
     margin: 10px 0;
 }
 
-.dish-card button {
-    background-color: #333;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
+.dish-card p {
+    margin: 5px 0;
 }
 
-dish-card button:hover {
-    background-color: #555;
+.dish-card button {
+    background-color: #66BB6A;
+    color: #fff;
+    border: none;
+    padding: 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    position: absolute; /* Position button absolutely within card */
+    bottom: 15px; /* Adjust position from bottom */
+    right: 15px; /* Adjust position from right */
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
+
+.dish-card button:hover {
+    background-color: #0d4d1e;
+    transform: scale(1.05);
+}
+
+/* What to Cook section */
+.what-to-cook {
+    margin: 30px auto; /* Adjust margin for a more compact look */
+    padding: 0 15px; /* Reduced padding */
+    max-width: 700px; /* Slightly smaller max-width */
+    background-color: #f9f9f9; /* Light background for better contrast */
+    border-radius: 8px; /* Slightly rounded corners */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    padding: 15px; /* Adjusted padding inside the section */
+}
+
+.what-to-cook h2 {
+    margin-top: 0;
+    margin-bottom: 20px; /* Consistent margin for spacing */
+    text-align: center;
+    font-size: 32px; /* Slightly smaller font size */
+    font-weight: 500; /* Medium weight for readability */
+    color: #228540; /* Dark color for text */
+}
+
+.what-to-cook form {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    grid-template-rows: repeat(3, auto); /* 3 rows */
+    grid-gap: 10px; /* Reduced space between buttons */
+    justify-content: center; /* Center the grid */
+    margin-bottom: 15px; /* Adjusted bottom margin */
+}
+
+.what-to-cook button {
+    display: flex;
+    align-items: center; /* Align text and icon */
+    background: linear-gradient(135deg, #228540, #2e7d32); /* Gradient background */
+    color: #fff;
+    padding: 10px 20px; /* Adjusted padding for a more compact button */
+    border: none;
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer;
+    font-size: 16px; /* Slightly smaller font size */
+    font-weight: 500; /* Medium weight for readability */
+    gap: 8px; /* Space between icon and text */
+    transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s; /* Smooth transitions */
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+.what-to-cook button.selected {
+    background: linear-gradient(135deg, #0d4d1e, #1b5e20); /* Darker gradient for selected button */
+}
+
+.what-to-cook button:hover:not(.selected) {
+    background: linear-gradient(135deg, #1b5e20, #66BB6A); /* Hover effect with lighter gradient */
+    transform: translateY(-2px); /* Slight lift effect on hover */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* More pronounced shadow on hover */
+}
+
+.what-to-cook button i {
+    font-size: 20px; /* Slightly smaller icon size */
+    color: #FFBE30; /* Ensure the icon color contrasts with the button background */
+}
+
+
 
 /* Footer */
 footer {
     background-color: #228540;
     color: #fff;
-    padding: 10px 0;
+    padding: 10px 20px; /* Padding around footer content */
     text-align: center;
     width: 100%;
     position: fixed;
     bottom: 0;
     left: 0;
+    z-index: 1000; /* Ensure footer is above other content */
 }
 
-footer .footer-left {
-    display: inline-block;
-    padding: 0 20px;
-}
-
+footer .footer-left,
 footer .footer-right {
     display: inline-block;
     padding: 0 20px;
@@ -166,205 +321,29 @@ footer::after {
     clear: both;
 }
 
-/* Popup */
-.popup {
-    display: none; /* Initially hidden */
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background: #fff;
-    padding: 20px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-
-.popup button {
-    background-color: #333;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
-    margin: 5px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.popup button:hover {
-    background-color: #555;
-}
-
-/* Hide the popup when not active */
-.popup.hidden {
-    display: none;
-}
-
-/* Additional CSS for login page design */
-
-/* Login container styling */
-.login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Full viewport height */
-    width: 100%;
-    background-color: #e0f7da;
-}
-
-/* Login card styling */
-.login-card {
-    background-color: #ffffff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-    text-align: center;
-    width: 100%;
-    max-width: 400px;
-}
-
-/* Login logo styling */
-.login-logo img {
-    width: 150px;
-    height: auto;
-    border-radius: 50%;
-    margin-bottom: 20px;
-}
-
-/* Headings and paragraphs styling */
-.login-card h2 {
-    color: #ff9800;
-    margin-bottom: 10px;
-}
-
-.login-card p {
-    margin-bottom: 20px;
-    color: #757575;
-}
-
-/* Form styling */
-form {
-    display: flex;
-    flex-direction: column;
-}
-
-form label.sr-only {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0,0,0,0);
-    border: 0;
-}
-
-form input {
-    width: calc(100% - 20px);
-    padding: 10px;
-    margin: 10px auto;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 16px;
-}
-
-form button {
-    width: 100%;
-    padding: 10px;
-    margin: 20px 0;
-    background-color: #4caf50;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-form button:hover {
-    background-color: #388e3c;
-}
-
-/* Links styling */
-form a {
-    color: #4caf50;
-    text-decoration: none;
-    margin-top: 10px;
-}
-
-form a:hover {
-    text-decoration: underline;
-}
-
-/* Sign-up link styling */
-.login-card p:last-child a {
-    color: #ff9800;
-}
-
-.login-card p:last-child a:hover {
-    text-decoration: underline;
-}
-
-.passport-size {
-    width: 2in; /* Set width to 2 inches */
-    height: 2in; /* Set height to 2 inches */
-    object-fit: cover; /* Ensure the image covers the element without distortion */
-    border-radius: 4px; /* Optional: Adds rounded corners */
-    border: 1px solid #ddd; /* Optional: Adds a border around the image */
-}
-
-.button {
-    background-color: #007bff;
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    text-align: center;
-    display: inline-block;
-    font-size: 16px;
-    text-decoration: none;
-}
-
-.button:hover {
-    background-color: #0056b3;
-    cursor: pointer;
-}
-
-.settings-button {
-    width: 100%;
-    padding: 10px;
-    margin: 20px 0;
-    background-color: #4caf50;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
-}
-
-.settings-button:hover {
-    background-color: #388e3c;
-}
-
 /* Basic styling for the modal */
 .modal {
     display: none; 
     position: fixed; 
-    z-index: 1; 
+    z-index: 1000; /* Ensure modal is above other content */
     left: 0;
     top: 0;
     width: 100%; 
     height: 100%; 
     overflow: auto; 
-    background-color: rgb(0,0,0); 
     background-color: rgba(0,0,0,0.4); 
 }
 
 .modal-content {
     background-color: #fefefe;
-    margin: 15% auto; 
+    margin: 5% auto; /* Center modal and add margin */
     padding: 20px;
     border: 1px solid #888;
     width: 80%; 
     max-width: 500px;
     position: relative;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
 }
 
 .close {
@@ -406,11 +385,6 @@ form a:hover {
     background-color: #388e3c; /* Applying your hover color */
 }
 
-/* Styling for the clickable dish card */
-.dish-card {
-    cursor: pointer;
-}
-
 .dish-details img {
     width: 100px; /* Passport size equivalent in pixels */
     height: 130px;
@@ -419,33 +393,201 @@ form a:hover {
     margin: 0 auto; /* Center the image horizontally */
 }
 
-.back-button {
-    background-color: #4caf50; /* Green background color */
-    color: white;
+
+/* Additional CSS for login page design */
+
+/* Login container styling */
+.login-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full viewport height */
+    width: 100%;
+    background-color: #e0f7da;
+    animation: fadeIn 1s ease-in; /* Fade-in animation */
+}
+
+/* Keyframes for fade-in animation */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Login card styling */
+.login-card {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.2);
+    text-align: center;
+    width: 100%;
+    max-width: 400px;
+    transform: translateY(-20px); /* Initial position for animation */
+    animation: slideUp 0.6s ease-out; /* Slide-up animation */
+}
+
+/* Keyframes for slide-up animation */
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Login logo styling */
+.login-logo img {
+    width: 150px;
+    height: auto;
+    border-radius: 50%;
+    margin-bottom: 20px;
+    animation: bounce 1s ease-in-out infinite; /* Bounce animation */
+}
+
+/* Keyframes for bounce animation */
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        transform: translateY(0);
+    }
+    40% {
+        transform: translateY(-30px);
+    }
+    60% {
+        transform: translateY(-15px);
+    }
+}
+
+/* Headings and paragraphs styling */
+.login-card h2 {
+    color: #ff9800;
+    margin-bottom: 10px;
+    font-size: 24px;
+    font-weight: 700;
+    transition: color 0.3s ease; /* Smooth color transition */
+}
+
+.login-card h2:hover {
+    color: #ff5722; /* Change color on hover */
+}
+
+.login-card p {
+    margin-bottom: 40px;
+    color: #000000;
+    font-size: 16px;
+}
+
+/* Form styling */
+form {
+    display: flex;
+    flex-direction: column;
+}
+
+form label.sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+}
+
+form .input-group {
+    position: relative;
+    margin-bottom: 20px;
+    transition: transform 0.3s ease; /* Smooth transition for input focus */
+}
+
+form .input-group i {
+    position: absolute;
+    top: 50%;
+    left: 10px;
+    transform: translateY(-50%);
+    color: #FFBE30;
+}
+
+form .input-group input {
+    width: calc(100% - 40px);
+    padding: 10px 10px 10px 40px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transitions for focus */
+}
+
+form .input-group input:focus {
+    border-color: #4caf50;
+    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3); /* Shadow on focus */
+}
+
+/* Button styling */
+form button, .login-card .login-button {
+    width: 100%;
+    padding: 10px;
+    margin: 20px 0;
+    background-color: #4caf50;
+    color: #fff;
     border: none;
-    padding: 10px 20px;
     border-radius: 4px;
     cursor: pointer;
     font-size: 16px;
+    transition: background-color 0.3s ease, transform 0.3s ease; /* Smooth hover and click effects */
+}
+
+form button:hover, .login-card .login-button:hover {
+    background-color: #388e3c;
+    transform: translateY(-2px); /* Slight lift effect on hover */
+}
+
+form button:active, .login-card .login-button:active {
+    transform: translateY(1px); /* Slight push effect on click */
+}
+
+/* Links styling */
+form a {
+    color: #4caf50;
+    text-decoration: none;
+    margin-top: 10px;
+    display: inline-block;
+    transition: color 0.3s ease; /* Smooth color transition */
+}
+
+form a:hover {
+    text-decoration: underline;
+    color: #388e3c; /* Change color on hover */
+}
+
+/* Position "Forgot your password?" link to the right */
+form .forgot-password {
+    text-align: right;
+    display: block;
     margin-bottom: 20px;
 }
 
-.back-button:hover {
-    background-color: #388e3c; /* Darker green on hover */
+/* Sign-up link styling */
+.signup-link {
+    margin-top: 20px;
+    font-size: 14px;
+    color: #555;
+    text-align: center;
 }
 
-.add-button {
-    background-color: #4caf50; /* Green background color */
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 16px;
+.signup-link a {
+    color: #4caf50;
+    text-decoration: none;
+    transition: color 0.3s ease; /* Smooth color transition */
 }
 
-.add-button:hover {
-    background-color: #388e3c; /* Darker green on hover */
+.signup-link a:hover {
+    color: #388e3c; /* Change color on hover */
 }
-
 
