@@ -1,6 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from .models import AppUser
+from django.core.validators import RegexValidator
 
 class SignUpForm(forms.Form):
     name = forms.CharField(
@@ -49,12 +50,48 @@ class LoginForm(forms.Form):
     )
     
 class OTPForm(forms.Form):
-    otp = forms.CharField(
-        max_length=6,
+    otp_1 = forms.CharField(
+        max_length=1,
+        widget=forms.TextInput(attrs={'placeholder': '', 'maxlength': '1'}),
         required=True,
-        widget=forms.TextInput(attrs={'placeholder': 'Enter OTP'}),
-        help_text='Enter the OTP sent to your phone.'
+        validators=[RegexValidator(r'^\d$', 'Enter a single digit.')]
     )
+    otp_2 = forms.CharField(
+        max_length=1,
+        widget=forms.TextInput(attrs={'placeholder': '', 'maxlength': '1'}),
+        required=True,
+        validators=[RegexValidator(r'^\d$', 'Enter a single digit.')]
+    )
+    otp_3 = forms.CharField(
+        max_length=1,
+        widget=forms.TextInput(attrs={'placeholder': '', 'maxlength': '1'}),
+        required=True,
+        validators=[RegexValidator(r'^\d$', 'Enter a single digit.')]
+    )
+    otp_4 = forms.CharField(
+        max_length=1,
+        widget=forms.TextInput(attrs={'placeholder': '', 'maxlength': '1'}),
+        required=True,
+        validators=[RegexValidator(r'^\d$', 'Enter a single digit.')]
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        otp_1 = cleaned_data.get("otp_1")
+        otp_2 = cleaned_data.get("otp_2")
+        otp_3 = cleaned_data.get("otp_3")
+        otp_4 = cleaned_data.get("otp_4")
+
+        if not (otp_1 and otp_2 and otp_3 and otp_4):
+            raise forms.ValidationError("All digits are required.")
+        
+        return cleaned_data
+
+    def get_otp(self):
+        return ''.join([self.cleaned_data.get("otp_1", ""), 
+                        self.cleaned_data.get("otp_2", ""), 
+                        self.cleaned_data.get("otp_3", ""), 
+                        self.cleaned_data.get("otp_4", "")])
 
     
 class PhoneNumberForm(forms.Form):
@@ -67,11 +104,49 @@ class PhoneNumberForm(forms.Form):
 
 
 class VerificationCodeForm(forms.Form):
-    code = forms.CharField(
-        max_length=6,
-        widget=forms.TextInput(attrs={'placeholder': 'Enter the code'}),
-        help_text='Enter the verification code sent to your phone.'
+    code_1 = forms.CharField(
+        max_length=1,
+        widget=forms.TextInput(attrs={'placeholder': '', 'maxlength': '1'}),
+        required=True,
+        validators=[RegexValidator(r'^\d$', 'Enter a single digit.')]
     )
+    code_2 = forms.CharField(
+        max_length=1,
+        widget=forms.TextInput(attrs={'placeholder': '', 'maxlength': '1'}),
+        required=True,
+        validators=[RegexValidator(r'^\d$', 'Enter a single digit.')]
+    )
+    code_3 = forms.CharField(
+        max_length=1,
+        widget=forms.TextInput(attrs={'placeholder': '', 'maxlength': '1'}),
+        required=True,
+        validators=[RegexValidator(r'^\d$', 'Enter a single digit.')]
+    )
+    code_4 = forms.CharField(
+        max_length=1,
+        widget=forms.TextInput(attrs={'placeholder': '', 'maxlength': '1'}),
+        required=True,
+        validators=[RegexValidator(r'^\d$', 'Enter a single digit.')]
+    )
+
+    def clean(self):
+        cleaned_data = super().clean()
+        code_1 = cleaned_data.get("code_1")
+        code_2 = cleaned_data.get("code_2")
+        code_3 = cleaned_data.get("code_3")
+        code_4 = cleaned_data.get("code_4")
+
+        if not (code_1 and code_2 and code_3 and code_4):
+            raise forms.ValidationError("All digits are required.")
+        
+        return cleaned_data
+
+    def get_code(self):
+        return ''.join([self.cleaned_data.get("code_1", ""), 
+                        self.cleaned_data.get("code_2", ""), 
+                        self.cleaned_data.get("code_3", ""), 
+                        self.cleaned_data.get("code_4", "")])
+
 
 class NewPasswordForm(forms.Form):
     new_password = forms.CharField(
@@ -97,7 +172,7 @@ class SurveyForm(forms.Form):
             ('4-5 Members', '4-5 Members'),
         ],
         widget=forms.RadioSelect,
-        required=True
+        required=False
     )
     
     age_range = forms.MultipleChoiceField(
@@ -132,7 +207,7 @@ class SurveyForm(forms.Form):
             ('wheat', 'Wheat'),
             ('peanuts', 'Peanuts'),
             ('soybeans', 'Soybeans'),
-            ('none', 'None')
+            ('none', 'None')  # Ensure 'none' is in lowercase
         ],
         widget=forms.CheckboxSelectMultiple,
         required=False
@@ -152,7 +227,6 @@ class SurveyForm(forms.Form):
         widget=forms.RadioSelect,
         required=False
     )
-
     
 class ProfileUpdateForm(forms.ModelForm):
     password = forms.CharField(

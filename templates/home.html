@@ -8,6 +8,80 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* Pagination Controls */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+
+        .page-number {
+            margin: 0 10px;
+        }
+
+        .page-number a {
+            text-decoration: none;
+            color: #4caf50;
+            font-weight: bold;
+            padding: 10px 20px;
+            border: 2px solid #4caf50;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .page-number a:hover {
+            background-color: #4caf50;
+            color: #ffffff;
+        }
+
+        /* Pagination Controls - Previous Button */
+        .pagination .page-number:first-child a {
+            border-radius: 5px 0 0 5px;
+        }
+
+        /* Pagination Controls - Next Button */
+        .pagination .page-number:last-child a {
+            border-radius: 0 5px 5px 0;
+        }
+    </style>
+    <script>
+        function validateBudgetForm(event) {
+            var minBudget = document.getElementById('min-budget').value;
+            var maxBudget = document.getElementById('max-budget').value;
+
+            if (minBudget === '' && maxBudget === '') {
+                var confirmClear = confirm("You have cleared both minimum and maximum budget. Do you want to remove the budget filter?");
+                if (!confirmClear) {
+                    event.preventDefault(); // Prevent form submission
+                    return;
+                }
+            } else {
+                minBudget = parseInt(minBudget, 10);
+                maxBudget = parseInt(maxBudget, 10);
+                
+                if (minBudget > maxBudget) {
+                    alert("Please enter a valid minimum and maximum budget.");
+                    event.preventDefault(); // Prevent form submission
+                }
+            }
+        }
+
+        function clearFilters() {
+            // Clear budget fields
+            document.getElementById('min-budget').value = '';
+            document.getElementById('max-budget').value = '';
+            
+            // Clear meal type field
+            var mealTypeField = document.querySelector('input[name="meal_type"]');
+            if (mealTypeField) {
+                mealTypeField.value = '';
+            }
+            
+            // Submit the form
+            document.querySelector('form').submit();
+        }
+    </script>
 </head>
 <body>
     <header>
@@ -30,19 +104,18 @@
                 <h1>KusinAI Ready</h1>
                 <p>Enjoy delightful, budget-friendly, and healthy dining that supports a balanced lifestyle with effortless planning.</p>
             </div>
-            <form method="GET" action="{% url 'home' %}">
+            <form method="GET" action="{% url 'home' %}" onsubmit="validateBudgetForm(event)">
                 <input type="hidden" name="meal_type" value="{{ selected_meal_type }}">
                 <div class="budget-form-group">
-                    <label for="budget">Enter Budget:</label>
-                    <select id="budget" name="budget" onchange="this.form.submit()">
-                        <option value="">All</option>
-                        <option value="100-200" {% if selected_budget == '100-200' %}selected{% endif %}>100-200</option>
-                        <option value="300-400" {% if selected_budget == '300-400' %}selected{% endif %}>300-400</option>
-                        <option value="500-600" {% if selected_budget == '500-600' %}selected{% endif %}>500-600</option>
-                        <option value="700-800" {% if selected_budget == '700-800' %}selected{% endif %}>700-800</option>
-                        <option value="900-1000" {% if selected_budget == '900-1000' %}selected{% endif %}>900-1000</option>
-                    </select>
+                    <label for="min-budget">Min Budget:</label>
+                    <input type="number" id="min-budget" name="min_budget" min="100" max="1000" value="{{ min_budget }}" required>
                 </div>
+                <div class="budget-form-group">
+                    <label for="max-budget">Max Budget:</label>
+                    <input type="number" id="max-budget" name="max_budget" min="100" max="1000" value="{{ max_budget }}" required>
+                </div>
+                <button type="submit">Filter</button>
+                <button type="button" onclick="clearFilters()">Clear Filters</button>
             </form>
         </section>
 
@@ -56,16 +129,30 @@
                     </div>
                     <h3>{{ dish.dish_name }}</h3>
                     <p>Preparation Time: {{ dish.preparation_time }}</p>
-                    <p>Cost: {{ dish.cost }}</p>
-                    <button type="button" onclick="event.stopPropagation(); openModal('{{ dish.id }}', '{{ selected_meal_type }}', '{{ selected_budget }}')">
+                    <p>Cost: {{ dish.get_cost_range }}</p>
+                    <button type="button" onclick="event.stopPropagation(); openModal('{{ dish.id }}', '{{ selected_meal_type }}', '{{ min_budget }}', '{{ max_budget }}')">
                         <i class="fas fa-plus"></i>
                     </button>
-                </div>
+                </div>                
                 {% empty %}
                 <p>No dishes available.</p>
                 {% endfor %}
             </div>
         </section>
+
+        <!-- Pagination Controls -->
+        <div class="pagination">
+            <span class="page-number">
+                {% if page_obj.has_previous %}
+                    <a href="?page={{ page_obj.previous_page_number }}{% if min_budget %}&min_budget={{ min_budget }}{% endif %}{% if max_budget %}&max_budget={{ max_budget }}{% endif %}{% if selected_meal_type %}&meal_type={{ selected_meal_type }}{% endif %}">&laquo; Previous</a>
+                {% endif %}
+            </span>
+            <span class="page-number">
+                {% if page_obj.has_next %}
+                    <a href="?page={{ page_obj.next_page_number }}{% if min_budget %}&min_budget={{ min_budget }}{% endif %}{% if max_budget %}&max_budget={{ max_budget }}{% endif %}{% if selected_meal_type %}&meal_type={{ selected_meal_type }}{% endif %}">Next &raquo;</a>
+                {% endif %}
+            </span>
+        </div>
 
         <!-- The Modal -->
         <div id="myModal" class="modal">
@@ -77,7 +164,8 @@
                     <input type="hidden" name="dish_id" id="dish_id">
                     <input type="hidden" name="category" id="category">
                     <input type="hidden" name="meal_type" id="meal_type" value="{{ selected_meal_type }}">
-                    <input type="hidden" name="budget" id="budget" value="{{ selected_budget }}">
+                    <input type="hidden" name="min_budget" id="min_budget" value="{{ min_budget }}">
+                    <input type="hidden" name="max_budget" id="max_budget" value="{{ max_budget }}">
                     <div class="category-buttons">
                         <button type="button" onclick="setCategory('Breakfast')">Breakfast</button>
                         <button type="button" onclick="setCategory('Lunch')">Lunch</button>
@@ -90,7 +178,8 @@
         <section class="what-to-cook">
             <h2>What to Cook</h2>
             <form method="GET" action="{% url 'home' %}">
-                <input type="hidden" name="budget" value="{{ selected_budget }}">
+                <input type="hidden" name="min_budget" value="{{ min_budget }}">
+                <input type="hidden" name="max_budget" value="{{ max_budget }}">
                 <button type="submit" name="meal_type" value="Appetizer" {% if selected_meal_type == 'Appetizer' %}class="selected"{% endif %}>
                     <i class="fas fa-utensils"></i> Appetizer
                 </button>
@@ -123,23 +212,16 @@
         </div>
     </footer>
     <script>
-        function toggleMenu() {
-            var navLinks = document.querySelector('.nav-links');
-            navLinks.classList.toggle('active');
-            navLinks.style.opacity = navLinks.classList.contains('active') ? '1' : '0';
-        }
-
-        function openModal(dishId, mealType, budget) {
+        function openModal(dishId, mealType, minBudget, maxBudget) {
             document.getElementById('dish_id').value = dishId;
             document.getElementById('meal_type').value = mealType;
-            document.getElementById('budget').value = budget;
-            document.getElementById('myModal').style.display = "block";
-            setTimeout(() => document.getElementById('myModal').style.opacity = "1", 10); // Animation delay
+            document.getElementById('min_budget').value = minBudget;
+            document.getElementById('max_budget').value = maxBudget;
+            document.getElementById('myModal').style.display = 'block';
         }
 
         function closeModal() {
-            document.getElementById('myModal').style.opacity = "0";
-            setTimeout(() => document.getElementById('myModal').style.display = "none", 300); // Match animation duration
+            document.getElementById('myModal').style.display = 'none';
         }
 
         function setCategory(category) {
@@ -151,6 +233,11 @@
             if (event.target == document.getElementById('myModal')) {
                 closeModal();
             }
+        }
+
+        function toggleMenu() {
+            var navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
         }
     </script>
 </body>

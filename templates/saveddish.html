@@ -6,6 +6,73 @@
     <title>Saved Dish Details</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+        /* Add necessary styles for tabs and content */
+        .tabs {
+            display: flex;
+            border-bottom: 2px solid #ddd;
+            background-color: #fff; /* White background for the tabs */
+        }
+        .tab {
+            flex: 1;
+            padding: 10px;
+            cursor: pointer;
+            text-align: center;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
+        }
+        .tab.active {
+            background-color: #fff;
+            border-bottom: 2px solid #fff;
+        }
+        .tab-content {
+            display: none;
+            background-color: #fff; /* White background for content */
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-top: none;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .step {
+            display: none;
+        }
+        .step.active {
+            display: block;
+        }
+        .progress-bar {
+            height: 5px;
+            background-color: #ddd;
+            margin-top: 10px;
+        }
+        .progress {
+            height: 100%;
+            background-color: #4caf50;
+            width: 0;
+        }
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+        .modal {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .modal button {
+            margin: 10px;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -33,15 +100,36 @@
             <p>Cooking Skill: {{ dish.skills_needed }}</p>
             <p>Age Range: {{ dish.age_range_that_can_eat }}</p>
 
-            <div class="card">
+            <div class="tabs">
+                <div class="tab" onclick="showTab('ingredients')">Ingredients</div>
+                <div class="tab" onclick="showTab('directions')">Directions</div>
+                <div class="tab" onclick="showTab('nutritional_guide')">Nutritional Guide</div>
+            </div>
+
+            <div id="ingredients" class="tab-content">
                 <h2>Ingredients</h2>
-                <p>{{ dish.ingredient_list }}</p>
+                {% for ingredient in ingredients %}
+                    <label>
+                        <input type="checkbox" name="ingredients" value="{{ ingredient }}" /> {{ ingredient }}
+                    </label><br/>
+                {% endfor %}
             </div>
-            <div class="card">
-                <h2>Procedure</h2>
-                <p>{{ dish.procedure }}</p>
+
+            <div id="directions" class="tab-content">
+                <h2>Directions</h2>
+                <div class="progress-bar"><div class="progress"></div></div>
+                <div id="directions-steps">
+                    {% for step in procedure_steps %}
+                        <div class="step {% if forloop.first %}active{% endif %}">
+                            <p>{{ step }}</p>
+                        </div>
+                    {% endfor %}
+                </div>
+                <button onclick="prevStep()">Previous</button>
+                <button onclick="nextStep()">Next</button>
             </div>
-            <div class="card">
+
+            <div id="nutritional_guide" class="tab-content">
                 <h2>Nutritional Guide</h2>
                 <p>{{ dish.nutritional_guide }}</p>
             </div>
@@ -66,37 +154,106 @@
         </div>
     </footer>
     <script>
+        let currentStep = 0;
+
+        function showTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tabContent => {
+                tabContent.classList.remove('active');
+            });
+
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+
+            // Check if navigating away from Ingredients tab
+            if (tabId === 'directions' && !areAllIngredientsChecked()) {
+                // Alert box
+                if (confirm("Oops! Seems like you don't have all the ingredients. Do you still want to continue?")) {
+                    // Proceed to Directions tab
+                    document.getElementById(tabId).classList.add('active');
+                    document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+                } else {
+                    // Stay on Ingredients tab
+                    showTab('ingredients');
+                }
+            } else {
+                // Show the selected tab content
+                document.getElementById(tabId).classList.add('active');
+                document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+            }
+        }
+
+        function areAllIngredientsChecked() {
+            const checkboxes = document.querySelectorAll('#ingredients input[type="checkbox"]');
+            return Array.from(checkboxes).every(checkbox => checkbox.checked);
+        }
+
+        function showStep(index) {
+            const steps = document.querySelectorAll('#directions-steps .step');
+            if (index >= 0 && index < steps.length) {
+                steps.forEach((step, i) => {
+                    step.classList.toggle('active', i === index);
+                });
+                currentStep = index;
+                updateProgressBar();
+            }
+        }
+
+        function prevStep() {
+            showStep(currentStep - 1);
+        }
+
+        function nextStep() {
+            showStep(currentStep + 1);
+        }
+
+        function updateProgressBar() {
+            const progress = document.querySelector('.progress');
+            const totalSteps = document.querySelectorAll('#directions-steps .step').length;
+            const percentage = ((currentStep + 1) / totalSteps) * 100;
+            progress.style.width = percentage + '%';
+        }
+
         function handleAction(action) {
             const form = document.getElementById('dish-form');
-            const dishPlanId = form.querySelector('input[name="dish_plan_id"]').value;
-            
-            fetch('{% url "saveddish" dish.id %}', {
+            const formData = new FormData(form);
+            formData.append('action', action);
+        
+            const url = form.action; // Use form action URL directly
+        
+            fetch(url, {
                 method: 'POST',
+                body: formData,
                 headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: new URLSearchParams({
-                    'action': action,
-                    'dish_plan_id': dishPlanId
-                })
+                    'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]').value
+                }
             })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    window.location.href = "{% url 'saved' %}";
+                    if (action === 'done' && data.cooked) {
+                        // Show alert if dish is already cooked
+                        alert('Dish already in the cooked page');
+                        // Simulate a delete action
+                        handleAction('delete'); // Trigger the delete action
+                    } else {
+                        // Redirect to the saved dishes page
+                        window.location.href = "{% url 'saved' %}";
+                    }
                 } else {
-                    alert(data.error || 'Error performing action');
-                    window.location.href = "{% url 'saved' %}";
+                    alert(data.error);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('Error performing action');
-                window.location.href = "{% url 'saved' %}";
+                alert('An error occurred');
             });
         }
+        
+        // Show the first tab initially
+        showTab('ingredients');
     </script>
-    
 </body>
 </html>

@@ -7,49 +7,43 @@
     {% load static %}
     {% load custom_filters %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <style>
+        .rating-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 10px;
+        }
+        
         .rating {
             display: flex;
-            align-items: center;
+            gap: 5px;
+            position: relative;
         }
-
+        
+        /* Ensure stars are always in the correct state */
         .star {
-            font-size: 1.5em;
-            color: gray;
+            font-size: 22px;
+            color: #ddd;
             cursor: pointer;
-            transition: color 0.2s;
+            transition: color 0.3s;
         }
-
+        
+        
+        
+        /* For the filled state when the rating is set */
         .star.filled {
             color: gold;
         }
-
-        .rating-btn {
-            background: none;
-            border: none;
-            padding: 0;
-            margin: 0;
-            cursor: pointer;
-        }
-
-        .rating-btn:hover .star {
-            color: gold;
-        }
-
-        /* Style for the dish images */
-        .passport-size {
-            width: 2in; /* Set width to 2 inches */
-            height: 2in; /* Set height to 2 inches */
-            object-fit: cover; /* Ensure the image covers the element without distortion */
-            border-radius: 4px; /* Optional: Adds rounded corners */
-            border: 1px solid #ddd; /* Optional: Adds a border around the image */
-        }
+        
     </style>
 </head>
 <body>
     <header>
         <nav>
-            <div class="logo">kusinAIready</div>
+            <div class="logo">KusinAIready</div>
             <div class="nav-menu">
                 <button class="burger-menu">☰</button>
                 <div class="nav-links">
@@ -64,23 +58,30 @@
     <main>
         <h1>Cooked Dishes</h1>
         
-        <section class="cooked-dishes">
+        <section class="cooked-dishes dish-grid">
             {% for cooked_dish in cooked_dishes %}
-                <div class="dish-card" id="dish-card-{{ cooked_dish.id }}">
+            <div class="dish-card" id="dish-card-{{ cooked_dish.id }}">
+                <div class="image-container">
                     <img src="{{ cooked_dish.dish.dish_image.url }}" alt="{{ cooked_dish.dish.name }}" class="passport-size">
-                    <h3>{{ cooked_dish.dish.dish_name }}</h3>
-                    <p>Preparation Time: {{ cooked_dish.dish.preparation_time }}</p>
-                    <p>Cost: {{ cooked_dish.dish.cost }}</p>
-                    <button type="button" onclick="handleAction('delete', '{{ cooked_dish.id }}')">Delete</button>
+                    <button class="delete-button" onclick="handleAction('delete', '{{ cooked_dish.id }}')">
+                        <i class="fas fa-trash-alt"></i>
+                    </button>
+                </div>
+                <h3>{{ cooked_dish.dish.dish_name }}</h3>
+                <div class="dish-info">
+                    <p><i class="fas fa-clock"></i> {{ cooked_dish.dish.preparation_time }}</p>
+                    <p><i class="fas fa-sun"></i> {{ cooked_dish.dish.rating_range }}</p>
+                    <p><i class="fas fa-coins"></i> {{ cooked_dish.dish.cost }}</p>
+                </div>
+                <div class="rating-container">
                     <div class="rating" id="rating-{{ cooked_dish.id }}">
-                        <!-- Display rating buttons -->
                         {% for rating in ratings %}
-                            <button type="button" class="rating-btn" onclick="handleAction('rate', '{{ cooked_dish.id }}', '{{ rating }}')">
-                                <span class="star {% if rating <= cooked_dish.rating %}filled{% endif %}" data-rating="{{ rating }}">&#9733;</span>
-                            </button>
+                        <span class="star {% if rating <= cooked_dish.rating %}filled{% endif %}" data-rating="{{ rating }}" onclick="handleAction('rate', '{{ cooked_dish.id }}', {{ rating }})">&#9733;</span>
                         {% endfor %}
                     </div>
-                </div>
+                </div>                
+            </div>
+            
             {% empty %}
                 <p>No cooked dishes to display.</p>
             {% endfor %}
@@ -89,6 +90,7 @@
 
     <script>
         function handleAction(action, id, rating = null) {
+            console.log(`Action: ${action}, ID: ${id}, Rating: ${rating}`); // Add this line for debugging
             fetch("{% url 'cooked' %}", {
                 method: 'POST',
                 headers: {
@@ -124,6 +126,14 @@
                 alert('An error occurred: ' + error);
             });
         }
+        
     </script>
+    <script>
+        document.querySelector('.burger-menu').addEventListener('click', function() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        });
+    </script>
+    
 </body>
 </html>

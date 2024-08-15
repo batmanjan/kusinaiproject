@@ -31,29 +31,36 @@ class Dish(models.Model):
         ('Vegetable with Seafood', 'Vegetable with Seafood'),
         ('Vegetable with Meat', 'Vegetable with Meat'),
     ]
-    
-    COST_CHOICES = [
-        ('100-200', '100-200'),
-        ('300-400', '300-400'),
-        ('500-600', '500-600'),
-        ('700-800', '700-800'),
-        ('900-1000', '900-1000'),
-    ]
-    
+
     dish_name = models.CharField(max_length=200)
     preparation_time = models.DurationField()
-    ingredient_list = models.TextField()  # Changed to TextField for multiple values
-    number_of_servings = models.CharField(max_length=50)  # Changed to CharField for ranges
+    ingredient_list = models.TextField()
+    number_of_servings = models.CharField(max_length=50)
     procedure = models.TextField()
     nutritional_guide = models.TextField()
     skills_needed = models.CharField(max_length=200)
-    age_range_that_can_eat = models.JSONField()  # JSON field for multiple values
-    cost = models.CharField(max_length=20, choices=COST_CHOICES)  # Changed to CharField with choices
+    age_range_that_can_eat = models.JSONField()
+    cost = models.IntegerField()  # Changed to IntegerField
     dish_image = models.ImageField(upload_to='dish_images/')
-    meal_type = models.CharField(max_length=30, choices=MEAL_TYPE_CHOICES)  
+    meal_type = models.CharField(max_length=30, choices=MEAL_TYPE_CHOICES)
 
     def __str__(self):
         return self.dish_name
+
+    def get_cost_range(self):
+        # Define the ranges
+        ranges = [
+            (100, 200),
+            (300, 400),
+            (500, 600),
+            (700, 800),
+            (900, 1000)
+        ]
+        for lower, upper in ranges:
+            if lower <= self.cost <= upper:
+                return f"{lower}-{upper}"
+        return "Unknown"
+
 
 
 

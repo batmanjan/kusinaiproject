@@ -9,224 +9,316 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        /* Sign-up page design */
-        .signup-container {
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #D8EFC8;
+            padding-bottom: 60px;
+            margin: 0 auto;
+            max-width: 1200px;
             align-items: center;
-            height: 100vh;
-            width: 100%;
-            background-color: #D8EFC8; /* Updated background color */
-            opacity: 0;
-            animation: fadeIn 1s ease-in forwards;
+            justify-content: center;
+            overflow-x: hidden; /* Prevent horizontal scroll */
         }
-
-        .signup-card {
-            background-color: #ffffff;
-            padding: 40px; /* Adjust padding as needed */
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            text-align: center; /* Center-align text within the card */
-            width: 100%;
-            max-width: 600px; /* Increased max-width */
-            transform: translateY(-20px);
-            animation: slideIn 0.8s ease-out forwards;
+    
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #D8EFC8;
+            height: 130vh;
         }
-
+    
+        .signup-logo {
+            margin-bottom: 1rem;
+            text-align: center;
+            width: 100%;
+            max-width: 800px;
+            animation: fadeIn 1s ease-in-out;
+        }
+    
         .signup-logo img {
             width: 150px;
             height: auto;
             border-radius: 50%;
-            margin-bottom: 20px;
-            transform: scale(0.8);
-            animation: zoomIn 1s ease-out forwards;
+            object-fit: cover;
+            display: block;
+            margin: 0 auto;
+            animation: bounceIn 1s ease-in-out;
         }
-
-        .signup-card h2 {
-            color: #ff9800;
-            margin-bottom: 10px;
+    
+        .signup-container {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            margin: 0;
+            text-align: center;
+            box-sizing: border-box;
+            animation: fadeInUp 1s ease-in-out;
         }
-
-        .signup-card p {
-            margin-bottom: 40px;
-            color: #000000;
+    
+        h2 {
+            color: #FF9900;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
         }
-
-        .signup-card form {
-            margin-bottom: 20px;
+    
+        p {
+            font-size: 1rem;
+            color: #555;
+            margin-bottom: 1.5rem;
         }
-
-        .signup-card form .input-group {
+    
+        .form-container {
+            width: 100%;
+        }
+    
+        .form-group {
             position: relative;
-            margin-bottom: 20px;
+            margin-bottom: 1rem;
+            text-align: left;
             opacity: 0;
-            animation: fadeInUp 0.6s ease-out forwards;
+            animation: fadeInUp 1s ease-in-out forwards;
         }
-
-        .signup-card form .input-group i {
+    
+        .form-group:nth-child(odd) {
+            animation-delay: 0.2s;
+        }
+    
+        .form-group:nth-child(even) {
+            animation-delay: 0.4s;
+        }
+    
+        .form-group i {
             position: absolute;
-            top: 50%;
-            left: 12px; /* Position the icon */
+            top: 70%;
             transform: translateY(-50%);
-            color: #FFBE30; /* Icon color */
+            color: #FF9900;
+            font-size: 1.25rem;
+            z-index: 1;
+            right: 1rem;
         }
-
-        .signup-card form .input-group input {
-            width: calc(100% - 40px); /* Adjust width to leave space for the icon */
-            padding: 10px 10px 10px 40px;
+    
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem 0.5rem;
             border: 1px solid #ddd;
             border-radius: 4px;
-            font-size: 16px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            color: #333;
             transition: border-color 0.3s ease;
         }
-
-        .signup-card form .input-group input:focus {
-            border-color: #4caf50;
+    
+        .form-group input:focus {
+            border-color: #FF9900;
+            outline: none;
         }
-
-        .signup-card form .phone-wrapper {
+    
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+    
+        .phone-wrapper {
             display: flex;
             align-items: center;
-        }
-
-        .signup-card form .phone-wrapper .phone-prefix {
-            background-color: #fff;
-            border: 1px solid #FFBE30;
-            border-radius: 4px 0 0 4px;
-            padding: 10px;
-            color: #333;
-            font-size: 16px;
-            text-align: center;
-        }
-
-        .signup-card form .phone-wrapper .phone-input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 0 4px 4px 0;
-            font-size: 16px;
-        }
-
-        .signup-card form .password-group {
             position: relative;
         }
-
-        .signup-card form .password-group i.toggle-password {
+    
+        .phone-wrapper .fas.fa-phone {
             position: absolute;
-            top: 33%;
-            right: 10px;
-            transform: translateY(-50%);
-            color: #FFBE30; /* Icon color */
-            cursor: pointer;
+            right: 1rem;
+            top: 1.5rem;
         }
-
-        .signup-card form button {
-            width: 100%;
-            padding: 8px;
-            margin: 20px 0;
-            background-color: #4caf50;
+    
+        .phone-prefix {
+            background-color: #ddd;
+            padding: 0.75rem;
+            border-radius: 4px 0 0 4px;
+            border: 1px solid #ddd;
+            border-right: none;
+            color: #333;
+        }
+    
+        .phone-input {
+            border-radius: 0 4px 4px 0;
+            border: 1px solid #ddd;
+            flex: 1;
+            padding: 0.75rem;
+            padding-right: 2.5rem;
+        }
+    
+        button {
+            background-color: #28a745;
             color: #fff;
             border: none;
-            border-radius: 8px;
+            border-radius: 4px;
+            padding: 0.75rem;
+            width: 100%;
+            font-size: 1rem;
             cursor: pointer;
-            font-size: 16px;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s, transform 0.2s;
+            position: relative;
+            overflow: hidden;
         }
-
-        .signup-card form button:hover {
-            background-color: #388e3c;
+    
+        button:hover {
+            background-color: #218838;
+            transform: scale(1.02);
         }
-
-        .login-link {
-            margin-top: 20px;
-            font-size: 14px;
+    
+        .signup-link {
+            margin-top: 1rem;
+            font-size: 0.9rem;
             color: #555;
         }
-
-        .login-link a {
-            color: #4caf50;
+    
+        .signup-link a {
+            color: #ff9800;
             text-decoration: none;
         }
-
-        .login-link a:hover {
-            text-decoration: underline;
+    
+        .signup-link a:hover {
+            color: #ff5722;
         }
-
+    
         /* Animations */
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
-
-        @keyframes slideIn {
-            from { transform: translateY(-20px); opacity: 0; }
-            to { transform: translateY(0); opacity: 1; }
-        }
-
-        @keyframes zoomIn {
-            from { transform: scale(0.8); opacity: 0; }
-            to { transform: scale(1); opacity: 1; }
-        }
-
+    
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    
+        @keyframes bounceIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.5);
+            }
+            50% {
+                opacity: 1;
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+    
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            h2 {
+                font-size: 1.5rem;
+            }
+    
+            p {
+                font-size: 0.875rem;
+            }
+    
+            .form-group i {
+                right: 1rem;
+            }
+    
+            .phone-wrapper .fas.fa-phone {
+                right: 1rem;
+            }
+    
+            .phone-prefix {
+                padding: 0.5rem;
+            }
+    
+            .phone-input {
+                padding: 0.5rem;
+                padding-right: 2rem;
+            }
+    
+            button {
+                padding: 0.5rem;
+                font-size: 0.875rem;
+            }
+    
+            .signup-link {
+                font-size: 0.8rem;
+            }
         }
     </style>
+    
 </head>
 <body>
-    <main class="signup-container">
+    <div class="login-container">
         <div class="signup-logo">
             <img src="{% static 'images/logo.png' %}" alt="KusinAI Ready Logo">
         </div>
-        <div class="signup-card">
+        <main class="signup-container">
             <h2>Welcome</h2>
             <p>Sign up to create a new account.</p>
-            <form method="post">
-                {% csrf_token %}
-                <div class="input-group">
-                    <i class="fa fa-user"></i>
-                    <input type="text" name="name" placeholder="Enter your name" required>
-                </div>
-                <div class="input-group">
-                    <i class="fa fa-user"></i>
-                    <input type="text" name="username" placeholder="Enter your username" required>
-                </div>
-                <div class="input-group phone-wrapper">
-                    <span class="phone-prefix">+63</span>
-                    <input type="text" name="phone_number" class="phone-input" placeholder="Enter your phone number" required>
-                </div>
-                <div class="password-group">
-                    <div class="input-group">
-                        <i class="fa fa-lock"></i>
-                        <input type="password" id="password" name="password" placeholder="Enter your password" required>
+            <div class="form-container">
+                <form method="post">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="{{ form.name.id_for_label }}">Name</label>
+                        <i class="fas fa-user"></i>
+                        {{ form.name }}
                     </div>
-                    <i class="fa fa-eye toggle-password" id="toggle-password"></i>
-                </div>
-                <div class="password-group">
-                    <div class="input-group">
-                        <i class="fa fa-lock"></i>
-                        <input type="password" id="re-password" name="re_password" placeholder="Re-enter your password" required>
+                    <div class="form-group">
+                        <label for="{{ form.username.id_for_label }}">Username</label>
+                        <i class="fas fa-user"></i>
+                        {{ form.username }}
                     </div>
-                    <i class="fa fa-eye toggle-password" id="toggle-re-password"></i>
-                </div>
-                <button type="submit">Sign Up</button>
-            </form>
-            <p class="login-link">Already have an account? <a href="{% url 'login' %}">Log in</a>.</p>
-        </div>
-    </main>
-    
+                    <div class="form-group">
+                        <label for="{{ form.phone.id_for_label }}">Phone Number</label>
+                        <div class="phone-wrapper">
+                            <span class="phone-prefix">+63</span>
+                            <input type="text" name="{{ form.phone.html_name }}" id="{{ form.phone.id_for_label }}" class="phone-input" value="{{ form.phone.value|default_if_none:'' }}" placeholder="{{ form.phone.field.widget.attrs.placeholder }}">
+                            <i class="fas fa-phone right"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.password.id_for_label }}">Password</label>
+                        <input type="password" id="password" name="password" class="form-control">
+                        <i class="fas fa-eye toggle-password" id="toggle-password" onclick="togglePasswordVisibility('password')"></i>
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.repassword.id_for_label }}">Confirm Password</label>
+                        <input type="password" id="repassword" name="repassword" class="form-control">
+                        <i class="fas fa-eye toggle-password" id="toggle-repassword" onclick="togglePasswordVisibility('repassword')"></i>
+                    </div>
+                    <button type="submit">Sign Up</button>
+                </form>
+            </div>
+            <div class="signup-link">
+                Already have an account? <a href="{% url 'login' %}">Log in</a>
+            </div>
+        </main>
+    </div>
     <script>
-        document.querySelectorAll('.toggle-password').forEach(icon => {
-            icon.addEventListener('click', function () {
-                const inputField = document.querySelector('#' + icon.id.replace('toggle-', ''));
-                const type = inputField.getAttribute('type') === 'password' ? 'text' : 'password';
-                inputField.setAttribute('type', type);
-                icon.classList.toggle('fa-eye');
-                icon.classList.toggle('fa-eye-slash');
-            });
-        });
+        function togglePasswordVisibility(fieldId) {
+            const passwordField = document.querySelector(`#${fieldId}`);
+            const icon = document.querySelector(`#toggle-${fieldId}`);
+            if (passwordField.type === 'password') {
+                passwordField.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordField.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        }
     </script>
 </body>
 </html>

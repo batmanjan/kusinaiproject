@@ -6,11 +6,13 @@
     <title>Saved Dishes</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
     <header>
         <nav>
-            <div class="logo">kusinAIready</div>
+            <div class="logo">KusinAIready</div>
             <div class="nav-menu">
                 <button class="burger-menu">☰</button>
                 <div class="nav-links">
@@ -24,55 +26,83 @@
     </header>
     <main>
         <h1>Saved Dishes</h1>
-        
+
+        <!-- Breakfast Section -->
         <section class="saved-dishes">
             <h2>Breakfast</h2>
-            {% for plan in saved_dishes.breakfast %}
-                <div id="dish-{{ plan.id }}" class="dish-card" onclick="window.location.href='{% url 'saveddish' plan.dish.id %}'">
-                    <img src="{{ plan.dish.dish_image.url }}" alt="{{ plan.dish.dish_name }}" class="passport-size">
-                    <h3>{{ plan.dish.dish_name }}</h3>
-                    <p>Preparation Time: {{ plan.dish.preparation_time }}</p>
-                    <p>Cost: {{ plan.dish.cost }}</p>
-                    <button type="button" onclick="event.stopPropagation(); handleAction('delete', '{{ plan.id }}', this)">Delete</button>
-                    <button type="button" onclick="event.stopPropagation(); handleAction('done', '{{ plan.id }}', this)">Done</button>
-                </div>
-            {% empty %}
-                <p>No breakfast dishes saved.</p>
-            {% endfor %}
+            <div class="dish-grid"> <!-- Grid container -->
+                {% for plan in saved_dishes.breakfast %}
+                    <div id="dish-{{ plan.id }}" class="dish-card" onclick="window.location.href='{% url 'saveddish' plan.dish.id %}'">
+                        <div class="image-container">
+                            <button class="delete-button" onclick="event.stopPropagation(); handleAction('delete', '{{ plan.id }}', this)">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                            <img src="{{ plan.dish.dish_image.url }}" alt="{{ plan.dish.dish_name }}">
+                            <button class="done-button" onclick="event.stopPropagation(); handleAction('done', '{{ plan.id }}', this)">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </div>
+                        <h3>{{ plan.dish.dish_name }}</h3>
+                        <p>Preparation Time: {{ plan.dish.preparation_time }}</p>
+                        <p>Cost: {{ plan.dish.cost }}</p>
+                    </div>
+                {% empty %}
+                    <p>No breakfast dishes saved.</p>
+                {% endfor %}
+            </div> <!-- End of grid container -->
         </section>
 
+        <!-- Lunch Section -->
         <section class="saved-dishes">
             <h2>Lunch</h2>
-            {% for plan in saved_dishes.lunch %}
-                <div id="dish-{{ plan.id }}" class="dish-card" onclick="window.location.href='{% url 'saveddish' plan.dish.id %}'">
-                    <img src="{{ plan.dish.dish_image.url }}" alt="{{ plan.dish.dish_name }}" class="passport-size">
-                    <h3>{{ plan.dish.dish_name }}</h3>
-                    <p>Preparation Time: {{ plan.dish.preparation_time }}</p>
-                    <p>Cost: {{ plan.dish.cost }}</p>
-                    <button type="button" onclick="event.stopPropagation(); handleAction('delete', '{{ plan.id }}', this)">Delete</button>
-                    <button type="button" onclick="event.stopPropagation(); handleAction('done', '{{ plan.id }}', this)">Done</button>
-                </div>
-            {% empty %}
-                <p>No lunch dishes saved.</p>
-            {% endfor %}
+            <div class="dish-grid"> <!-- Grid container -->
+                {% for plan in saved_dishes.lunch %}
+                    <div id="dish-{{ plan.id }}" class="dish-card" onclick="window.location.href='{% url 'saveddish' plan.dish.id %}'">
+                        <div class="image-container">
+                            <button class="delete-button" onclick="event.stopPropagation(); handleAction('delete', '{{ plan.id }}', this)">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                            <img src="{{ plan.dish.dish_image.url }}" alt="{{ plan.dish.dish_name }}">
+                            <button class="done-button" onclick="event.stopPropagation(); handleAction('done', '{{ plan.id }}', this)">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </div>
+                        <h3>{{ plan.dish.dish_name }}</h3>
+                        <p>Preparation Time: {{ plan.dish.preparation_time }}</p>
+                        <p>Cost: {{ plan.dish.cost }}</p>
+                    </div>
+                {% empty %}
+                    <p>No lunch dishes saved.</p>
+                {% endfor %}
+            </div> <!-- End of grid container -->
         </section>
 
+        <!-- Dinner Section -->
         <section class="saved-dishes">
             <h2>Dinner</h2>
-            {% for plan in saved_dishes.dinner %}
-                <div id="dish-{{ plan.id }}" class="dish-card" onclick="window.location.href='{% url 'saveddish' plan.dish.id %}'">
-                    <img src="{{ plan.dish.dish_image.url }}" alt="{{ plan.dish.dish_name }}" class="passport-size">
-                    <h3>{{ plan.dish.dish_name }}</h3>
-                    <p>Preparation Time: {{ plan.dish.preparation_time }}</p>
-                    <p>Cost: {{ plan.dish.cost }}</p>
-                    <button type="button" onclick="event.stopPropagation(); handleAction('delete', '{{ plan.id }}', this)">Delete</button>
-                    <button type="button" onclick="event.stopPropagation(); handleAction('done', '{{ plan.id }}', this)">Done</button>
-                </div>
-            {% empty %}
-                <p>No dinner dishes saved.</p>
-            {% endfor %}
+            <div class="dish-grid"> <!-- Grid container -->
+                {% for plan in saved_dishes.dinner %}
+                    <div id="dish-{{ plan.id }}" class="dish-card" onclick="window.location.href='{% url 'saveddish' plan.dish.id %}'">
+                        <div class="image-container">
+                            <button class="delete-button" onclick="event.stopPropagation(); handleAction('delete', '{{ plan.id }}', this)">
+                                <i class="fas fa-trash-alt"></i>
+                            </button>
+                            <img src="{{ plan.dish.dish_image.url }}" alt="{{ plan.dish.dish_name }}">
+                            <button class="done-button" onclick="event.stopPropagation(); handleAction('done', '{{ plan.id }}', this)">
+                                <i class="fas fa-check"></i>
+                            </button>
+                        </div>
+                        <h3>{{ plan.dish.dish_name }}</h3>
+                        <p>Preparation Time: {{ plan.dish.preparation_time }}</p>
+                        <p>Cost: {{ plan.dish.cost }}</p>
+                    </div>
+                {% empty %}
+                    <p>No dinner dishes saved.</p>
+                {% endfor %}
+            </div> <!-- End of grid container -->
         </section>
 
+        <!-- What to Cook Section -->
         <section class="what-to-cook">
             <h2>What to Cook</h2>
             <form method="GET" action="{% url 'home' %}">
@@ -99,8 +129,12 @@
 
     <script>
         function handleAction(action, dishPlanId, buttonElement) {
+            console.log(`Handling action: ${action}, dishPlanId: ${dishPlanId}`);
+        
+            // Corrected querySelector syntax
             const dishElement = document.querySelector(`#dish-${dishPlanId}`);
-            
+            console.log(`Dish element found: ${dishElement}`);
+        
             fetch('{% url "saved" %}', {
                 method: 'POST',
                 headers: {
@@ -114,6 +148,8 @@
             })
             .then(response => response.json())
             .then(data => {
+                console.log('Response data:', data);
+        
                 if (data.success) {
                     if (action === 'done') {
                         alert(data.error || 'Dish marked as cooked and removed from saved.');
@@ -122,15 +158,23 @@
                         dishElement.remove();  // Remove the element from the DOM
                     }
                 } else {
-                    alert('Error performing action');
+                    alert('Error performing action: ' + data.error);
                 }
             })
             .catch(error => {
-                console.error('Error:', error);
+                console.error('Fetch error:', error);
                 alert('Error performing action');
             });
         }
+        
     </script>
+    <script>
+        document.querySelector('.burger-menu').addEventListener('click', function() {
+            const navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        });
+    </script>
+    
 
 </body>
 </html>

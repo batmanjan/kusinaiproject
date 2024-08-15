@@ -6,6 +6,100 @@
     <title>Dish Details</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+       
+        
+        
+        /* Panel styles */
+        .panel {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin: 20px;
+        }
+        .tabs {
+            display: flex;
+            cursor: pointer;
+            padding: 10px;
+            background: #f1f1f1;
+            border-bottom: 2px solid #ccc;
+        }
+        .tab {
+            padding: 10px 20px;
+            margin-right: 10px;
+            background: #ddd;
+        }
+        .tab.active {
+            background: #fff;
+            border-bottom: 2px solid #fff;
+        }
+        .tab-content {
+            display: none;
+            padding: 20px;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        .ingredient-checkbox {
+            margin-right: 10px;
+        }
+        .flash-card {
+            display: none;
+            padding: 10px;
+            border: 1px solid #ccc;
+            margin-bottom: 10px;
+        }
+        .flash-card.active {
+            display: block;
+        }
+        .progress-bar {
+            width: 100%;
+            height: 5px;
+            background: #eee;
+            margin-bottom: 10px;
+            position: relative;
+        }
+        .progress-bar .progress {
+            height: 100%;
+            background: #4caf50;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0,0,0);
+            background-color: rgba(0,0,0,0.4);
+            padding-top: 60px;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -32,22 +126,48 @@
             <p>Cost: {{ dish.cost }}</p>
             <p>Cooking Skill: {{ dish.skills_needed }}</p>
             <p>Age Range: {{ dish.age_range_that_can_eat }}</p>
+        </div>
+        <div class="panel">
+            <div class="tabs">
+                <div class="tab active" data-tab="ingredients">Ingredients</div>
+                <div class="tab" data-tab="directions">Directions</div>
+                <div class="tab" data-tab="nutritional">Nutritional Guide</div>
+            </div>
 
-            <div class="card">
+            <div class="tab-content ingredients active">
                 <h2>Ingredients</h2>
-                <p>{{ dish.ingredient_list }}</p>
+                {% for ingredient in ingredients %}
+                    <div>
+                        <input type="checkbox" id="ingredient_{{ forloop.counter }}" class="ingredient-checkbox">
+                        <label for="ingredient_{{ forloop.counter }}">{{ ingredient }}</label>
+                    </div>
+                {% endfor %}
             </div>
-            <div class="card">
-                <h2>Procedure</h2>
-                <p>{{ dish.procedure }}</p>
+
+            <div class="tab-content directions">
+                <h2>Directions</h2>
+                <div class="progress-bar">
+                    <div class="progress" id="progress-bar"></div>
+                </div>
+                {% if steps %}
+                    {% for step in steps %}
+                        <div class="flash-card">{{ step }}</div>
+                    {% endfor %}
+                {% else %}
+                    <p>No directions available for this dish.</p>
+                {% endif %}
+                <button onclick="prevStep()">Previous</button>
+                <button onclick="nextStep()">Next</button>
             </div>
-            <div class="card">
+
+            <div class="tab-content nutritional">
                 <h2>Nutritional Guide</h2>
                 <p>{{ dish.nutritional_guide }}</p>
             </div>
 
-            <button class="add-button" type="button" onclick="openModal('{{ dish.id }}')">Add</button>
+           
         </div>
+        <button class="add-button" type="button" onclick="openModal('{{ dish.id }}')">Add</button>
     </main>
     <footer>
         <div class="footer-left">kusinAIready</div>
@@ -82,19 +202,96 @@
     </div>
 
     <script>
+        let currentStep = 0;
+        const steps = document.querySelectorAll('.flash-card');
+        const progressBar = document.getElementById('progress-bar');
+    
         function openModal(dishId) {
             document.getElementById('dish_id').value = dishId;
             document.getElementById('myModal').style.display = "block";
         }
-
+    
         function closeModal() {
             document.getElementById('myModal').style.display = "none";
         }
-
+    
         function setCategory(category) {
             document.getElementById('category').value = category;
             document.getElementById('categoryForm').submit();
         }
-    </script>
+    
+        document.querySelectorAll('.tab').forEach(tab => {
+            tab.addEventListener('click', function() {
+                const selectedTab = this.getAttribute('data-tab');
+                const ingredientsTab = document.querySelector('.tab-content.ingredients');
+                const directionsTab = document.querySelector('.tab-content.directions');
+                const nutritionalTab = document.querySelector('.tab-content.nutritional');
+    
+                if (selectedTab === 'directions') {
+                    const allChecked = Array.from(document.querySelectorAll('.ingredient-checkbox')).every(cb => cb.checked);
+                    if (!allChecked) {
+                        if (confirm('Oops! Seems like you don\'t have all the ingredients. Do you still want to continue?')) {
+                            showTab(directionsTab);
+                        } else {
+                            showTab(ingredientsTab);
+                        }
+                    } else {
+                        showTab(directionsTab);
+                    }
+                } else if (selectedTab === 'ingredients') {
+                    showTab(ingredientsTab);
+                } else if (selectedTab === 'nutritional') {
+                    showTab(nutritionalTab);
+                }
+            });
+        });
+    
+        function showTab(tabContent) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            tabContent.classList.add('active');
+    
+            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+            const activeTab = document.querySelector(`.tab[data-tab="${tabContent.classList[1]}"]`);
+            activeTab.classList.add('active');
+    
+            // Initialize steps for Directions tab
+            if (tabContent.classList.contains('directions')) {
+                currentStep = 0; // Set the current step to 0 to show the first step
+                updateSteps();
+            }
+        }
+    
+        function updateSteps() {
+            // Hide all steps
+            steps.forEach(step => step.classList.remove('active'));
+            if (steps.length > 0) {
+                // Show the current step
+                steps[currentStep].classList.add('active');
+                updateProgressBar();
+            }
+        }
+    
+        function prevStep() {
+            if (currentStep > 0) {
+                currentStep--;
+                updateSteps();
+            }
+        }
+    
+        function nextStep() {
+            if (currentStep < steps.length - 1) {
+                currentStep++;
+                updateSteps();
+            }
+        }
+    
+        function updateProgressBar() {
+            const progress = ((currentStep + 1) / steps.length) * 100;
+            progressBar.style.width = `${progress}%`;
+        }
+    
+        // Initialize steps visibility on page load
+        updateSteps();
+    </script>    
 </body>
 </html>

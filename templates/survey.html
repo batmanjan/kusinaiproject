@@ -9,68 +9,102 @@
 </head>
 <body>
     <main>
-        <h1>Survey</h1>
+        <h1>Survey - Step {{ current_step }} of {{ total_steps }}</h1>
         <form method="post">
             {% csrf_token %}
             <fieldset>
-                <legend>Family Size?</legend>
-                {{ form.family_size }}
+                {% if current_step == 1 %}
+                    <legend>Family Size?</legend>
+                    {{ form.family_size }}
+                    {% if form.family_size.errors %}
+                        <div class="error">{{ form.family_size.errors }}</div>
+                    {% endif %}
+                {% elif current_step == 2 %}
+                    <legend>Age Range?</legend>
+                    {{ form.age_range }}
+                    {% if form.age_range.errors %}
+                        <div class="error">{{ form.age_range.errors }}</div>
+                    {% endif %}
+                {% elif current_step == 3 %}
+                    <legend>Meal Preference?</legend>
+                    {{ form.meal_preference }}
+                    {% if form.meal_preference.errors %}
+                        <div class="error">{{ form.meal_preference.errors }}</div>
+                    {% endif %}
+                    {% elif current_step == 4 %}
+                    <legend>Allergies?</legend>
+                    {{ form.allergies }}
+                    <textarea id="other_allergies" name="other_allergies" placeholder="Specify other allergies, if you have 2 or more, separate each with a comma">{{ form.other_allergies.value|default_if_none:'' }}</textarea>
+                    {% if form.allergies.errors %}
+                        <div class="error">{{ form.allergies.errors }}</div>
+                    {% endif %}                
+                {% elif current_step == 5 %}
+                    <legend>Cooking Skills?</legend>
+                    {{ form.cooking_skills }}
+                    {% if form.cooking_skills.errors %}
+                        <div class="error">{{ form.cooking_skills.errors }}</div>
+                    {% endif %}
+                {% endif %}
             </fieldset>
 
-            <fieldset>
-                <legend>Age Range?</legend>
-                {{ form.age_range }}
-            </fieldset>
-
-            <fieldset>
-                <legend>Meal Preference?</legend>
-                {{ form.meal_preference }}
-            </fieldset>
-
-            <fieldset>
-                <legend>Allergies?</legend>
-                {{ form.allergies }}
-                <textarea id="other_allergies" name="other_allergies" placeholder="Specify other allergies, if you have 2 or more, separate each with a comma"></textarea>
-            </fieldset>
-
-            <fieldset>
-                <legend>Cooking Skills?</legend>
-                {{ form.cooking_skills }}
-            </fieldset>
-
-            <button type="submit">Get Started</button>
+            {% if current_step < total_steps %}
+                <button type="submit">Next</button>
+            {% else %}
+                <button type="submit">Submit</button>
+            {% endif %}
         </form>
     </main>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const noneCheckbox = document.querySelector('input[name="allergies"][value="none"]');
-            const otherCheckboxes = document.querySelectorAll('input[name="allergies"]:not([value="none"])');
+            const noneCheckbox = document.querySelector('input[name="step_4-allergies"][value="none"]');
+            const otherCheckboxes = document.querySelectorAll('input[name="step_4-allergies"]:not([value="none"])');
             const otherAllergiesTextArea = document.getElementById('other_allergies');
-
+            
+            // Debugging logs
+            console.log('None checkbox found:', noneCheckbox !== null);
+            console.log('Other checkboxes found:', otherCheckboxes.length);
+            console.log('TextArea found:', otherAllergiesTextArea !== null);
+        
+            // Check if the noneCheckbox and otherCheckboxes exist
+            if (!noneCheckbox || otherCheckboxes.length === 0 || !otherAllergiesTextArea) {
+                console.error('Required elements not found in the DOM.');
+                return; // Exit the function if any required elements are missing
+            }
+        
             function updateAllergies() {
                 if (noneCheckbox.checked) {
-                    otherCheckboxes.forEach(checkbox => checkbox.checked = false);
+                    otherCheckboxes.forEach(checkbox => {
+                        checkbox.checked = false;
+                    });
                     otherAllergiesTextArea.value = '';  // Clear the text area
+                    otherAllergiesTextArea.disabled = true; // Disable the text area when "None" is selected
+                } else {
+                    otherAllergiesTextArea.disabled = false; // Enable the text area when "None" is deselected
                 }
             }
-
-            // Update on page load based on the form's current state
-            updateAllergies();
-
-            noneCheckbox.addEventListener('change', function() {
+        
+            function handleCheckboxChange() {
+                if (this !== noneCheckbox && this.checked) {
+                    noneCheckbox.checked = false;
+                }
                 updateAllergies();
-            });
-
-            otherCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
-                    if (noneCheckbox.checked) {
-                        noneCheckbox.checked = false;
-                        otherAllergiesTextArea.value = '';  // Clear the text area
-                    }
+            }
+        
+            // Initialize on page load
+            updateAllergies();
+        
+            if (noneCheckbox) {
+                noneCheckbox.addEventListener('change', function() {
+                    updateAllergies();
                 });
+            }
+        
+            otherCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', handleCheckboxChange);
             });
         });
+        
     </script>
 </body>
 </html>
