@@ -129,7 +129,7 @@
                     </div>
                     <h3>{{ dish.dish_name }}</h3>
                     <p>Preparation Time: {{ dish.preparation_time }}</p>
-                    <p>Cost: {{ dish.get_cost_range }}</p>
+                    <p>Cost: {{ dish.cost }}</p>
                     <button type="button" onclick="event.stopPropagation(); openModal('{{ dish.id }}', '{{ selected_meal_type }}', '{{ min_budget }}', '{{ max_budget }}')">
                         <i class="fas fa-plus"></i>
                     </button>
@@ -177,29 +177,37 @@
 
         <section class="what-to-cook">
             <h2>What to Cook</h2>
-            <form method="GET" action="{% url 'home' %}">
+            <form id="mealTypeForm" method="GET" action="{% url 'home' %}">
                 <input type="hidden" name="min_budget" value="{{ min_budget }}">
                 <input type="hidden" name="max_budget" value="{{ max_budget }}">
-                <button type="submit" name="meal_type" value="Appetizer" {% if selected_meal_type == 'Appetizer' %}class="selected"{% endif %}>
+                <input type="hidden" name="meal_type" id="selectedMealTypes" value="{{ selected_meal_type }}">
+        
+                <button type="button" onclick="toggleMealType('Appetizer')" 
+                        {% if 'Appetizer' in selected_meal_type %}class="selected"{% endif %}>
                     <i class="fas fa-utensils"></i> Appetizer
                 </button>
-                <button type="submit" name="meal_type" value="Soup" {% if selected_meal_type == 'Soup' %}class="selected"{% endif %}>
+                <button type="button" onclick="toggleMealType('Soup')" 
+                        {% if 'Soup' in selected_meal_type %}class="selected"{% endif %}>
                     <i class="fas fa-bowl-rice"></i> Soup
                 </button>
-                <button type="submit" name="meal_type" value="Dessert" {% if selected_meal_type == 'Dessert' %}class="selected"{% endif %}>
+                <button type="button" onclick="toggleMealType('Dessert')" 
+                        {% if 'Dessert' in selected_meal_type %}class="selected"{% endif %}>
                     <i class="fas fa-cake"></i> Dessert
                 </button>
-                <button type="submit" name="meal_type" value="Vegetable Dishes" {% if selected_meal_type == 'Vegetable Dishes' %}class="selected"{% endif %}>
+                <button type="button" onclick="toggleMealType('Vegetable Dishes')" 
+                        {% if 'Vegetable Dishes' in selected_meal_type %}class="selected"{% endif %}>
                     <i class="fas fa-carrot"></i> Vegetable Dishes
                 </button>
-                <button type="submit" name="meal_type" value="Vegetable with Seafood" {% if selected_meal_type == 'Vegetable with Seafood' %}class="selected"{% endif %}>
+                <button type="button" onclick="toggleMealType('Vegetable with Seafood')" 
+                        {% if 'Vegetable with Seafood' in selected_meal_type %}class="selected"{% endif %}>
                     <i class="fas fa-fish"></i> Vegetable with Seafood
                 </button>
-                <button type="submit" name="meal_type" value="Vegetable with Meat" {% if selected_meal_type == 'Vegetable with Meat' %}class="selected"{% endif %}>
+                <button type="button" onclick="toggleMealType('Vegetable with Meat')" 
+                        {% if 'Vegetable with Meat' in selected_meal_type %}class="selected"{% endif %}>
                     <i class="fas fa-drumstick-bite"></i> Vegetable with Meat
                 </button>
             </form>
-        </section>        
+        </section>
     </main>
     <footer>
         <div class="footer-left">KusinAIready</div>
@@ -219,26 +227,46 @@
             document.getElementById('max_budget').value = maxBudget;
             document.getElementById('myModal').style.display = 'block';
         }
-
+    
         function closeModal() {
             document.getElementById('myModal').style.display = 'none';
         }
-
+    
         function setCategory(category) {
             document.getElementById('category').value = category;
             document.getElementById('categoryForm').submit();
+            alert("Recipe already on saved page, thanks for choosing!");
         }
-
+    
         window.onclick = function(event) {
             if (event.target == document.getElementById('myModal')) {
                 closeModal();
             }
         }
-
+    
         function toggleMenu() {
             var navLinks = document.querySelector('.nav-links');
             navLinks.classList.toggle('active');
         }
+    
+        function toggleMealType(mealType) {
+            let selectedMealTypes = document.getElementById('selectedMealTypes').value.split(',');
+    
+            if (selectedMealTypes.includes(mealType)) {
+                selectedMealTypes = selectedMealTypes.filter(item => item !== mealType);
+            } else {
+                selectedMealTypes.push(mealType);
+            }
+    
+            document.getElementById('selectedMealTypes').value = selectedMealTypes.join(',');
+            
+            // Toggle the selected class on the button
+            event.target.classList.toggle('selected');
+            
+            // Automatically submit the form after selection
+            document.getElementById('mealTypeForm').submit();
+        }
     </script>
+    
 </body>
 </html>

@@ -156,104 +156,106 @@
     <script>
         let currentStep = 0;
 
-        function showTab(tabId) {
-            // Hide all tab contents
-            document.querySelectorAll('.tab-content').forEach(tabContent => {
-                tabContent.classList.remove('active');
-            });
+function showTab(tabId) {
+    // Hide all tab contents
+    document.querySelectorAll('.tab-content').forEach(tabContent => {
+        tabContent.classList.remove('active');
+    });
 
-            // Remove active class from all tabs
-            document.querySelectorAll('.tab').forEach(tab => {
-                tab.classList.remove('active');
-            });
+    // Remove active class from all tabs
+    document.querySelectorAll('.tab').forEach(tab => {
+        tab.classList.remove('active');
+    });
 
-            // Check if navigating away from Ingredients tab
-            if (tabId === 'directions' && !areAllIngredientsChecked()) {
-                // Alert box
-                if (confirm("Oops! Seems like you don't have all the ingredients. Do you still want to continue?")) {
-                    // Proceed to Directions tab
-                    document.getElementById(tabId).classList.add('active');
-                    document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
-                } else {
-                    // Stay on Ingredients tab
-                    showTab('ingredients');
-                }
+    // Check if navigating away from Ingredients tab
+    if (tabId === 'directions' && !areAllIngredientsChecked()) {
+        // Alert box
+        if (confirm("Oops! Seems like you don't have all the ingredients. Do you still want to continue?")) {
+            // Proceed to Directions tab
+            document.getElementById(tabId).classList.add('active');
+            document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+        } else {
+            // Stay on Ingredients tab
+            showTab('ingredients');
+        }
+    } else {
+        // Show the selected tab content
+        document.getElementById(tabId).classList.add('active');
+        document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+    }
+}
+
+function areAllIngredientsChecked() {
+    const checkboxes = document.querySelectorAll('#ingredients input[type="checkbox"]');
+    return Array.from(checkboxes).every(checkbox => checkbox.checked);
+}
+
+function showStep(index) {
+    const steps = document.querySelectorAll('#directions-steps .step');
+    if (index >= 0 && index < steps.length) {
+        steps.forEach((step, i) => {
+            step.classList.toggle('active', i === index);
+        });
+        currentStep = index;
+        updateProgressBar();
+    }
+}
+
+function prevStep() {
+    showStep(currentStep - 1);
+}
+
+function nextStep() {
+    showStep(currentStep + 1);
+}
+
+function updateProgressBar() {
+    const progress = document.querySelector('.progress');
+    const totalSteps = document.querySelectorAll('#directions-steps .step').length;
+    const percentage = ((currentStep + 1) / totalSteps) * 100;
+    progress.style.width = percentage + '%';
+}
+
+function handleAction(action) {
+    const form = document.getElementById('dish-form');
+    const formData = new FormData(form);
+    formData.append('action', action);
+
+    const url = form.action; // Use form action URL directly
+
+    fetch(url, {
+        method: 'POST',
+        body: formData,
+        headers: {
+            'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]').value
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (action === 'done' && data.cooked) {
+                
+                // Show alert that dish is marked as cooked and removed from saved
+                alert('Dish marked as cooked and removed from saved.');
+                // Simulate a delete action
+                handleAction('delete'); // Trigger the delete action
             } else {
-                // Show the selected tab content
-                document.getElementById(tabId).classList.add('active');
-                document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+                // Redirect to the saved dishes page
+                window.location.href = "{% url 'saved' %}";
             }
+        } else {
+            alert(data.error);
         }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred');
+    });
+}
 
-        function areAllIngredientsChecked() {
-            const checkboxes = document.querySelectorAll('#ingredients input[type="checkbox"]');
-            return Array.from(checkboxes).every(checkbox => checkbox.checked);
-        }
+// Show the first tab initially
+showTab('ingredients');
 
-        function showStep(index) {
-            const steps = document.querySelectorAll('#directions-steps .step');
-            if (index >= 0 && index < steps.length) {
-                steps.forEach((step, i) => {
-                    step.classList.toggle('active', i === index);
-                });
-                currentStep = index;
-                updateProgressBar();
-            }
-        }
-
-        function prevStep() {
-            showStep(currentStep - 1);
-        }
-
-        function nextStep() {
-            showStep(currentStep + 1);
-        }
-
-        function updateProgressBar() {
-            const progress = document.querySelector('.progress');
-            const totalSteps = document.querySelectorAll('#directions-steps .step').length;
-            const percentage = ((currentStep + 1) / totalSteps) * 100;
-            progress.style.width = percentage + '%';
-        }
-
-        function handleAction(action) {
-            const form = document.getElementById('dish-form');
-            const formData = new FormData(form);
-            formData.append('action', action);
-        
-            const url = form.action; // Use form action URL directly
-        
-            fetch(url, {
-                method: 'POST',
-                body: formData,
-                headers: {
-                    'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]').value
-                }
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    if (action === 'done' && data.cooked) {
-                        // Show alert if dish is already cooked
-                        alert('Dish already in the cooked page');
-                        // Simulate a delete action
-                        handleAction('delete'); // Trigger the delete action
-                    } else {
-                        // Redirect to the saved dishes page
-                        window.location.href = "{% url 'saved' %}";
-                    }
-                } else {
-                    alert(data.error);
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('An error occurred');
-            });
-        }
-        
-        // Show the first tab initially
-        showTab('ingredients');
     </script>
 </body>
 </html>

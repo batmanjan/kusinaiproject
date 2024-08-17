@@ -165,7 +165,7 @@ class NewPasswordForm(forms.Form):
             raise forms.ValidationError("Passwords do not match.")
         return re_password
     
-class SurveyForm(forms.Form):
+class FamilySizeForm(forms.Form):
     family_size = forms.ChoiceField(
         choices=[
             ('2-3 Members', '2-3 Members'),
@@ -174,7 +174,8 @@ class SurveyForm(forms.Form):
         widget=forms.RadioSelect,
         required=False
     )
-    
+
+class AgeRangeForm(forms.Form):
     age_range = forms.MultipleChoiceField(
         choices=[
             ('kids', 'Kids (2-3yrs old)'),
@@ -185,7 +186,8 @@ class SurveyForm(forms.Form):
         widget=forms.CheckboxSelectMultiple,
         required=False
     )
-    
+
+class MealPreferenceForm(forms.Form):
     meal_preference = forms.MultipleChoiceField(
         choices=[
             ('appetizer', 'Appetizer'),
@@ -199,6 +201,7 @@ class SurveyForm(forms.Form):
         required=False
     )
 
+class AllergiesForm(forms.Form):
     allergies = forms.MultipleChoiceField(
         choices=[
             ('milk', 'Milk'),
@@ -212,12 +215,12 @@ class SurveyForm(forms.Form):
         widget=forms.CheckboxSelectMultiple,
         required=False
     )
-
     other_allergies = forms.CharField(
         widget=forms.Textarea(attrs={'placeholder': 'Put other allergies here, if you have 2 or more, separate each with a comma'}),
         required=False
     )
-    
+
+class CookingSkillsForm(forms.Form):
     cooking_skills = forms.ChoiceField(
         choices=[
             ('beginner', 'Beginner'),

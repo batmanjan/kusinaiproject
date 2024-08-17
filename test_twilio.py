@@ -12,7 +12,7 @@ class Command(BaseCommand):
             message = client.messages.create(
                 body='Testing Twilio credentials',
                 from_='+16467832567',  # Replace with your Twilio number
-                to='+639324083119'      # Replace with a valid recipient number
+                to='+639760483137'      # Replace with a valid recipient number
             )
             self.stdout.write(self.style.SUCCESS(f"Message SID: {message.sid}"))
         except Exception as e:

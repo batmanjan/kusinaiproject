@@ -34,7 +34,7 @@
                     {% elif current_step == 4 %}
                     <legend>Allergies?</legend>
                     {{ form.allergies }}
-                    <textarea id="other_allergies" name="other_allergies" placeholder="Specify other allergies, if you have 2 or more, separate each with a comma">{{ form.other_allergies.value|default_if_none:'' }}</textarea>
+                    <textarea id="other_allergies" name="step_4-other_allergies" placeholder="Specify other allergies, if you have 2 or more, separate each with a comma">{{ form.other_allergies.value|default_if_none:'' }}</textarea>
                     {% if form.allergies.errors %}
                         <div class="error">{{ form.allergies.errors }}</div>
                     {% endif %}                
@@ -57,54 +57,83 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const noneCheckbox = document.querySelector('input[name="step_4-allergies"][value="none"]');
-            const otherCheckboxes = document.querySelectorAll('input[name="step_4-allergies"]:not([value="none"])');
-            const otherAllergiesTextArea = document.getElementById('other_allergies');
-            
-            // Debugging logs
-            console.log('None checkbox found:', noneCheckbox !== null);
-            console.log('Other checkboxes found:', otherCheckboxes.length);
-            console.log('TextArea found:', otherAllergiesTextArea !== null);
+            const form = document.querySelector('form');
+            const currentStep = parseInt("{{ current_step }}", 10);
         
-            // Check if the noneCheckbox and otherCheckboxes exist
-            if (!noneCheckbox || otherCheckboxes.length === 0 || !otherAllergiesTextArea) {
-                console.error('Required elements not found in the DOM.');
-                return; // Exit the function if any required elements are missing
-            }
+            if (currentStep === 4) {
+                const noneCheckbox = document.querySelector('input[name="step_4-allergies"][value="none"]');
+                const otherCheckboxes = document.querySelectorAll('input[name="step_4-allergies"]:not([value="none"])');
+                const otherAllergiesTextArea = document.getElementById('other_allergies');
         
-            function updateAllergies() {
-                if (noneCheckbox.checked) {
-                    otherCheckboxes.forEach(checkbox => {
-                        checkbox.checked = false;
-                    });
-                    otherAllergiesTextArea.value = '';  // Clear the text area
-                    otherAllergiesTextArea.disabled = true; // Disable the text area when "None" is selected
-                } else {
-                    otherAllergiesTextArea.disabled = false; // Enable the text area when "None" is deselected
+                function updateAllergies() {
+                    if (noneCheckbox && noneCheckbox.checked) {
+                        otherCheckboxes.forEach(checkbox => {
+                            checkbox.checked = false;
+                        });
+                        if (otherAllergiesTextArea) {
+                            otherAllergiesTextArea.value = '';  // Clear the text area
+                            otherAllergiesTextArea.disabled = true; // Disable the text area when "None" is selected
+                        }
+                    } else {
+                        if (otherAllergiesTextArea) {
+                            otherAllergiesTextArea.disabled = false; // Enable the text area when "None" is deselected
+                        }
+                    }
                 }
-            }
         
-            function handleCheckboxChange() {
-                if (this !== noneCheckbox && this.checked) {
-                    noneCheckbox.checked = false;
-                }
-                updateAllergies();
-            }
-        
-            // Initialize on page load
-            updateAllergies();
-        
-            if (noneCheckbox) {
-                noneCheckbox.addEventListener('change', function() {
+                function handleCheckboxChange() {
+                    if (this !== noneCheckbox && this.checked) {
+                        noneCheckbox.checked = false;
+                    }
                     updateAllergies();
+                }
+        
+                // Initialize on page load
+                updateAllergies();
+        
+                if (noneCheckbox) {
+                    noneCheckbox.addEventListener('change', function() {
+                        updateAllergies();
+                    });
+                }
+        
+                otherCheckboxes.forEach(checkbox => {
+                    checkbox.addEventListener('change', handleCheckboxChange);
                 });
             }
         
-            otherCheckboxes.forEach(checkbox => {
-                checkbox.addEventListener('change', handleCheckboxChange);
+            form.addEventListener('submit', function(event) {
+                let isValid = true;
+        
+                // Check required fields based on the current step
+                if (currentStep === 1) {
+                    isValid = document.querySelector('input[name="step_1-family_size"]:checked') !== null;
+                } else if (currentStep === 2) {
+                    isValid = document.querySelectorAll('input[name="step_2-age_range"]:checked').length > 0;
+                } else if (currentStep === 3) {
+                    isValid = document.querySelectorAll('input[name="step_3-meal_preference"]:checked').length > 0;
+                } else if (currentStep === 4) {
+                    const noneCheckbox = document.querySelector('input[name="step_4-allergies"][value="none"]');
+                    const allergiesChecked = document.querySelectorAll('input[name="step_4-allergies"]:checked').length > 0;
+                    const otherAllergiesFilled = document.getElementById('other_allergies').value.trim().length > 0;
+        
+                    // Check if either an allergy is selected, "None" is selected, or other_allergies is filled
+                    isValid = allergiesChecked || (noneCheckbox && noneCheckbox.checked) || otherAllergiesFilled;
+                } else if (currentStep === 5) {
+                    isValid = document.querySelector('input[name="step_5-cooking_skills"]:checked') !== null;
+                }
+        
+                if (!isValid) {
+                    event.preventDefault(); // Stop form submission if invalid
+                    alert("OOPS! Answer all questions please. Thank you!");
+                }
             });
         });
         
     </script>
+    
+    
+    
+    
 </body>
 </html>

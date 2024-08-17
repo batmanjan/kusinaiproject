@@ -2,7 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-# Provided from signup and survey
+
+
 class AppUser(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     name = models.CharField(max_length=100)
@@ -12,26 +13,21 @@ class AppUser(models.Model):
     family_size = models.CharField(max_length=50, null=True, blank=True)
     age_range = models.JSONField(null=True, blank=True)
     meal_preference = models.JSONField(null=True, blank=True)
-    allergies = models.JSONField(null=True, blank=True)  # No default value
+    allergies = models.JSONField(null=True, blank=True)
     cooking_skills = models.CharField(max_length=200, null=True, blank=True)
     survey_completed = models.BooleanField(default=False)
 
     def __str__(self):
         return self.username
 
+class MealType(models.Model):
+    name = models.CharField(max_length=50)
 
-
+    def __str__(self):
+        return self.name
 
 class Dish(models.Model):
-    MEAL_TYPE_CHOICES = [
-        ('Appetizer', 'Appetizer'),
-        ('Soup', 'Soup'),
-        ('Dessert', 'Dessert'),
-        ('Vegetable Dishes', 'Vegetable Dishes'),
-        ('Vegetable with Seafood', 'Vegetable with Seafood'),
-        ('Vegetable with Meat', 'Vegetable with Meat'),
-    ]
-
+    id = models.AutoField(primary_key=True)
     dish_name = models.CharField(max_length=200)
     preparation_time = models.DurationField()
     ingredient_list = models.TextField()
@@ -40,46 +36,28 @@ class Dish(models.Model):
     nutritional_guide = models.TextField()
     skills_needed = models.CharField(max_length=200)
     age_range_that_can_eat = models.JSONField()
-    cost = models.IntegerField()  # Changed to IntegerField
+    cost = models.IntegerField()
     dish_image = models.ImageField(upload_to='dish_images/')
-    meal_type = models.CharField(max_length=30, choices=MEAL_TYPE_CHOICES)
+    meal_type = models.ManyToManyField(MealType)
 
     def __str__(self):
         return self.dish_name
 
-    def get_cost_range(self):
-        # Define the ranges
-        ranges = [
-            (100, 200),
-            (300, 400),
-            (500, 600),
-            (700, 800),
-            (900, 1000)
-        ]
-        for lower, upper in ranges:
-            if lower <= self.cost <= upper:
-                return f"{lower}-{upper}"
-        return "Unknown"
-
-
-
-
-# Provided from saving dish from home to saved page
 class DishPlan(models.Model):
+    id = models.AutoField(primary_key=True)
     user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
-    plan = models.CharField(max_length=100)  # Adjust field type as needed
+    plan = models.CharField(max_length=100)
     
-
     class Meta:
-        unique_together = ('user', 'dish')  # Ensure unique plans per user and dish
-        
+        unique_together = ('user', 'dish')
+
 class CookedDish(models.Model):
+    id = models.AutoField(primary_key=True)
     user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
-    cooked_date = models.DateTimeField(auto_now_add=True)  # Track when the dish was cooked
-    rating = models.IntegerField(null=True, blank=True)  # Add this line if not already present
+    cooked_date = models.DateTimeField(auto_now_add=True)
+    rating = models.IntegerField(null=True, blank=True)
 
     class Meta:
-        unique_together = ('user', 'dish')  # Ensure unique cooked dishes per user
-
+        unique_together = ('user', 'dish')

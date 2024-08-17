@@ -28,7 +28,8 @@ import time
 
 from .forms import (
     ProfileUpdateForm, SignUpForm, LoginForm, OTPForm,
-    PhoneNumberForm, VerificationCodeForm, NewPasswordForm, SurveyForm, 
+    PhoneNumberForm, VerificationCodeForm, NewPasswordForm, 
+    FamilySizeForm, AgeRangeForm, MealPreferenceForm, AllergiesForm, CookingSkillsForm,
 )
 from .models import AppUser
 
@@ -270,29 +271,31 @@ def survey(request):
     total_steps = 5
     current_step = int(request.session.get('survey_step', 1))
 
+    form_classes = {
+        1: FamilySizeForm,
+        2: AgeRangeForm,
+        3: MealPreferenceForm,
+        4: AllergiesForm,
+        5: CookingSkillsForm
+    }
+
     if request.method == 'POST':
-        form = SurveyForm(request.POST, prefix=f'step_{current_step}')
+        form_class = form_classes[current_step]
+        form = form_class(request.POST, prefix=f'step_{current_step}')
+        
+        # Debugging: Print the POST data to verify what's being sent
+        print("POST data:", request.POST)
         
         if form.is_valid():
             step_data = form.cleaned_data
-            app_user, created = AppUser.objects.get_or_create(user=user)
-
-            # Print debug information
+            
+            # Debugging: Check what's in step_data
             print("Step Data:", step_data)
-            print("User Selected Allergies:", step_data.get('allergies', []))  # Debug print for selected allergies
+            
+            app_user, created = AppUser.objects.get_or_create(user=user)
 
             # Update fields based on the current step
             update_app_user(app_user, step_data, current_step)
-
-            # Print debug information
-            print("Updated AppUser:", {
-                'family_size': app_user.family_size,
-                'age_range': app_user.age_range,
-                'meal_preference': app_user.meal_preference,
-                'allergies': app_user.allergies,
-                'cooking_skills': app_user.cooking_skills,
-                'survey_completed': app_user.survey_completed,
-            })
 
             app_user.save()
 
@@ -305,9 +308,13 @@ def survey(request):
                 logout(request)
                 return redirect('login')
         else:
-            # Log or handle form errors
-            print("Form errors:", form.errors)
-            return HttpResponseBadRequest('Invalid form submission.')
+            # Return to the same step with errors
+            return render(request, 'survey.html', {
+                'form': form,
+                'current_step': current_step,
+                'total_steps': total_steps,
+                'form_errors': form.errors
+            })
 
     else:
         if 'survey_step' not in request.session:
@@ -315,7 +322,8 @@ def survey(request):
 
         current_step = request.session.get('survey_step', 1)
         initial_data = get_initial_data(user, current_step)
-        form = SurveyForm(initial=initial_data, prefix=f'step_{current_step}')
+        form_class = form_classes[current_step]
+        form = form_class(initial=initial_data, prefix=f'step_{current_step}')
 
     return render(request, 'survey.html', {
         'form': form,
@@ -332,26 +340,38 @@ def update_app_user(app_user, step_data, step):
     elif step == 3:
         app_user.meal_preference = step_data.get('meal_preference', [])
     elif step == 4:
+        # Extract the allergies and other_allergies fields
         allergies = step_data.get('allergies', [])
+        other_allergies = step_data.get('other_allergies', '').strip()
 
-        # Debug print
-        print("Raw allergies data:", allergies)
+        # Debugging output to verify the data
+        print("Allergies:", allergies)
+        print("Other Allergies:", other_allergies)
 
-        # Normalize the data
+        # Normalize the allergies data
         normalized_allergies = [a.lower() for a in allergies]
 
+        # Process other_allergies if provided
+        if other_allergies:
+            # Split the other_allergies string by commas and add to the list
+            other_allergies_list = [a.strip().lower() for a in other_allergies.split(',')]
+            normalized_allergies.extend(other_allergies_list)
+
+        # Remove duplicates and set the allergies field
         if 'none' in normalized_allergies:
             app_user.allergies = ['None']
         else:
-            app_user.allergies = list(set(allergies))  # Ensure uniqueness
+            app_user.allergies = list(set(normalized_allergies))  # Ensure uniqueness
 
         # Debug print
-        print("Processed allergies data:", app_user.allergies)
+        print("Processed allergies data before saving:", app_user.allergies)
+
+        # Save the updated allergies to the app_user
+        app_user.save()
 
     elif step == 5:
         app_user.cooking_skills = step_data.get('cooking_skills')
         app_user.survey_completed = True
-
 
 def get_initial_data(user, current_step):
     try:
@@ -380,10 +400,20 @@ def get_initial_data(user, current_step):
 
 @login_required
 def home(request):
+    # Retrieve budget and meal type filter values
     min_budget = request.GET.get('min_budget', '')
     max_budget = request.GET.get('max_budget', '')
     meal_type_filter = request.GET.get('meal_type', '')
 
+    # Convert meal_type_filter from comma-separated string to a list
+    meal_type_filters = meal_type_filter.split(',') if meal_type_filter else []
+
+    # Print initial values for debugging
+    print("Initial min_budget:", min_budget)
+    print("Initial max_budget:", max_budget)
+    print("Initial meal_type_filters:", meal_type_filters)
+
+    # Start with all dishes
     dishes = Dish.objects.all()
 
     # Handle budget filtering
@@ -391,72 +421,41 @@ def home(request):
         try:
             min_budget = int(min_budget)
             max_budget = int(max_budget)
+            print("Parsed min_budget:", min_budget)
+            print("Parsed max_budget:", max_budget)
+
             if min_budget <= max_budget and 100 <= min_budget <= 1000 and 100 <= max_budget <= 1000:
                 dishes = dishes.filter(cost__range=(min_budget, max_budget))
-            else:
-                dishes = Dish.objects.all()
+                print(f"Dishes after budget filtering: {dishes.count()} found")
         except ValueError:
+            print("ValueError in budget parsing")
             dishes = Dish.objects.all()
-    elif min_budget or max_budget:
-        dishes = Dish.objects.all()
 
-    # Apply meal type filter if specified
-    if meal_type_filter and meal_type_filter != 'Recommended Dishes':
-        dishes = dishes.filter(meal_type=meal_type_filter)
-
-    context = {
-        'dishes': dishes,
-        'min_budget': min_budget,
-        'max_budget': max_budget,
-        'selected_meal_type': meal_type_filter,
-    }
-    return render(request, 'home.html', context)
-
-
-
-
-
-@login_required
-def home(request):
-    min_budget = request.GET.get('min_budget', '')
-    max_budget = request.GET.get('max_budget', '')
-    meal_type_filter = request.GET.get('meal_type', '')
-
-    dishes = Dish.objects.all()
-
-    # Handle budget filtering
-    if min_budget and max_budget:
-        try:
-            min_budget = int(min_budget)
-            max_budget = int(max_budget)
-            if min_budget <= max_budget and 100 <= min_budget <= 1000 and 100 <= max_budget <= 1000:
-                dishes = dishes.filter(cost__range=(min_budget, max_budget))
-            else:
-                dishes = Dish.objects.all()
-        except ValueError:
-            dishes = Dish.objects.all()
-    elif min_budget or max_budget:
-        dishes = Dish.objects.all()
-
-    # Apply meal type filter if specified
-    if meal_type_filter and meal_type_filter != 'Recommended Dishes':
-        dishes = dishes.filter(meal_type=meal_type_filter)
+    # Apply meal type filters if specified
+    if meal_type_filters:
+        dishes = dishes.filter(meal_type__name__in=meal_type_filters).distinct()
+        print(f"Dishes after meal type filtering: {dishes.count()} found")
+    else:
+        print("No meal type filters applied")
 
     # Paginate dishes
     paginator = Paginator(dishes, 9)  # Show 9 dishes per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
+    # Print the number of dishes on the current page for debugging
+    print(f"Number of dishes on page {page_number}: {page_obj.object_list.count()}")
+
     context = {
         'dishes': page_obj,
         'min_budget': min_budget,
         'max_budget': max_budget,
-        'selected_meal_type': meal_type_filter,
+        'selected_meal_type': meal_type_filter,  # Pass the string of selected meal types
         'page_obj': page_obj,
+        'meal_types': Dish.objects.values_list('meal_type__name', flat=True).distinct()  # Fetch distinct meal types
     }
+
     return render(request, 'home.html', context)
-
-
 
 
 
@@ -487,18 +486,30 @@ def save_to_saved(request):
             defaults={'plan': category}
         )
 
-        # Check if filters are present, else redirect to Recommended Dishes
+        # Check if filters are present, else redirect to base home URL
         meal_type = request.POST.get('meal_type')
-        budget = request.POST.get('budget')
+        min_budget = request.POST.get('min_budget')
+        max_budget = request.POST.get('max_budget')
 
-        if meal_type or budget:
-            # Redirect with existing filters
-            return HttpResponseRedirect(f"{reverse('home')}?meal_type={meal_type}&budget={budget}")
-        else:
-            # Redirect to Recommended Dishes without extra filters
-            return HttpResponseRedirect(f"{reverse('home')}?meal_type=Recommended%20Dishes")
+        # Construct the redirect URL with valid filters
+        redirect_url = reverse('home')
+        query_params = []
+
+        if meal_type:
+            query_params.append(f"meal_type={meal_type}")
+        if min_budget:
+            query_params.append(f"min_budget={min_budget}")
+        if max_budget:
+            query_params.append(f"max_budget={max_budget}")
+
+        if query_params:
+            redirect_url += '?' + '&'.join(query_params)
+
+        return HttpResponseRedirect(redirect_url)
 
     return HttpResponse('Invalid request', status=400)
+
+
 
 
 @login_required
