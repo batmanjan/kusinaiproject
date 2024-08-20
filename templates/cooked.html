@@ -90,42 +90,45 @@
 
     <script>
         function handleAction(action, id, rating = null) {
-            console.log(`Action: ${action}, ID: ${id}, Rating: ${rating}`); // Add this line for debugging
-            fetch("{% url 'cooked' %}", {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': '{{ csrf_token }}'
-                },
-                body: new URLSearchParams({
-                    'action': action,
-                    'id': id,
-                    'rating': rating
-                })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    if (action === 'delete') {
-                        document.getElementById(`dish-card-${id}`).remove();
-                    } else if (action === 'rate') {
-                        // Update the rating stars
-                        document.querySelectorAll(`#rating-${id} .star`).forEach(star => {
-                            if (parseInt(star.dataset.rating) <= rating) {
-                                star.classList.add('filled');
-                            } else {
-                                star.classList.remove('filled');
-                            }
-                        });
+    console.log(`Action: ${action}, ID: ${id}, Rating: ${rating}`); // Add this line for debugging
+    fetch("{% url 'cooked' %}", {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+            'X-CSRFToken': '{{ csrf_token }}'
+        },
+        body: new URLSearchParams({
+            'action': action,
+            'id': id,
+            'rating': rating
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            if (action === 'delete') {
+                document.getElementById(`dish-card-${id}`).remove();
+            } else if (action === 'rate') {
+                // Update the rating stars
+                document.querySelectorAll(`#rating-${id} .star`).forEach(star => {
+                    if (parseInt(star.dataset.rating) <= rating) {
+                        star.classList.add('filled');
+                    } else {
+                        star.classList.remove('filled');
                     }
-                } else {
-                    alert(data.error);
-                }
-            })
-            .catch(error => {
-                alert('An error occurred: ' + error);
-            });
+                });
+                // Show the thank you alert
+                alert('Thank you for rating!');
+            }
+        } else {
+            alert(data.error);
         }
+    })
+    .catch(error => {
+        alert('An error occurred: ' + error);
+    });
+}
+
         
     </script>
     <script>

@@ -31,7 +31,7 @@
                     {% if form.meal_preference.errors %}
                         <div class="error">{{ form.meal_preference.errors }}</div>
                     {% endif %}
-                    {% elif current_step == 4 %}
+                {% elif current_step == 4 %}
                     <legend>Allergies?</legend>
                     {{ form.allergies }}
                     <textarea id="other_allergies" name="step_4-other_allergies" placeholder="Specify other allergies, if you have 2 or more, separate each with a comma">{{ form.other_allergies.value|default_if_none:'' }}</textarea>
@@ -59,6 +59,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.querySelector('form');
             const currentStep = parseInt("{{ current_step }}", 10);
+            const totalSteps = parseInt("{{ total_steps }}", 10);
         
             if (currentStep === 4) {
                 const noneCheckbox = document.querySelector('input[name="step_4-allergies"][value="none"]');
@@ -126,13 +127,12 @@
                 if (!isValid) {
                     event.preventDefault(); // Stop form submission if invalid
                     alert("OOPS! Answer all questions please. Thank you!");
+                } else if (currentStep === totalSteps) {
+                    alert("Survey form saved, Thank you for answering!");
                 }
             });
         });
-        
     </script>
-    
-    
     
     
 </body>

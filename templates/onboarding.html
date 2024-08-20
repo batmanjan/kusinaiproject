@@ -7,7 +7,6 @@
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body, html {
             margin: 0;
@@ -17,77 +16,75 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: #e2f0d9; /* Light green background */
-            font-family: Arial, sans-serif;
-            overflow: hidden;
+            background-color: #D8EFC8; /* Light green background */
+            font-family: 'Montserrat', Arial, sans-serif;
         }
 
         .splash-container {
             text-align: center;
-            animation: fadeIn 1.5s ease-in-out;
             position: relative;
+            animation: fadeIn 1.5s ease-in-out;
         }
 
         .logo {
-            width: 150px;
+            width: 250px;  /* Increase logo size */
             display: inline-block;
+            position: relative;
+            z-index: 2; /* Ensure logo is above the orbiting items */
         }
 
         .food-item {
             position: absolute;
-            width: 40px;
-            animation: eatFood 3s ease-in-out infinite;
+            width: 100px;  /* Increase orbiting items size */
+            height: 100px;
+            top: 50%;
+            left: 50%;
+            transform-origin: -300px 0px; /* Adjust distance from the logo */
+            animation: orbit 5s linear infinite;
+            z-index: 1; /* Ensure items are below the logo */
         }
 
         .food1 {
-            top: 50%;
-            left: -50px;
+            transform-origin: -300px 0; /* Adjust distance from center */
             animation-delay: 0s;
         }
 
         .food2 {
-            top: 20%;
-            right: -50px;
-            animation-delay: 1s;
+            transform-origin: -300px 0; /* Adjust distance from center */
+            animation-delay: 1.5s;
         }
 
         .food3 {
-            bottom: 20%;
-            left: -50px;
-            animation-delay: 2s;
-        }
-
-        @keyframes eatFood {
-            0% { opacity: 0; transform: translate(0, 0); }
-            50% { opacity: 1; }
-            100% { opacity: 0; transform: translate(150px, -50px); }
-        }
-
-        .text {
-            margin-top: 20px;
-            font-size: 24px;
-            font-weight: bold;
-            color: #333;
+            transform-origin: -300px 0; /* Adjust distance from center */
+            animation-delay: 3s;
         }
 
         @keyframes fadeIn {
             from { opacity: 0; }
             to { opacity: 1; }
         }
+
+        @keyframes orbit {
+            0% {
+                transform: rotate(0deg) translateX(300px) rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg) translateX(300px) rotate(-360deg);
+            }
+        }
     </style>
     <script>
-        // JavaScript to handle the redirection after 3 seconds
+        // JavaScript to handle the redirection after 5 seconds
         setTimeout(function(){
             window.location.href = "{% url 'introduction' %}";
-        }, 3000); // 5 seconds delay for the animation to play out
+        }, 5000); // 3 seconds delay for the animation to play out
     </script>
 </head>
 <body>
     <div class="splash-container">
         <img src="{% static 'images/logo.png' %}" alt="KusinAI Ready Logo" class="logo">
-        <div class="text">KusinAI Ready</div>
 
-        <!-- Healthy food items -->
+        <!-- Healthy food items orbiting around the logo -->
         <img src="{% static 'images/apple.png' %}" alt="Apple" class="food-item food1">
         <img src="{% static 'images/carrot.png' %}" alt="Carrot" class="food-item food2">
         <img src="{% static 'images/broccoli.png' %}" alt="Broccoli" class="food-item food3">
