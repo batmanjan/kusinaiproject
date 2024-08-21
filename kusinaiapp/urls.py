@@ -29,4 +29,5 @@ urlpatterns = [
     path('verify_profile/', views.verify_profile, name='verify_profile'),
     path('verify_signup/', views.verify_signup, name='verify_signup'),
     path('save_dish/', views.save_dish, name='save_dish'),
+    path('addrecipe/', views.addrecipe, name='addrecipe'),
 ]

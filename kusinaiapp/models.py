@@ -39,6 +39,7 @@ class Dish(models.Model):
     cost = models.IntegerField()
     dish_image = models.ImageField(upload_to='dish_images/')
     meal_type = models.ManyToManyField(MealType)
+    approved = models.BooleanField(default=False)
 
     def __str__(self):
         return self.dish_name

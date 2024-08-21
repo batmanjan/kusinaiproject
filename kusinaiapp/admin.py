@@ -32,9 +32,9 @@ class AppUserAdmin(admin.ModelAdmin):
 
 @admin.register(Dish)
 class DishAdmin(admin.ModelAdmin):
-    list_display = ('dish_id', 'dish_name', 'preparation_time', 'get_meal_types', 'number_of_servings', 'cost')
+    list_display = ('dish_id', 'dish_name', 'preparation_time', 'get_meal_types', 'number_of_servings', 'cost', 'approved')
     search_fields = ('dish_name', 'ingredient_list', 'skills_needed')
-    list_filter = ('skills_needed', 'cost', 'meal_type')
+    list_filter = ('skills_needed', 'cost', 'meal_type', 'approved')
 
     formfield_overrides = {
         models.ManyToManyField: {'widget': Select2MultipleWidget},

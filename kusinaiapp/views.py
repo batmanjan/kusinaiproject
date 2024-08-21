@@ -16,6 +16,7 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseBadRequest
 from django.core.paginator import Paginator
+from .forms import DishForm
 
 
 from twilio.rest import Client
@@ -398,6 +399,11 @@ def get_initial_data(user, current_step):
 
 
 
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.core.paginator import Paginator
+from .models import Dish
+
 @login_required
 def home(request):
     # Retrieve budget and meal type filter values
@@ -413,8 +419,8 @@ def home(request):
     print("Initial max_budget:", max_budget)
     print("Initial meal_type_filters:", meal_type_filters)
 
-    # Start with all dishes
-    dishes = Dish.objects.all()
+    # Start with all approved dishes
+    dishes = Dish.objects.filter(approved=True)
 
     # Handle budget filtering
     if min_budget and max_budget:
@@ -429,7 +435,7 @@ def home(request):
                 print(f"Dishes after budget filtering: {dishes.count()} found")
         except ValueError:
             print("ValueError in budget parsing")
-            dishes = Dish.objects.all()
+            dishes = Dish.objects.filter(approved=True)
 
     # Apply meal type filters if specified
     if meal_type_filters:
@@ -456,6 +462,7 @@ def home(request):
     }
 
     return render(request, 'home.html', context)
+
 
 
 
@@ -905,7 +912,17 @@ def resend_otp(request):
     return JsonResponse({'success': False, 'message': 'Invalid request method.'})
 
 
-
+def addrecipe(request):
+    if request.method == 'POST':
+        form = DishForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('home')  # or another success page
+        else:
+            return render(request, 'addrecipe.html', {'form': form})
+    else:
+        form = DishForm()
+    return render(request, 'addrecipe.html', {'form': form})
 
 
 

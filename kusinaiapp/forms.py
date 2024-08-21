@@ -1,7 +1,9 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import AppUser
+from .models import AppUser, MealType
 from django.core.validators import RegexValidator
+from .models import Dish
+from django.forms.widgets import TextInput
 
 class SignUpForm(forms.Form):
     name = forms.CharField(
@@ -281,3 +283,90 @@ class ProfileUpdateForm(forms.ModelForm):
             self.add_error('repassword', 'Passwords do not match.')
 
         return cleaned_data
+
+class TimeInputWidget(forms.MultiWidget):
+    def __init__(self, attrs=None):
+        widgets = [
+            TextInput(attrs={'size': '2', 'maxlength': '2', 'placeholder': 'HH'}),
+            TextInput(attrs={'size': '2', 'maxlength': '2', 'placeholder': 'MM'}),
+        ]
+        super().__init__(widgets, attrs)
+
+    def decompress(self, value):
+        if value:
+            parts = value.split(':')
+            return parts[0:2]  # Only return hours and minutes
+        return [None, None]
+
+    def format_output(self, rendered_widgets):
+        return ':'.join(rendered_widgets)
+
+class TimeField(forms.MultiValueField):
+    def __init__(self, *args, **kwargs):
+        fields = [
+            forms.CharField(),
+            forms.CharField(),
+        ]
+        super().__init__(fields, *args, **kwargs)
+
+    def compress(self, data_list):
+        if data_list:
+            # Always return the format "HH:MM:00"
+            return f'{data_list[0]}:{data_list[1]}:00'
+        return '00:00:00'
+
+class DishForm(forms.ModelForm):
+    NUMBER_OF_SERVINGS_CHOICES = [
+        ('2-3', '2-3'),
+        ('4-5', '4-5'),
+    ]
+    
+    SKILLS_NEEDED_CHOICES = [
+        ('beginner', 'Beginner'),
+        ('intermediate', 'Intermediate'),
+        ('advanced', 'Advanced'),
+    ]
+    
+    AGE_CHOICES = [
+        ('kids', 'Kids (2-3yrs old)'),
+        ('teens', 'Teens (13-18)'),
+        ('adults', 'Adults (19-59)'),
+        ('elderly', 'Elderly (60+)'),
+    ]
+
+    # Use CheckboxSelectMultiple for meal_type
+    meal_type = forms.ModelMultipleChoiceField(
+        queryset=MealType.objects.all(),
+        widget=forms.CheckboxSelectMultiple
+    )
+
+    number_of_servings = forms.ChoiceField(choices=NUMBER_OF_SERVINGS_CHOICES, widget=forms.RadioSelect)
+    skills_needed = forms.ChoiceField(choices=SKILLS_NEEDED_CHOICES, widget=forms.RadioSelect)
+    age_range_that_can_eat = forms.MultipleChoiceField(choices=AGE_CHOICES, widget=forms.CheckboxSelectMultiple)
+    
+    # Preparation time field
+    preparation_time = TimeField(
+        widget=TimeInputWidget,
+        required=False,  # optional based on your needs
+    )
+
+    class Meta:
+        model = Dish
+        fields = [
+            'dish_name',
+            'preparation_time',
+            'ingredient_list',
+            'number_of_servings',
+            'procedure',
+            'nutritional_guide',
+            'skills_needed',
+            'age_range_that_can_eat',
+            'cost',
+            'dish_image',
+            'meal_type',
+        ]
+        widgets = {
+            'ingredient_list': forms.Textarea(attrs={'placeholder': 'Add ingredients, press Enter to add each one.'}),
+            'procedure': forms.Textarea(attrs={'placeholder': 'Add steps, press Enter to add each one.'}),
+            'nutritional_guide': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Nutritional guide'}),
+        }

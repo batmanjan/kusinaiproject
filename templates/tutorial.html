@@ -54,7 +54,13 @@
 
         button:hover {
             background-color: #5f8430;
+
+
+        
         }
+
+
+        
     </style>
     <script>
         function skipToHome() {
@@ -65,18 +71,19 @@
 
 <body>
     <header>
-        <nav>
-            <div class="logo">KusinAIready</div>
-            <div class="nav-menu">
-                <button class="burger-menu" onclick="toggleMenu()">☰</button>
-                <div class="nav-links">
-                    <a href="{% url 'home' %}">Home</a>
-                    <a href="{% url 'saved' %}">Saved</a>
-                    <a href="{% url 'cooked' %}">Cooked</a>
-                    <a href="{% url 'settings' %}">Settings</a>
-                </div>
+        <div class="logo">
+            <img src="{% static 'images/logo.png' %}" alt="KusinAIReady Logo">
+            KusinAIReady
+        </div>
+        <div class="nav-menu">
+            <button class="burger-menu" onclick="toggleMenu()">☰</button>
+            <div class="nav-links">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'saved' %}">Saved</a>
+                <a href="{% url 'cooked' %}">Cooked</a>
+                <a href="{% url 'settings' %}">Settings</a>
             </div>
-        </nav>
+        </div>
     </header>
 
     <main>

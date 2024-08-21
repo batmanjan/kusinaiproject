@@ -17,103 +17,144 @@ body {
 }
 /* Header and navigation */
 header {
-    background-color: #228540;
-    color: #fff;
-    padding: 10px 20px; /* Padding around header content */
-    width: 100%;
+    background-color: #D8EFC8; /* Light green background */
+    padding: 15px 40px; /* Add padding for top and sides */
+    display: flex; /* Use flexbox to align logo and nav links */
+    justify-content: space-between; /* Space between logo and nav links */
+    align-items: center;
     position: fixed;
+    width: 100%;
     top: 0;
     left: 0;
-    z-index: 1000; /* Ensure header is above other content */
+    z-index: 1000;
+    box-sizing: border-box; /* Include padding and border in element's width and height */
 }
 
 header .logo {
+    display: flex; /* Use flexbox to align items horizontally */
+    align-items: center; /* Align items vertically in the center */
     font-size: 24px;
-    display: inline-block;
+    font-weight: bold;
+    color: #228540;
+}
+
+header .logo img {
+    width: 40px; /* Adjust the logo size */
+    height: auto; /* Maintain aspect ratio */
+    margin-right: 10px; /* Space between the logo and the text */
 }
 
 header .nav-menu {
+    display: flex; /* Display links horizontally */
+    justify-content: flex-end; /* Move the nav links to the right */
+    flex-grow: 1; /* Let the nav links take up all the remaining space */
     position: relative;
-    display: inline-block;
+}
+
+header .nav-links {
+    display: flex; /* Aligns children (links) in a row */
+    justify-content: center; /* Align links in the center */
+    gap: 20px; /* Add space between the links */
+}
+
+header .nav-links a {
+    color: #228540; /* Green color */
+    text-decoration: none;
+    padding: 10px 15px; /* Add more padding to space out links */
+    font-weight: bold;
+    font-size: 18px; /* Increase font size */
+    transition: color 0.3s ease;
+}
+
+header .nav-links a:hover {
+    color: #fff; /* White text on hover */
+    background-color: #0d4d1e; /* Darker green background on hover */
+    border-radius: 4px; /* Add slight rounding to make it look nicer */
 }
 
 header .burger-menu {
     background: none;
     border: none;
-    color: #fcfcfc;
+    color: #228540;
     font-size: 24px;
     cursor: pointer;
-    display: none; /* Hidden by default */
-    transition: color 0.3s ease;
+    display: none; /* Hidden by default, shown on smaller screens */
+    transition: color 0.3s ease, transform 0.3s ease; /* Added transform transition */
+    position: absolute;
+    right: 20px; /* Adjusted right position to ensure visibility */
+    top: 50%; /* Align the burger menu vertically */
+    transform: translateY(-50%); /* Center the burger menu vertically */
 }
 
 header .burger-menu:hover {
-    color: #66BB6A; /* Color change on hover */
+    color: #FFBE30; /* Change color on hover */
+    transform: translateY(-50%) rotate(90deg); /* Rotate on hover */
 }
 
-header .nav-links {
-    display: inline-block;
-    margin-left: 20px;
+header .burger-menu.active {
+    transform: translateY(-50%) rotate(45deg); /* Rotate 45 degrees when active */
+    color: #FFBE30; /* Change color when active */
 }
 
-header .nav-links a {
-    color: #fff;
-    text-decoration: none;
-    padding: 0 15px;
-    display: inline-block;
-    transition: color 0.3s ease;
-}
-
-header .nav-links a:hover {
-    text-decoration: underline;
-    color: #66BB6A;
-}
-
-/* Responsive Navigation */
-/* Responsive Navigation */
+/*for responsiveness*/
 @media (max-width: 768px) {
-    header .burger-menu {
-        display: inline-block; /* Show burger menu on small screens */
-    }
     header .nav-links {
-        display: none; /* Hide navigation links by default */
+        display: none; /* Initially hide links */
         position: absolute;
-        top: 50px;
-        right: 0;
-        width: 150px; /* Adjust width to match your design */
+        top: 60px; /* Position below the header */
+        right: 10px;
+        width: 200px; /* Width of the menu */
         background-color: #228540;
         flex-direction: column;
-        align-items: flex-start; /* Align the links to the left */
-        padding: 10px;
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add a shadow for better visibility */
-        z-index: 1001; /* Ensure it's on top of other content */
+        align-items: center; /* Center links horizontally */
+        padding: 15px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Add subtle shadow */
+        border-radius: 8px; /* Rounded corners */
+        z-index: 1001;
+        transform: translateY(-20px); /* Start slightly above */
+        opacity: 0; /* Start hidden */
+        transition: transform 0.3s ease, opacity 0.3s ease; /* Smooth transition */
     }
+
     header .nav-links.active {
-        display: flex; /* Show navigation links when active */
+        display: flex; /* Show links when active */
+        transform: translateY(0); /* Slide into view */
+        opacity: 1; /* Fade in */
     }
+
     header .nav-links a {
-        padding: 10px 20px; /* Adjust padding for each link */
-        text-align: left;
-        width: 100%;
-        color: #fff;
-        white-space: nowrap; /* Prevent text wrapping */
+        width: 90%; /* Give some padding around the links */
+        color: #fff; /* Ensure text is white */
+        padding: 12px 0; /* Adjust padding for better spacing */
+        text-align: center; /* Center text within the links */
+        white-space: nowrap;
+        border-radius: 4px; /* Rounded corners for individual items */
+        margin-bottom: 8px; /* Space between items */
+        transition: background-color 0.3s ease, color 0.3s ease; /* Smooth hover transition */
+    }
+
+    header .nav-links a:hover {
+        background-color: #FFBE30; /* Yellow background on hover */
+        color: #228540; /* Dark green text on hover */
+    }
+
+    header .burger-menu {
+        display: block; /* Show burger menu on small screens */
+        cursor: pointer;
     }
 }
 
 
-
+/* Main content padding */
 main {
-    padding: 80px 20px 20px; /* Add top padding to account for fixed header */
+    padding: 100px 40px 20px; /* Add top padding to account for fixed header */
+    margin: 0 auto;
+    max-width: 1200px;
 }
+
 
 
 /* Section for budget selection */
-.budget {
-    margin: 40px auto; /* Center the section and add margin */
-    padding: 0 20px; /* Add padding for better spacing */
-    max-width: 800px; /* Maximum width for the section */
-}
-
 .budget-header {
     text-align: center; /* Center title and description text */
     margin-bottom: 20px; /* Space between header and form */
@@ -122,6 +163,7 @@ main {
 .budget-header h1 {
     font-size: 36px;
     margin-bottom: 10px; /* Space between title and description */
+    color: #228540; /* Green color for the title */
 }
 
 .budget-header p {
@@ -130,32 +172,100 @@ main {
     margin-bottom: 30px;
 }
 
-.budget form {
+.budget-form {
     display: flex;
-    justify-content: center; /* Center the form horizontally */
+    flex-direction: column;
     align-items: center; /* Center the form elements vertically */
+    justify-content: center; /* Center the form elements horizontally */
+    gap: 20px; /* Space between the form groups and buttons */
+    height: 100%; /* Ensure it takes full height of the container */
+    padding: 20px; /* Add some padding for better spacing */
+    background-color: #f7f7f7; /* Light background color for the form */
+    border-radius: 10px; /* Rounded corners for a softer look */
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); /* Soft shadow for depth */
 }
 
 .budget-form-group {
     display: flex;
-    align-items: center; /* Align label and select box vertically */
-    gap: 10px; /* Space between label and select box */
+    justify-content: space-between; /* Space between the two inputs */
+    align-items: center;
+    gap: 20px; /* Space between the input fields */
+    width: 100%;
+    max-width: 500px; /* Limit the width of the form group */
+    margin-bottom: 15px; /* Add some space below the inputs */
 }
 
-.budget label {
+.budget-form-group input[type="number"] {
+    padding: 10px;
+    width: 100%; /* Make the input field fill the available space */
+    max-width: 220px; /* Ensure it doesn't stretch too wide */
+    font-size: 16px;
+    border: 2px solid #228540;
+    border-radius: 5px;
+    background-color: #fff;
+    color: #228540;
+    font-weight: bold;
+    text-align: center; /* Center the placeholder text inside the input */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Add a slight shadow */
+}
+
+.budget-form-group input[type="number"]::placeholder {
+    color: #6f6f6f; /* Lighter color for the placeholder text */
     font-weight: bold;
 }
 
-.budget select {
-    padding: 5px;
-    width: 150px; /* Adjust width as needed */
+.budget-buttons {
+    display: flex;
+    justify-content: space-between; /* Align buttons on the opposite sides */
+    width: 100%; /* Ensure the buttons take up the full width */
+    max-width: 300px; /* Match the width of the form group */
+    margin-top: 20px; /* Maintain space between the inputs and the buttons */
 }
+
+.budget-buttons .clear, 
+.budget-buttons .filter {
+    padding: 10px 25px; /* Adjust padding for a more balanced button size */
+    font-size: 14px; /* Decrease font size for smaller text */
+    border-radius: 5px; /* Slightly reduce border radius */
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    width: 45%; /* Further reduce the width of each button */
+}
+
+.budget-buttons .filter {
+    background-color: #228540; /* Consistent button color */
+    color: #fff;
+    border: none; /* Remove the border for a cleaner look */
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+}
+
+.budget-buttons .filter:hover {
+    background-color: #1a6531;
+    transform: translateY(-2px);
+}
+
+.budget-buttons .clear {
+    background-color: #228540;
+    color: #fff;
+    border: 2px solid #228540;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.1); /* Add shadow for depth */
+}
+
+.budget-buttons .clear:hover {
+    background-color: #1a6531;
+    transform: translateY(-2px);
+}
+
+
+
+
+
 
 /* Section for recommended dishes */
 .recommend {
     margin: 40px auto; /* Center the section and add margin */
     padding: 0 20px; /* Add padding for better spacing */
-    max-width: 900px; /* Maximum width for the section */
+    max-width: 1200px; /* Limit the section width to prevent it from stretching too wide */
 }
 
 .recommend h2 {
@@ -168,32 +278,39 @@ main {
 
 .dish-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* 3 columns */
-    grid-template-rows: repeat(3, auto); /* 3 rows */
-    gap: 20px; /* Space between items */
+    grid-template-columns: repeat(3, 1fr); /* Three columns */
+    gap: 30px; /* Space between items */
     justify-content: center; /* Center the grid */
+    align-items: start; /* Align items to the start to avoid overlap */
 }
 
 .dish-card {
     background-color: #fff;
     border: 1px solid #ddd;
     border-radius: 8px;
-    padding: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    padding: 15px; /* Padding inside the card */
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
     text-align: center;
     position: relative; /* Ensure button can be positioned relative to card */
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Ensure content is spaced out evenly */
+    height: auto; /* Allow height to be flexible */
+    margin-bottom: 30px; /* Add margin at the bottom of each card */
 }
 
 .dish-card:hover {
-    transform: translateY(-10px);
+    transform: translateY(-5px); /* Reduced hover effect */
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
 }
 
 .image-container {
     width: 100%;
-    height: 200px; /* Set a fixed height for images */
+    height: 160px; /* Consistent height for all images */
     overflow: hidden; /* Hide overflow to maintain size */
+    margin-bottom: 15px; /* Space between image and content */
+    flex-shrink: 0; /* Prevent the image from shrinking */
 }
 
 .image-container img {
@@ -201,6 +318,60 @@ main {
     height: 100%;
     object-fit: cover; /* Ensure images cover the container without distortion */
 }
+
+.dish-card h3 {
+    font-size: 18px; /* Font size for dish names */
+    margin: 10px 0; /* Spacing around dish names */
+    flex-grow: 1; /* Allow the title to grow and push the rest down */
+}
+
+.dish-card p {
+    font-size: 14px; /* Font size for preparation time and cost */
+    margin: 5px 0; /* Spacing around text */
+}
+
+/* Responsive adjustments */
+@media (max-width: 1024px) {
+    .dish-grid {
+        grid-template-columns: repeat(2, 1fr); /* Two columns for medium screens */
+        gap: 20px; /* Adjust gap for smaller screens */
+    }
+
+    .dish-card {
+        max-width: 100%; /* Allow cards to fill the column */
+        margin-bottom: 20px; /* Adjust bottom margin */
+    }
+
+    .image-container {
+        height: 140px; /* Adjust image height for smaller screens */
+    }
+}
+
+@media (max-width: 480px) {
+    .dish-grid {
+        grid-template-columns: repeat(1, 1fr); /* One column for smaller screens */
+        gap: 20px; /* Adjust gap for smaller screens */
+    }
+
+    .dish-card {
+        max-width: 100%; /* Allow cards to fill the column */
+        margin-bottom: 20px; /* Adjust bottom margin */
+    }
+
+    .image-container {
+        height: 120px; /* Further reduce image height for small screens */
+    }
+
+    .dish-card h3 {
+        font-size: 16px; /* Font size for dish names */
+    }
+
+    .dish-card p {
+        font-size: 14px; /* Font size for preparation time and cost */
+    }
+}
+
+
 
 .delete-button,
 .done-button {
@@ -267,12 +438,13 @@ main {
 }
 
 /* What to Cook section */
+/* What to Cook section */
 .what-to-cook {
-    margin: 30px auto; /* Adjust margin for a more compact look */
-    padding: 0 15px; /* Reduced padding */
-    max-width: 700px; /* Slightly smaller max-width */
+    margin: 30px auto; /* Center the section */
+    padding: 0 15px; /* Padding around the section */
+    max-width: 850px; /* Slightly smaller max-width */
     background-color: #f9f9f9; /* Light background for better contrast */
-    border-radius: 8px; /* Slightly rounded corners */
+    border-radius: 8px; /* Rounded corners */
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
     padding: 15px; /* Adjusted padding inside the section */
 }
@@ -282,15 +454,15 @@ main {
     margin-bottom: 20px; /* Consistent margin for spacing */
     text-align: center;
     font-size: 32px; /* Slightly smaller font size */
-    font-weight: 500; /* Medium weight for readability */
+    font-weight: 700; /* Medium weight for readability */
     color: #228540; /* Dark color for text */
 }
 
 .what-to-cook form {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* 2 columns */
+    grid-template-columns: repeat(3, 1fr); /* 3 columns */
     grid-template-rows: repeat(3, auto); /* 3 rows */
-    grid-gap: 10px; /* Reduced space between buttons */
+    grid-gap: 10px; /* Space between buttons */
     justify-content: center; /* Center the grid */
     margin-bottom: 15px; /* Adjusted bottom margin */
 }
@@ -300,7 +472,7 @@ main {
     align-items: center; /* Align text and icon */
     background: linear-gradient(135deg, #228540, #2e7d32); /* Gradient background */
     color: #fff;
-    padding: 10px 20px; /* Adjusted padding for a more compact button */
+    padding: 20px; /* Adjusted padding for buttons */
     border: none;
     border-radius: 8px; /* Rounded corners */
     cursor: pointer;
@@ -309,6 +481,7 @@ main {
     gap: 8px; /* Space between icon and text */
     transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s; /* Smooth transitions */
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+    text-align: center; /* Center text inside button */
 }
 
 .what-to-cook button.selected {
@@ -326,35 +499,75 @@ main {
     color: #FFBE30; /* Ensure the icon color contrasts with the button background */
 }
 
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .what-to-cook form {
+        grid-template-columns: repeat(2, 1fr); /* Adjust grid for smaller screens */
+        grid-template-rows: auto; /* Rows adjust automatically */
+    }
+
+    .what-to-cook button {
+        padding: 12px; /* Slightly reduce padding for smaller screens */
+        font-size: 14px; /* Reduce font size for readability */
+    }
+
+    .what-to-cook h2 {
+        font-size: 28px; /* Reduce heading size */
+    }
+}
+
+@media (max-width: 480px) {
+    .what-to-cook form {
+        grid-template-columns: repeat(1, 1fr); /* Adjust grid for very small screens */
+        grid-template-rows: auto; /* Rows adjust automatically */
+    }
+
+    .what-to-cook button {
+        padding: 10px; /* Further reduce padding for very small screens */
+        font-size: 12px; /* Further reduce font size */
+    }
+
+    .what-to-cook h2 {
+        font-size: 24px; /* Further reduce heading size */
+    }
+
+    .what-to-cook button i {
+        font-size: 16px; /* Further reduce icon size */
+    }
+}
+
 
 
 /* Footer */
 footer {
-    background-color: #228540;
-    color: #fff;
-    padding: 10px 20px; /* Padding around footer content */
+    background-color: #ffffff;
+    color: #66BB6A;
+    padding: 15px 25px; /* Increased padding for better spacing */
     text-align: center;
     width: 100%;
     position: fixed;
     bottom: 0;
     left: 0;
     z-index: 1000; /* Ensure footer is above other content */
+    box-shadow: 0 -2px 4px rgba(0, 0, 0, 0.1); /* Add subtle shadow for depth */
 }
 
 footer .footer-left,
 footer .footer-right {
     display: inline-block;
-    padding: 0 20px;
+    padding: 0 25px; /* Adjust padding for balance */
 }
 
 footer .footer-right a {
-    color: #fff;
+    color: #66BB6A;
     text-decoration: none;
-    padding: 0 10px;
+    padding: 0 15px; /* Increased padding for easier clickability */
+    transition: color 0.3s ease; /* Smooth color transition */
 }
 
 footer .footer-right a:hover {
     text-decoration: underline;
+    color: #4CAF50; /* Slightly darker color on hover */
 }
 
 /* Clearfix for floated elements */
@@ -363,6 +576,7 @@ footer::after {
     display: table;
     clear: both;
 }
+
 
 /* Basic styling for the modal */
 .modal {

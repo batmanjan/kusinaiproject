@@ -44,6 +44,52 @@
         .pagination .page-number:last-child a {
             border-radius: 0 5px 5px 0;
         }
+
+        /* Container for logo image and text */
+        header .logo {
+        display: flex; /* Use flexbox to align the items horizontally */
+        align-items: center; /* Align items vertically in the center */
+        font-size: 24px; /* Adjust text size */
+        font-weight: bold; /* Make the text bold */
+        color: #228540; /* Set text color to green */
+        margin-left: 20px; /* Add some left margin to separate from the edge */
+}
+
+        /* Styling the logo image */
+        header .logo img {
+        width: 40px; /* Adjust the logo size */
+        height: auto; /* Maintain aspect ratio */
+        margin-right: 10px; /* Space between the logo and the text */
+        vertical-align: middle; /* Ensure the image aligns with the text */
+}
+
+.budget {
+    margin: 40px auto;
+    padding: 40px;
+    max-width: 1000px; /* Adjusted width */
+    background-color: #f0f8e4;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    background-image: url("{% static 'images/bg.png' %}");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    margin: 0 auto;
+    
+
+}
+.footer-logo {
+    height: 40px; /* Adjust this to match the text size */
+    width: 40px; /* Set width equal to height to make it a perfect circle */
+    border-radius: 50%; /* Make it a circle */
+    vertical-align: middle; /* Aligns the image with the text vertically */
+    margin-right: 10px; /* Adds space between the logo and the text */
+    object-fit: cover; /* Ensures the image covers the entire area */
+}
+
+
+
     </style>
     <script>
         function validateBudgetForm(event) {
@@ -85,18 +131,19 @@
 </head>
 <body>
     <header>
-        <nav>
-            <div class="logo">KusinAIready</div>
-            <div class="nav-menu">
-                <button class="burger-menu" onclick="toggleMenu()">☰</button>
-                <div class="nav-links">
-                    <a href="{% url 'home' %}">Home</a>
-                    <a href="{% url 'saved' %}">Saved</a>
-                    <a href="{% url 'cooked' %}">Cooked</a>
-                    <a href="{% url 'settings' %}">Settings</a>
-                </div>
+        <div class="logo">
+            <img src="{% static 'images/logo.png' %}" alt="KusinAIReady Logo">
+            KusinAIReady
+        </div>
+        <div class="nav-menu">
+            <button class="burger-menu" onclick="toggleMenu()">☰</button>
+            <div class="nav-links">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'saved' %}">Saved</a>
+                <a href="{% url 'cooked' %}">Cooked</a>
+                <a href="{% url 'settings' %}">Settings</a>
             </div>
-        </nav>
+        </div>
     </header>
     <main>
         <section class="budget">
@@ -106,16 +153,18 @@
             </div>
             <form method="GET" action="{% url 'home' %}" onsubmit="validateBudgetForm(event)">
                 <input type="hidden" name="meal_type" value="{{ selected_meal_type }}">
-                <div class="budget-form-group">
-                    <label for="min-budget">Min Budget:</label>
-                    <input type="number" id="min-budget" name="min_budget" min="100" max="1000" value="{{ min_budget }}" required>
-                </div>
-                <div class="budget-form-group">
-                    <label for="max-budget">Max Budget:</label>
-                    <input type="number" id="max-budget" name="max_budget" min="100" max="1000" value="{{ max_budget }}" required>
-                </div>
-                <button type="submit">Filter</button>
-                <button type="button" onclick="clearFilters()">Clear Filters</button>
+                <div class="budget-form">
+                    <div class="budget-form-group">
+                        <input type="number" id="min-budget" name="min_budget" min="100" max="1000" value="{{ min_budget }}" placeholder="Min Budget" required>
+                        <input type="number" id="max-budget" name="max_budget" min="100" max="1000" value="{{ max_budget }}" placeholder="Max Budget" required>
+                    </div>
+                
+                
+                
+                    <div class="budget-buttons">
+                        <button type="button" class="clear" onclick="clearFilters()">Clear</button>
+                        <button type="submit" class="filter">Enter</button>
+                    </div>
             </form>
         </section>
 
@@ -210,7 +259,10 @@
         </section>
     </main>
     <footer>
-        <div class="footer-left">KusinAIready</div>
+        <div class="footer-left">
+            <img src="{% static 'images/logo.png' %}" alt="Logo" class="footer-logo"> <!-- Logo image -->
+            KusinAIready
+        </div>
         <div class="footer-right">
             <a href="{% url 'home' %}">Home</a>
             <a href="{% url 'saved' %}">Saved</a>
@@ -221,6 +273,7 @@
             <a href="{% url 'tutorial' %}">How to Use?</a>
         </div>
     </footer>
+    
     <script>
         function openModal(dishId, mealType, minBudget, maxBudget) {
             document.getElementById('dish_id').value = dishId;
@@ -267,6 +320,8 @@
             
             // Automatically submit the form after selection
             document.getElementById('mealTypeForm').submit();
+
+            
         }
     </script>
     
