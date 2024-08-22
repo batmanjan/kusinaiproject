@@ -107,13 +107,26 @@
         <section class="what-to-cook">
             <h2>What to Cook</h2>
             <form method="GET" action="{% url 'home' %}">
-                <button type="submit" name="meal_type" value="Appetizer" {% if selected_meal_type == 'Appetizer' %}class="selected"{% endif %}>Appetizer</button>
-                <button type="submit" name="meal_type" value="Soup" {% if selected_meal_type == 'Soup' %}class="selected"{% endif %}>Soup</button>
-                <button type="submit" name="meal_type" value="Dessert" {% if selected_meal_type == 'Dessert' %}class="selected"{% endif %}>Dessert</button>
-                <button type="submit" name="meal_type" value="Vegetable Dishes" {% if selected_meal_type == 'Vegetable Dishes' %}class="selected"{% endif %}>Vegetable Dishes</button>
-                <button type="submit" name="meal_type" value="Vegetable with Seafood" {% if selected_meal_type == 'Vegetable with Seafood' %}class="selected"{% endif %}>Vegetable with Seafood</button>
-                <button type="submit" name="meal_type" value="Vegetable with Meat" {% if selected_meal_type == 'Vegetable with Meat' %}class="selected"{% endif %}>Vegetable with Meat</button>
+                <button type="submit" name="meal_type" value="Appetizer" {% if selected_meal_type == 'Appetizer' %}class="selected"{% endif %}>
+                    <i class="fas fa-utensils"></i> Appetizer
+                </button>
+                <button type="submit" name="meal_type" value="Soup" {% if selected_meal_type == 'Soup' %}class="selected"{% endif %}>
+                    <i class="fas fa-mug-hot"></i> Soup
+                </button>
+                <button type="submit" name="meal_type" value="Dessert" {% if selected_meal_type == 'Dessert' %}class="selected"{% endif %}>
+                    <i class="fas fa-cake"></i> Dessert
+                </button>
+                <button type="submit" name="meal_type" value="Vegetable Dishes" {% if selected_meal_type == 'Vegetable Dishes' %}class="selected"{% endif %}>
+                    <i class="fas fa-carrot"></i> Vegetable Dishes
+                </button>
+                <button type="submit" name="meal_type" value="Vegetable with Seafood" {% if selected_meal_type == 'Vegetable with Seafood' %}class="selected"{% endif %}>
+                    <i class="fas fa-fish"></i> Vegetable with Seafood
+                </button>
+                <button type="submit" name="meal_type" value="Vegetable with Meat" {% if selected_meal_type == 'Vegetable with Meat' %}class="selected"{% endif %}>
+                    <i class="fas fa-drumstick-bite"></i> Vegetable with Meat
+                </button>
             </form>
+            
         </section>
     </main>
     <footer>
