@@ -6,7 +6,167 @@
     <title>Survey</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
+<style>
+    body, html {
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #E8F5E9; /* Softer green background for a fresher look */
+        font-family: 'Montserrat', Arial, sans-serif;
+    }
+    
+    main {
+        background-color: #FFFFFF;
+        padding: 30px;
+        border-radius: 15px;
+        width: 90%;
+        max-width: 450px;
+        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
+        text-align: left; /* Align text to the left */
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    main:hover {
+        transform: scale(1.03);
+        box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.15);
+    }
+    
+    h1 {
+        font-size: 26px;
+        font-weight: 700;
+        color: #2E7D32; /* Darker green for better contrast */
+        margin-bottom: 25px;
+        text-align: center; /* Center the heading */
+        transition: color 0.3s ease;
+    }
+    
+    fieldset {
+        border: none;
+        margin-bottom: 25px;
+    }
+    
+    legend {
+        font-size: 20px;
+        font-weight: 600;
+        color: #388E3C;
+        margin-bottom: 20px;
+        transition: color 0.3s ease;
+        text-align: center; /* Center the legend */
+        width: 100%;
+    }
+    
+    fieldset {
+        display: flex;
+        flex-direction: column;
+        gap: 15px; /* Increase gap between fields for better readability */
+    }
+    
+    label {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+        color: #333;
+        padding: 5px 0; /* Reduce padding to prevent overlap */
+        cursor: pointer;
+    }
+    
+    label:hover {
+        background-color: #F1F8E9;
+        transform: translateY(-2px);
+    }
+    
+    label input {
+        margin-right: 10px;
+        transform: scale(1.3);
+        transition: transform 0.3s ease;
+        position: relative;
+        z-index: 1; /* Ensure input is on top */
+    }
+    
+    .error {
+        color: red;
+        font-size: 14px;
+    }
+    
+    button {
+        background-color: #43A047;
+        color: white;
+        font-weight: 700;
+        border: none;
+        padding: 15px 25px;
+        border-radius: 30px;
+        cursor: pointer;
+        font-size: 16px;
+        width: 100%;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        margin-top: 20px;
+        box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.1);
+    }
+    
+    button:hover {
+        background-color: #388E3C;
+        transform: translateY(-3px);
+        box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
+    }
+    
+    button:disabled {
+        background-color: #d4d4d4;
+        cursor: not-allowed;
+    }
+    
+    textarea {
+        width: 100%;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 10px;
+        margin-top: 10px;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    textarea:focus {
+        border-color: #43A047;
+        box-shadow: 0px 0px 5px rgba(67, 160, 71, 0.2);
+    }
+    
+    .progress-indicators {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 30px;
+    }
+    
+    .progress-indicator {
+        background-color: #d4d4d4;
+        color: white;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 7px;
+        font-size: 16px;
+        font-weight: 700;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+    
+    .progress-indicator.active {
+        background-color: #43A047;
+        transform: scale(1.2);
+    }
+    
+    .progress-indicator:hover {
+        transform: scale(1.2);
+    }
+    
+    
+</style>
 <body>
     <main>
         <h1>Survey - Step {{ current_step }} of {{ total_steps }}</h1>
@@ -14,32 +174,32 @@
             {% csrf_token %}
             <fieldset>
                 {% if current_step == 1 %}
-                    <legend>Family Size?</legend>
+                    <legend>What is the size of your Family?</legend>
                     {{ form.family_size }}
                     {% if form.family_size.errors %}
                         <div class="error">{{ form.family_size.errors }}</div>
                     {% endif %}
                 {% elif current_step == 2 %}
-                    <legend>Age Range?</legend>
+                    <legend>What are the age ranges of your family members?</legend>
                     {{ form.age_range }}
                     {% if form.age_range.errors %}
                         <div class="error">{{ form.age_range.errors }}</div>
                     {% endif %}
                 {% elif current_step == 3 %}
-                    <legend>Meal Preference?</legend>
+                    <legend>What does your family like to eat?</legend>
                     {{ form.meal_preference }}
                     {% if form.meal_preference.errors %}
                         <div class="error">{{ form.meal_preference.errors }}</div>
                     {% endif %}
                 {% elif current_step == 4 %}
-                    <legend>Allergies?</legend>
+                    <legend>Does anyone in your family have any allergies? (Select all that apply).</legend>
                     {{ form.allergies }}
                     <textarea id="other_allergies" name="step_4-other_allergies" placeholder="Specify other allergies, if you have 2 or more, separate each with a comma">{{ form.other_allergies.value|default_if_none:'' }}</textarea>
                     {% if form.allergies.errors %}
                         <div class="error">{{ form.allergies.errors }}</div>
                     {% endif %}                
                 {% elif current_step == 5 %}
-                    <legend>Cooking Skills?</legend>
+                    <legend>How would you rate your cooking skills?</legend>
                     {{ form.cooking_skills }}
                     {% if form.cooking_skills.errors %}
                         <div class="error">{{ form.cooking_skills.errors }}</div>
@@ -47,19 +207,43 @@
                 {% endif %}
             </fieldset>
 
-            {% if current_step < total_steps %}
-                <button type="submit">Next</button>
-            {% else %}
-                <button type="submit">Submit</button>
-            {% endif %}
+            <div class="button-container">
+                {% if current_step > 1 %}
+                    <button type="button" onclick="goBack()">Back</button>
+                {% endif %}
+            
+                {% if current_step < total_steps %}
+                    <button type="submit">Next</button>
+                {% else %}
+                    <button type="submit">Submit</button>
+                {% endif %}
+            </div>
         </form>
     </main>
 
     <script>
+        function goBack() {
+            console.log("Back button clicked");  // Debug print to check if the function is triggered
+            const form = document.querySelector('form');
+        
+            // Add a hidden input to indicate back action
+            const backInput = document.createElement('input');
+            backInput.type = 'hidden';
+            backInput.name = 'back';
+            backInput.value = 'true';
+            form.appendChild(backInput);
+        
+            console.log("Submitting form with back input");  // Debug print before form submission
+            // Submit the form
+            form.submit();
+        }
+        
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.querySelector('form');
             const currentStep = parseInt("{{ current_step }}", 10);
             const totalSteps = parseInt("{{ total_steps }}", 10);
+
+            
         
             if (currentStep === 4) {
                 const noneCheckbox = document.querySelector('input[name="step_4-allergies"][value="none"]');
@@ -81,6 +265,8 @@
                         }
                     }
                 }
+
+                
         
                 function handleCheckboxChange() {
                     if (this !== noneCheckbox && this.checked) {
@@ -132,6 +318,8 @@
                 }
             });
         });
+
+
     </script>
     
     

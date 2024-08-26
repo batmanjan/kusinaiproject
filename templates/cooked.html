@@ -71,8 +71,9 @@
                 <h3>{{ cooked_dish.dish.dish_name }}</h3>
                 <div class="dish-info">
                     <p><i class="fas fa-clock"></i> {{ cooked_dish.dish.preparation_time }}</p>
-                    <p><i class="fas fa-sun"></i> {{ cooked_dish.dish.rating_range }}</p>
                     <p><i class="fas fa-coins"></i> {{ cooked_dish.dish.cost }}</p>
+                    <p><i class="fas fa-calendar-alt"></i> {{ cooked_dish.cooked_date|date:"M d, Y" }}</p>
+                    
                 </div>
                 <div class="rating-container">
                     <div class="rating" id="rating-{{ cooked_dish.id }}">

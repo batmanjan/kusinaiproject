@@ -90,6 +90,159 @@
     object-fit: cover; /* Ensures the image covers the entire area */
 }
 
+/* Community Picks Slideshow */
+.community-picks {
+    margin: 40px auto;
+    padding: 20px;
+    max-width: 1000px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    font-family: 'Arial', sans-serif;
+    overflow: hidden;
+}
+
+.slideshow-container {
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    height: 480px;
+    margin-bottom: 20px;
+    border-radius: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.slides {
+    display: flex;
+    transition: transform 0.8s ease-in-out;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.slide {
+    display: flex;
+    justify-content: center;
+    flex: 1 0 100%;
+    box-sizing: border-box;
+    min-width: 100%;
+}
+
+.community-dish-card {
+    flex: 1;
+    margin: 0 15px;
+    background-color: #f9f9f9;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    padding: 20px; /* Increased padding for better spacing */
+    max-width: 240px;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Horizontally center content */
+    justify-content: space-between; /* Distribute space evenly between elements */
+    text-align: center; /* Center align text within the card */
+    height: 100%; /* Ensure the card takes up full height */
+    box-sizing: border-box;
+}
+
+.community-dish-card img {
+    width: 100%;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    transition: transform 0.3s ease;
+}
+
+.community-dish-card h3 {
+    font-size: 1.2rem;
+    color: #333;
+    margin: 10px 0;
+    font-weight: bold;
+    line-height: 1.4;
+}
+
+.community-dish-card p {
+    font-size: 0.9rem;
+    color: #666;
+    margin: 5px 0;
+    width: 100%;
+    opacity: 0.85;
+}
+
+.community-dish-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.15);
+}
+
+.community-dish-card:hover img {
+    transform: scale(1.05);
+}
+
+.slideshow-pagination {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.slideshow-pagination button {
+    background: linear-gradient(145deg, #2da94f, #1e7a39);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 0 5px;
+    border-radius: 50px;
+    transition: background 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
+    outline: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.15);
+}
+
+.slideshow-pagination button:hover {
+    background: linear-gradient(145deg, #1e7a39, #228540);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+.slideshow-pagination button:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(45, 169, 79, 0.5);
+}
+
+.slideshow-pagination button.active {
+    background: #1d6f35;
+    transform: translateY(0);
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+.slideshow-pagination button:before {
+    content: '«';
+    margin-right: 8px;
+    display: inline-block;
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+}
+
+.slideshow-pagination button:after {
+    content: '»';
+    margin-left: 8px;
+    display: inline-block;
+    transform: translateX(0);
+    transition: transform 0.3s ease;
+}
+
+.slideshow-pagination button:hover:before {
+    transform: translateX(-5px);
+}
+
+.slideshow-pagination button:hover:after {
+    transform: translateX(5px);
+}
+
+
 
 
     </style>
@@ -205,6 +358,55 @@
             </span>
         </div>
 
+       
+<!-- Community Picks Slideshow -->
+<section class="community-picks">
+    <h2>Community Picks</h2>
+    <div class="slideshow-container">
+        <div class="slides">
+            <div class="slide">
+                {% for dish in community_picks_first_half %}
+                <div class="community-dish-card" onclick="window.location.href='{% url 'homedish' dish.id %}?referrer={{ request.get_full_path }}'"> <!-- Added onclick for navigation -->
+                    <div class="image-container">
+                        <img src="{{ dish.dish_image.url }}" alt="{{ dish.dish_name }}">
+                    </div>
+                    <h3>{{ dish.dish_name }}</h3>
+                    <p>Preparation Time: {{ dish.preparation_time }}</p>
+                    <p>Cost: {{ dish.cost }}</p>
+                    <p>Rating: {{ dish.avg_rating|floatformat:1 }}</p> <!-- Display average rating -->
+                </div>
+                {% empty %}
+                <p>No community picks available.</p>
+                {% endfor %}
+            </div>
+            <div class="slide">
+                {% for dish in community_picks_second_half %}
+                <div class="community-dish-card" onclick="window.location.href='{% url 'homedish' dish.id %}?referrer={{ request.get_full_path }}'"> <!-- Added onclick for navigation -->
+                    <div class="image-container">
+                        <img src="{{ dish.dish_image.url }}" alt="{{ dish.dish_name }}">
+                    </div>
+                    <h3>{{ dish.dish_name }}</h3>
+                    <p>Preparation Time: {{ dish.preparation_time }}</p>
+                    <p>Cost: {{ dish.cost }}</p>
+                    <p>Rating: {{ dish.avg_rating|floatformat:1 }}</p> <!-- Display average rating -->
+                </div>
+                {% empty %}
+                <p>No community picks available.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    <div class="slideshow-pagination">
+        <button class="prev" onclick="plusSlides(-1)">&#10094;</button>
+        <button class="next" onclick="plusSlides(1)">&#10095;</button>
+    </div>
+</section>
+
+
+
+
+
+
         <!-- The Modal -->
         <div id="myModal" class="modal">
             <div class="modal-content">
@@ -240,7 +442,6 @@
                 <button type="button" onclick="toggleMealType('Soup')" 
                         {% if 'Soup' in selected_meal_type %}class="selected"{% endif %}>
                         <i class="fas fa-mug-hot"></i> Soup
-
                 </button>
                 <button type="button" onclick="toggleMealType('Dessert')" 
                         {% if 'Dessert' in selected_meal_type %}class="selected"{% endif %}>
@@ -277,6 +478,7 @@
         </div>
     </footer>
     
+    <!-- Your existing JavaScript code -->
     <script>
         function openModal(dishId, mealType, minBudget, maxBudget) {
             document.getElementById('dish_id').value = dishId;
@@ -323,9 +525,29 @@
             
             // Automatically submit the form after selection
             document.getElementById('mealTypeForm').submit();
-
-            
         }
+
+        let slideIndex = 0;
+
+function showSlides() {
+    let slides = document.getElementsByClassName("slides")[0];
+    let slideWidth = slides.children[0].offsetWidth;
+    slides.style.transform = `translateX(-${slideIndex * slideWidth}px)`;
+}
+
+function plusSlides(n) {
+    let slides = document.getElementsByClassName("slides")[0];
+    let slideCount = slides.children.length;
+    slideIndex += n;
+    if (slideIndex >= slideCount) { slideIndex = 0; }
+    if (slideIndex < 0) { slideIndex = slideCount - 1; }
+    showSlides(); // Update the slideshow position
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    showSlides(); // Initialize the slideshow
+});
+
     </script>
     
 </body>

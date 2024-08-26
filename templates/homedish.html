@@ -11,32 +11,31 @@
         
         
         /* Panel styles */
-        .panel {
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            margin: 20px;
-        }
+        
+        
         .tabs {
             display: flex;
-            cursor: pointer;
-            padding: 10px;
-            background: #f1f1f1;
-            border-bottom: 2px solid #ccc;
+            border-bottom: 2px solid #ddd;
+            background-color: #fff; /* White background for the tabs */
         }
         .tab {
-            padding: 10px 20px;
-            margin-right: 10px;
-            background: #ddd;
+            flex: 1;
+            padding: 10px;
+            cursor: pointer;
+            text-align: center;
+            background-color: #f1f1f1;
+            border: 1px solid #ddd;
         }
         .tab.active {
-            background: #fff;
+            background-color: #fff;
             border-bottom: 2px solid #fff;
         }
         .tab-content {
             display: none;
+            background-color: #fff; /* White background for content */
             padding: 20px;
+            border: 1px solid #ddd;
+            border-top: none;
         }
         .tab-content.active {
             display: block;

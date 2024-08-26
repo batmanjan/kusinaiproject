@@ -266,6 +266,10 @@ def login(request):
     return render(request, 'login.html', {'form': form})
 
 
+from django.shortcuts import render, redirect
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout
+
 @login_required
 def survey(request):
     user = request.user
@@ -280,19 +284,25 @@ def survey(request):
         5: CookingSkillsForm
     }
 
+    print(f"Current Step at the start: {current_step}")  # Debug print
+
     if request.method == 'POST':
+        # Check if the user clicked the "Back" button
+        if 'back' in request.POST and current_step > 1:
+            # Debug print to track when the "Back" button is clicked
+            print(f"Back button clicked on step {current_step}, moving to step {current_step - 1}")
+            # Move to the previous step
+            request.session['survey_step'] = current_step - 1
+            request.session.modified = True  # Ensure session is saved
+            print(f"New Step after Back: {request.session['survey_step']}")  # Debug print
+            return redirect('survey')
+
+        # Handle the form submission
         form_class = form_classes[current_step]
         form = form_class(request.POST, prefix=f'step_{current_step}')
-        
-        # Debugging: Print the POST data to verify what's being sent
-        print("POST data:", request.POST)
-        
+
         if form.is_valid():
             step_data = form.cleaned_data
-            
-            # Debugging: Check what's in step_data
-            print("Step Data:", step_data)
-            
             app_user, created = AppUser.objects.get_or_create(user=user)
 
             # Update fields based on the current step
@@ -301,14 +311,21 @@ def survey(request):
             app_user.save()
 
             if current_step < total_steps:
+                # Debug print to track moving to the next step
+                print(f"Moving from step {current_step} to step {current_step + 1}")
                 # Move to the next step
                 request.session['survey_step'] = current_step + 1
+                request.session.modified = True  # Ensure session is saved
+                print(f"New Step after Next: {request.session['survey_step']}")  # Debug print
                 return redirect('survey')
             else:
                 # Final step handling
+                print("Final step reached, logging out and redirecting to login")
                 logout(request)
                 return redirect('login')
         else:
+            # Debug print to show errors if form is invalid
+            print(f"Form invalid at step {current_step}: {form.errors}")
             # Return to the same step with errors
             return render(request, 'survey.html', {
                 'form': form,
@@ -318,6 +335,7 @@ def survey(request):
             })
 
     else:
+        # Handle GET request
         if 'survey_step' not in request.session:
             request.session['survey_step'] = 1
 
@@ -325,12 +343,16 @@ def survey(request):
         initial_data = get_initial_data(user, current_step)
         form_class = form_classes[current_step]
         form = form_class(initial=initial_data, prefix=f'step_{current_step}')
+        print(f"Rendering step {current_step} form")  # Debug print
 
     return render(request, 'survey.html', {
         'form': form,
         'current_step': current_step,
         'total_steps': total_steps,
     })
+
+
+
 
 
 def update_app_user(app_user, step_data, step):
@@ -399,10 +421,9 @@ def get_initial_data(user, current_step):
 
 
 
-from django.shortcuts import render
-from django.contrib.auth.decorators import login_required
-from django.core.paginator import Paginator
-from .models import Dish
+
+
+from django.db.models import Avg
 
 @login_required
 def home(request):
@@ -414,11 +435,6 @@ def home(request):
     # Convert meal_type_filter from comma-separated string to a list
     meal_type_filters = meal_type_filter.split(',') if meal_type_filter else []
 
-    # Print initial values for debugging
-    print("Initial min_budget:", min_budget)
-    print("Initial max_budget:", max_budget)
-    print("Initial meal_type_filters:", meal_type_filters)
-
     # Start with all approved dishes
     dishes = Dish.objects.filter(approved=True)
 
@@ -427,30 +443,29 @@ def home(request):
         try:
             min_budget = int(min_budget)
             max_budget = int(max_budget)
-            print("Parsed min_budget:", min_budget)
-            print("Parsed max_budget:", max_budget)
-
             if min_budget <= max_budget and 100 <= min_budget <= 1000 and 100 <= max_budget <= 1000:
                 dishes = dishes.filter(cost__range=(min_budget, max_budget))
-                print(f"Dishes after budget filtering: {dishes.count()} found")
         except ValueError:
-            print("ValueError in budget parsing")
             dishes = Dish.objects.filter(approved=True)
 
     # Apply meal type filters if specified
     if meal_type_filters:
         dishes = dishes.filter(meal_type__name__in=meal_type_filters).distinct()
-        print(f"Dishes after meal type filtering: {dishes.count()} found")
-    else:
-        print("No meal type filters applied")
 
     # Paginate dishes
     paginator = Paginator(dishes, 9)  # Show 9 dishes per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
 
-    # Print the number of dishes on the current page for debugging
-    print(f"Number of dishes on page {page_number}: {page_obj.object_list.count()}")
+    # Get top 10 dishes based on average rating from CookedDish
+    community_picks = (Dish.objects
+                       .filter(approved=True)
+                       .annotate(avg_rating=Avg('cookeddish__rating'))
+                       .order_by('-avg_rating')[:10])
+
+    # Split community picks into two sets of 5
+    community_picks_first_half = community_picks[:5]
+    community_picks_second_half = community_picks[5:]
 
     context = {
         'dishes': page_obj,
@@ -458,10 +473,14 @@ def home(request):
         'max_budget': max_budget,
         'selected_meal_type': meal_type_filter,  # Pass the string of selected meal types
         'page_obj': page_obj,
-        'meal_types': Dish.objects.values_list('meal_type__name', flat=True).distinct()  # Fetch distinct meal types
+        'meal_types': Dish.objects.values_list('meal_type__name', flat=True).distinct(),  # Fetch distinct meal types
+        'community_picks_first_half': community_picks_first_half,
+        'community_picks_second_half': community_picks_second_half,  # Pass the split community picks to the template
     }
 
     return render(request, 'home.html', context)
+
+
 
 
 
