@@ -284,26 +284,33 @@ class ProfileUpdateForm(forms.ModelForm):
 
         return cleaned_data
 
+from django import forms
+
 class TimeInputWidget(forms.MultiWidget):
     def __init__(self, attrs=None):
         widgets = [
-            TextInput(attrs={'size': '2', 'maxlength': '2', 'placeholder': 'HH'}),
-            TextInput(attrs={'size': '2', 'maxlength': '2', 'placeholder': 'MM'}),
+            forms.TextInput(attrs={'class': 'time-input', 'size': '2', 'maxlength': '2', 'placeholder': 'HH'}),
+            forms.TextInput(attrs={'class': 'time-input', 'size': '2', 'maxlength': '2', 'placeholder': 'MM'}),
+            forms.TextInput(attrs={'class': 'time-input', 'size': '2', 'maxlength': '2', 'placeholder': 'SS'}),
         ]
         super().__init__(widgets, attrs)
 
     def decompress(self, value):
         if value:
             parts = value.split(':')
-            return parts[0:2]  # Only return hours and minutes
-        return [None, None]
+            return parts + [None] * (3 - len(parts))  # Ensure we always return three parts
+        return [None, None, None]
 
     def format_output(self, rendered_widgets):
-        return ':'.join(rendered_widgets)
+        return f'<div class="time-input-container">{rendered_widgets[0]} : {rendered_widgets[1]} : {rendered_widgets[2]}</div>'
+
+
+
 
 class TimeField(forms.MultiValueField):
     def __init__(self, *args, **kwargs):
         fields = [
+            forms.CharField(),
             forms.CharField(),
             forms.CharField(),
         ]
@@ -311,10 +318,10 @@ class TimeField(forms.MultiValueField):
 
     def compress(self, data_list):
         if data_list:
-            # Always return the format "HH:MM:00"
-            return f'{data_list[0]}:{data_list[1]}:00'
+            # Always return the format "HH:MM:SS"
+            return f'{data_list[0]}:{data_list[1]}:{data_list[2]}'
         return '00:00:00'
-
+    
 class DishForm(forms.ModelForm):
     NUMBER_OF_SERVINGS_CHOICES = [
         ('2-3', '2-3'),
@@ -369,4 +376,5 @@ class DishForm(forms.ModelForm):
             'ingredient_list': forms.Textarea(attrs={'placeholder': 'Add ingredients, press Enter to add each one.'}),
             'procedure': forms.Textarea(attrs={'placeholder': 'Add steps, press Enter to add each one.'}),
             'nutritional_guide': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Nutritional guide'}),
+            'cost': forms.NumberInput(attrs={'placeholder': 'Cost range should be 100-1000 only'}),
         }

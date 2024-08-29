@@ -34,7 +34,7 @@ ALLOWED_HOSTS = [
 ]
 
 
-
+SITE_ID = 1
 # Application definition
 
 INSTALLED_APPS = [
@@ -45,6 +45,13 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'kusinaiapp',
+    'django.contrib.sites',
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
+    'allauth.socialaccount.providers.facebook',
+    'social_django',
+    
 ]
 
 MIDDLEWARE = [
@@ -55,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'kusinaiproject.urls'
@@ -70,9 +78,12 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'social_django.context_processors.backends',
+                'social_django.context_processors.login_redirect',
             ],
         },
     },
+    
 ]
 
 
@@ -152,5 +163,16 @@ TWILIO_AUTH_TOKEN = 'f18b6ef65dc0e86a1518d79d09035928'
 TWILIO_VERIFY_SERVICE_SID = 'VAbe18575d5da4a1bff47e03e719f7e721'
 
 django_heroku.settings(locals())
+
+
+SOCIAL_AUTH_FACEBOOK_KEY = '1373575073618705'
+SOCIAL_AUTH_FACEBOOK_SECRET = '97697b81f6afdb12e3623dfa4fff9e12'
+
+SOCIAL_AUTH_JSONFIELD_ENABLED = True
+
+AUTHENTICATION_BACKENDS = [
+    'social_core.backends.facebook.FacebookOAuth2',
+    'django.contrib.auth.backends.ModelBackend',
+]
 
 

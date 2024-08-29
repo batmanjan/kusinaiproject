@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from django.conf import settings
 from django.shortcuts import render, redirect
 from django.contrib.auth import logout as auth_logout, login as auth_login, authenticate
@@ -17,6 +18,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.http import HttpResponseBadRequest
 from django.core.paginator import Paginator
 from .forms import DishForm
+from django.utils import timezone
+import pytz
 
 
 from twilio.rest import Client
@@ -426,6 +429,13 @@ def get_initial_data(user, current_step):
 from django.db.models import Avg
 
 @login_required
+def check_recipe(request, dish_id):
+    app_user = AppUser.objects.get(user=request.user)
+    dish = get_object_or_404(Dish, id=dish_id)
+    already_saved = DishPlan.objects.filter(user=app_user, dish=dish).exists()
+    return JsonResponse({'already_saved': already_saved})
+
+@login_required
 def home(request):
     # Retrieve budget and meal type filter values
     min_budget = request.GET.get('min_budget', '')
@@ -487,11 +497,30 @@ def home(request):
 
 
 
+
 @login_required
 def save_to_saved(request):
     if request.method == 'POST':
         dish_id = request.POST.get('dish_id')
         category = request.POST.get('category')
+        saved_date_str = request.POST.get('saved_date')  # Retrieve the saved_date from the POST data
+
+        if not saved_date_str:
+            return HttpResponse('Missing date', status=400)
+
+        print(f"Received saved_date: {saved_date_str}")  # Debug print
+
+        # Ensure the date is in the right format and convert to date object
+        try:
+            # Parse the date in local timezone format (assuming the date is in 'YYYY-MM-DD')
+            saved_date = datetime.strptime(saved_date_str, '%Y-%m-%d').date()
+            # Use timezone-aware datetime at midnight local time
+            local_date = datetime.combine(saved_date, datetime.min.time())
+            local_date = timezone.make_aware(local_date, timezone.get_current_timezone())
+            # Convert to UTC
+            saved_date = local_date.astimezone(pytz.utc)
+        except ValueError:
+            return HttpResponse('Invalid date format', status=400)
 
         # Get the dish object
         try:
@@ -505,11 +534,11 @@ def save_to_saved(request):
         except AppUser.DoesNotExist:
             return HttpResponse('User not found', status=404)
 
-        # Create or update the DishPlan
+        # Create or update the DishPlan with the saved_date
         DishPlan.objects.update_or_create(
             user=app_user,
             dish=dish,
-            defaults={'plan': category}
+            defaults={'plan': category, 'saved_date': saved_date}
         )
 
         # Check if filters are present, else redirect to base home URL
@@ -536,8 +565,6 @@ def save_to_saved(request):
     return HttpResponse('Invalid request', status=400)
 
 
-
-
 @login_required
 def save_dish(request):
     if request.method == 'POST':
@@ -546,10 +573,17 @@ def save_dish(request):
         meal_type = request.POST.get('meal_type')
         budget = request.POST.get('budget')
         referrer = request.POST.get('referrer')  # Get referrer URL
+        saved_date = request.POST.get('saved_date')  # Get selected date
 
         # Validate inputs
-        if not dish_id or not category:
+        if not dish_id or not category or not saved_date:
             return HttpResponse('Invalid input', status=400)
+
+        # Convert the date string to a date object
+        try:
+            saved_date = datetime.strptime(saved_date, '%Y-%m-%d').date()
+        except ValueError:
+            return HttpResponse('Invalid date format', status=400)
 
         # Get the dish object
         dish = get_object_or_404(Dish, id=dish_id)
@@ -561,8 +595,11 @@ def save_dish(request):
         DishPlan.objects.update_or_create(
             user=app_user,
             dish=dish,
-            defaults={'plan': category}
+            defaults={'plan': category, 'saved_date': saved_date}
         )
+
+        # Debug print
+        print(f"Dish ID: {dish_id}, Category: {category}, Meal Type: {meal_type}, Budget: {budget}, Saved Date: {saved_date}")
 
         # Determine the redirect URL
         if referrer:
@@ -573,6 +610,10 @@ def save_dish(request):
         return redirect(redirect_url)
 
     return HttpResponse('Invalid request', status=400)
+
+def check_if_saved(request, dish_id):
+    is_saved = DishPlan.objects.filter(dish_id=dish_id).exists()
+    return JsonResponse({'isAlreadySaved': is_saved})
 
 @login_required
 def homedish(request, dish_id):
@@ -590,13 +631,18 @@ def homedish(request, dish_id):
     # Retrieve filters from request GET parameters
     meal_type = request.GET.get('meal_type', 'Recommended Dishes')
     budget = request.GET.get('budget', '')
+    selected_date = request.GET.get('selected_date', None)
+
+    # Debug print
+    print(f"Selected date: {selected_date}")
 
     context = {
         'dish': dish,
         'ingredients': ingredients,  # Add processed ingredients to context
         'steps': steps,  # Add processed steps to context
         'selected_meal_type': meal_type,
-        'selected_budget': budget
+        'selected_budget': budget,
+        'selected_date': selected_date  # Pass selected date to template
     }
     return render(request, 'homedish.html', context)
 
@@ -942,6 +988,9 @@ def addrecipe(request):
     else:
         form = DishForm()
     return render(request, 'addrecipe.html', {'form': form})
+
+
+
 
 
 

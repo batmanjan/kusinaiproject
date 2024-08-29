@@ -21,6 +21,7 @@
                 <a href="{% url 'home' %}">Home</a>
                 <a href="{% url 'saved' %}">Saved</a>
                 <a href="{% url 'cooked' %}">Cooked</a>
+                <a href="{% url 'addrecipe' %}">Add Recipe</a>
                 <a href="{% url 'settings' %}">Settings</a>
             </div>
         </div>
@@ -46,6 +47,7 @@
                         <h3>{{ plan.dish.dish_name }}</h3>
                         <p>Preparation Time: {{ plan.dish.preparation_time }}</p>
                         <p>Cost: {{ plan.dish.cost }}</p>
+                        <p>{{ plan.saved_date }}</p>
                     </div>
                 {% empty %}
                     <p>No breakfast dishes saved.</p>
@@ -71,6 +73,7 @@
                         <h3>{{ plan.dish.dish_name }}</h3>
                         <p>Preparation Time: {{ plan.dish.preparation_time }}</p>
                         <p>Cost: {{ plan.dish.cost }}</p>
+                        <p>{{ plan.saved_date }}</p>
                     </div>
                 {% empty %}
                     <p>No lunch dishes saved.</p>
@@ -96,6 +99,7 @@
                         <h3>{{ plan.dish.dish_name }}</h3>
                         <p>Preparation Time: {{ plan.dish.preparation_time }}</p>
                         <p>Cost: {{ plan.dish.cost }}</p>
+                        <p>{{ plan.saved_date }}</p>
                     </div>
                 {% empty %}
                     <p>No dinner dishes saved.</p>

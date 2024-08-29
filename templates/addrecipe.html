@@ -9,50 +9,268 @@
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        main {
+            max-width: 600px;
+            margin: 100px auto; /* Increased top margin for better spacing */
+            padding: 30px;
+            background-color: #ffffff; /* Subtle background color */
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            font-family: 'Montserrat', sans-serif;
+        }
+        
+        h1.settings-title {
+            font-size: 2.2em;
+            text-align: center;
+            color: #4CAF50;
+            margin-bottom: 30px; /* Increased margin for better spacing */
+        }
+        
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        
+        label {
+            font-weight: 600;
+            color: #333;
+            font-size: 1em; /* Slightly increased font size for better readability */
+        }
+        
+        input[type="text"],
+        input[type="number"],
+        input[type="file"],
+        textarea,
+        select {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            width: 100%;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            background-color: #ffffff; /* White background for input fields */
+        }
+        
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        input[type="file"]:focus,
+        textarea:focus,
+        select:focus {
+            border-color: #4CAF50;
+            box-shadow: 0 0 8px rgba(76, 175, 80, 0.2);
+            outline: none;
+        }
+        
+        textarea {
+            resize: vertical;
+            min-height: 120px; /* Slightly increased height for better appearance */
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: center;
+        }
+        
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        
+        button[type="submit"]:hover {
+            background-color: #45a049;
+            transform: translateY(-2px); /* Adds a slight lift on hover for interactivity */
+        }
+        
+        .checkbox-group,
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px; /* Adjusted spacing for better visual separation */
+        }
+        
+        .checkbox-group label,
+        .radio-group label {
+            font-weight: 500;
+            font-size: 0.95em;
+        }
+        
+        .flex-container-horizontal {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+        
+        .flex-container-horizontal input[type="text"] {
+            width: 60px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        
+        .note {
+            font-size: 0.85em;
+            color: #555; /* Darker note text for better contrast */
+            margin-top: -5px;
+        }
+
+        .time-input-container {
+            display: flex;
+            align-items: center;
+            gap: 0.7em; /* Increased gap for better spacing between time inputs */
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav>
-            <div class="logo">KusinAIready</div>
-            <div class="nav-menu">
-                <button class="burger-menu">☰</button>
-                <div class="nav-links">
-                    <a href="{% url 'home' %}">Home</a>
-                    <a href="{% url 'saved' %}">Saved</a>
-                    <a href="{% url 'cooked' %}">Cooked</a>
-                    <a href="{% url 'settings' %}">Settings</a>
-                </div>
+        <div class="logo">
+            <img src="{% static 'images/logo.png' %}" alt="KusinAIReady Logo">
+            KusinAIReady
+        </div>
+        <div class="nav-menu">
+            <button class="burger-menu" onclick="toggleMenu()">☰</button>
+            <div class="nav-links">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'saved' %}">Saved</a>
+                <a href="{% url 'cooked' %}">Cooked</a>
+                <a href="{% url 'addrecipe' %}">Add Recipe</a>
+                <a href="{% url 'settings' %}">Settings</a>
             </div>
-        </nav>
+        </div>
     </header>
     <main>
         <h1 class="settings-title">Add Recipe</h1>
         <form id="recipe-form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit">Add Recipe</button>
+            
+            <!-- Manually render the preparation time field with labels -->
+            
+            
+            <!-- Render other fields normally -->
+            <div class="form-group">
+                {{ form.dish_name.label_tag }} {{ form.dish_name }}
+            </div>
+            <div class="form-group">
+                {{ form.ingredient_list.label_tag }} {{ form.ingredient_list }}
+            </div>
+            <div class="form-group">
+                <label for="id_preparation_time_0">Preparation time:</label>
+                <div class="time-input-container">
+                    {{ form.preparation_time.subwidgets.0 }} 
+                    {{ form.preparation_time.subwidgets.1 }} 
+                    {{ form.preparation_time.subwidgets.2 }}
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form.number_of_servings.label_tag }} {{ form.number_of_servings }}
+            </div>
+            <div class="form-group">
+                {{ form.procedure.label_tag }} {{ form.procedure }}
+            </div>
+            <div class="form-group">
+                {{ form.nutritional_guide.label_tag }} {{ form.nutritional_guide }}
+            </div>
+            <div class="form-group">
+                {{ form.skills_needed.label_tag }} {{ form.skills_needed }}
+            </div>
+            <div class="form-group">
+                {{ form.age_range_that_can_eat.label_tag }} {{ form.age_range_that_can_eat }}
+            </div>
+            <div class="form-group">
+                {{ form.cost.label_tag }} {{ form.cost }}
+            </div>
+            <div class="form-group">
+                {{ form.dish_image.label_tag }} {{ form.dish_image }}
+            </div>
+            <div class="form-group">
+                {{ form.meal_type.label_tag }} {{ form.meal_type }}
+            </div>
+            
+            <div class="button-container">
+                <button type="submit">Add Recipe</button>
+            </div>
         </form>
+    
         <script>
             document.getElementById('recipe-form').addEventListener('submit', function(event) {
                 let form = event.target;
                 let isValid = true;
-
-                // Check if all required fields are filled
+        
+                // Check if all required fields are filled except preparation time
                 form.querySelectorAll('input, textarea, select').forEach(function(input) {
-                    if (input.required && !input.value.trim()) {
+                    if (input.required && input.type !== 'hidden' && !input.value.trim()) {
+                        isValid = false;
+                    }
+        
+                    // Additional check for checkboxes and multiple select fields like meal_type
+                    if (input.type === 'checkbox' || input.type === 'radio') {
+                        const name = input.name;
+                        if (document.querySelectorAll(`input[name="${name}"]:checked`).length === 0) {
+                            isValid = false;
+                        }
+                    }
+                    
+                    // Specific check for ModelMultipleChoiceField widgets like meal_type
+                    if (input.tagName === 'SELECT' && input.multiple && input.required && input.selectedOptions.length === 0) {
                         isValid = false;
                     }
                 });
-
+        
                 if (!isValid) {
                     event.preventDefault();
-                    alert('OOPS! Please enter all recipe details');
-                } else {
-                    alert('Thank you for adding your recipe! Please wait till your recipe is approved and will be available for everyone!');
+                    alert('Answer all forms');
+                    return;
                 }
+        
+                // Check if the cost is within the range 100-1000
+                let costInput = form.querySelector('input[name="cost"]');
+                if (costInput) {
+                    let costValue = parseInt(costInput.value.trim());
+                    if (isNaN(costValue) || costValue < 100 || costValue > 1000) {
+                        alert('Please enter a valid cost between 100 and 1000.');
+                        event.preventDefault();
+                        return;
+                    }
+                }
+        
+                // Ensure preparation time fields have default values and at least one is non-zero
+                let timeInputs = form.querySelectorAll('.time-input-container input[type="text"]');
+                let allZero = true;
+                timeInputs.forEach(function(input) {
+                    if (!input.value.trim()) {
+                        input.value = '00';
+                    } else if (input.value.trim() !== '00') {
+                        allZero = false;
+                    }
+                });
+        
+                if (allZero) {
+                    alert('Please enter a valid preparation time. All fields cannot be "00".');
+                    event.preventDefault();
+                    return;
+                }
+        
+                // Show success message if all validations pass
+                alert('Thank you for adding your recipe! Please wait till your recipe is approved and will be available for everyone!');
             });
         </script>
+        
     </main>
+    
+    
     <footer>
         <div class="footer-left">KusinAIready</div>
         <div class="footer-right">
@@ -103,9 +321,6 @@
                 procedureInput.addEventListener('blur', removeTrailingComma);
             }
         });
-        
         </script>
-        
-        
 </body>
 </html>

@@ -51,7 +51,7 @@ class DishAdmin(admin.ModelAdmin):
 
 @admin.register(DishPlan)
 class DishPlanAdmin(admin.ModelAdmin):
-    list_display = ('dishplan_id', 'appuser_id', 'dish', 'plan')
+    list_display = ('dishplan_id', 'appuser_id', 'dish', 'plan', 'saved_date')  # Add saved_date here
     search_fields = ('user__username', 'dish__dish_name', 'plan')
 
     def dishplan_id(self, obj):
@@ -59,15 +59,16 @@ class DishPlanAdmin(admin.ModelAdmin):
     dishplan_id.short_description = 'DISHPLAN_ID'
 
     def appuser_id(self, obj):
-        return obj.user.id  # Changed to use AppUser ID
+        return obj.user.id
     appuser_id.short_description = 'APPUSER_ID'
+
 
 @admin.register(CookedDish)
 class CookedDishAdmin(admin.ModelAdmin):
-    list_display = ('cooked_id', 'appuser_id', 'dish', 'rating', 'cooked_date')
-    list_filter = ('user', 'cooked_date', 'rating')
+    list_display = ('cooked_id', 'appuser_id', 'dish', 'rating')
+    list_filter = ('user', 'rating')
     search_fields = ('user__username', 'dish__dish_name')
-    ordering = ('-cooked_date',)
+    
 
     def cooked_id(self, obj):
         return obj.id

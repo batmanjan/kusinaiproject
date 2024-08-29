@@ -49,15 +49,14 @@ class DishPlan(models.Model):
     user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
     plan = models.CharField(max_length=100)
-    
+    saved_date = models.DateField(null=True, blank=True)  # Add this line
+
     class Meta:
         unique_together = ('user', 'dish')
-
 class CookedDish(models.Model):
     id = models.AutoField(primary_key=True)
     user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
-    cooked_date = models.DateTimeField(auto_now_add=True)
     rating = models.IntegerField(null=True, blank=True)
 
     class Meta:

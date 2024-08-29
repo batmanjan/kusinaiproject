@@ -9,6 +9,9 @@
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
 
     <style>
         /* Pagination Controls */
@@ -242,6 +245,74 @@
     transform: translateX(5px);
 }
 
+.seven-day-calendar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px auto; /* Centers the calendar horizontally on the page */
+    background-color: #f8f8f8;
+    border-radius: 12px;
+    padding: 10px 20px;
+    width: fit-content; /* Adjust width to fit the content */
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional: add a shadow for better visibility */
+}
+
+.calendar-nav {
+    display: flex;
+    align-items: center;
+}
+
+.nav-btn {
+    background-color: transparent;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 10px;
+}
+
+.week-days {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    padding: 5px;
+}
+
+.week-day {
+    text-align: center;
+    flex: 1;
+    padding: 10px 5px;
+    cursor: pointer;
+}
+
+.week-day h4 {
+    margin: 0;
+    color: #333;
+}
+
+.week-day p {
+    margin: 0;
+    color: #7b7b7b;
+    font-size: 12px;
+    line-height: 1.2;
+    white-space: pre-line; /* This ensures the date and month appear on separate lines */
+}
+
+.week-day.active {
+    background-color: #6a5acd;
+    color: #fff;
+    border-radius: 8px;
+    padding: 5px 0;
+}
+
+.week-day.disabled {
+    color: #c0c0c0;
+    cursor: not-allowed;
+}
+
+
+
 
 
 
@@ -281,6 +352,8 @@
             
             // Submit the form
             document.querySelector('form').submit();
+
+            
         }
     </script>
 </head>
@@ -296,6 +369,7 @@
                 <a href="{% url 'home' %}">Home</a>
                 <a href="{% url 'saved' %}">Saved</a>
                 <a href="{% url 'cooked' %}">Cooked</a>
+                <a href="{% url 'addrecipe' %}">Add Recipe</a>
                 <a href="{% url 'settings' %}">Settings</a>
             </div>
         </div>
@@ -323,11 +397,22 @@
             </form>
         </section>
 
+        <section class="seven-day-calendar">
+            <div class="calendar-nav">
+                <button class="nav-btn" id="prev-week">&#8249;</button>
+                <div class="week-days" id="week-days">
+                    <!-- Days will be populated here dynamically -->
+                </div>
+                <button class="nav-btn" id="next-week">&#8250;</button>
+            </div>
+        </section>
+        
+
         <section class="recommend">
             <h2>Recommended Dishes{% if selected_meal_type and selected_meal_type != 'Recommended Dishes' %} - {{ selected_meal_type }}{% endif %}</h2>
             <div class="dish-grid">
                 {% for dish in dishes %}
-                <div class="dish-card" onclick="window.location.href='{% url 'homedish' dish.id %}?referrer={{ request.get_full_path }}'">
+                <div class="dish-card" onclick="window.location.href='{% url 'homedish' dish.id %}?referrer={{ request.get_full_path }}&selected_date=' + encodeURIComponent(document.getElementById('saved_date').value)">
                     <div class="image-container">
                         <img src="{{ dish.dish_image.url }}" alt="{{ dish.dish_name }}">
                     </div>
@@ -366,7 +451,8 @@
         <div class="slides">
             <div class="slide">
                 {% for dish in community_picks_first_half %}
-                <div class="community-dish-card" onclick="window.location.href='{% url 'homedish' dish.id %}?referrer={{ request.get_full_path }}'"> <!-- Added onclick for navigation -->
+                <div class="community-dish-card" onclick="window.location.href='{% url 'homedish' dish.id %}?referrer={{ request.get_full_path }}&selected_date=' + encodeURIComponent(document.getElementById('saved_date').value)">
+                    <!-- Added onclick for navigation -->
                     <div class="image-container">
                         <img src="{{ dish.dish_image.url }}" alt="{{ dish.dish_name }}">
                     </div>
@@ -419,12 +505,15 @@
                     <input type="hidden" name="meal_type" id="meal_type" value="{{ selected_meal_type }}">
                     <input type="hidden" name="min_budget" id="min_budget" value="{{ min_budget }}">
                     <input type="hidden" name="max_budget" id="max_budget" value="{{ max_budget }}">
+                    <input type="hidden" name="saved_date" id="saved_date">
+                
                     <div class="category-buttons">
                         <button type="button" onclick="setCategory('Breakfast')">Breakfast</button>
                         <button type="button" onclick="setCategory('Lunch')">Lunch</button>
                         <button type="button" onclick="setCategory('Dinner')">Dinner</button>
                     </div>
                 </form>
+                
             </div>
         </div>
 
@@ -485,14 +574,27 @@
             document.getElementById('meal_type').value = mealType;
             document.getElementById('min_budget').value = minBudget;
             document.getElementById('max_budget').value = maxBudget;
+            document.getElementById('saved_date').value = document.getElementById('saved_date').value; // Ensure the saved date is updated
             document.getElementById('myModal').style.display = 'block';
         }
+        
     
         function closeModal() {
             document.getElementById('myModal').style.display = 'none';
         }
     
-        function setCategory(category) {
+        async function setCategory(category) {
+            const dishId = document.getElementById('dish_id').value;
+    
+            // Make an AJAX request to check if the dish is already saved
+            const response = await fetch(`/check_if_saved/${dishId}/`);
+            const data = await response.json();
+    
+            if (data.isAlreadySaved) {
+                alert("OOPS! Recipe already in the saved page");
+                return;
+            }
+    
             document.getElementById('category').value = category;
             document.getElementById('categoryForm').submit();
             alert("Recipe already on saved page, thanks for choosing!");
@@ -526,29 +628,139 @@
             // Automatically submit the form after selection
             document.getElementById('mealTypeForm').submit();
         }
-
+    
         let slideIndex = 0;
-
-function showSlides() {
-    let slides = document.getElementsByClassName("slides")[0];
-    let slideWidth = slides.children[0].offsetWidth;
-    slides.style.transform = `translateX(-${slideIndex * slideWidth}px)`;
-}
-
-function plusSlides(n) {
-    let slides = document.getElementsByClassName("slides")[0];
-    let slideCount = slides.children.length;
-    slideIndex += n;
-    if (slideIndex >= slideCount) { slideIndex = 0; }
-    if (slideIndex < 0) { slideIndex = slideCount - 1; }
-    showSlides(); // Update the slideshow position
-}
-
-document.addEventListener("DOMContentLoaded", function() {
-    showSlides(); // Initialize the slideshow
-});
-
+    
+        function showSlides() {
+            let slides = document.getElementsByClassName("slides")[0];
+            let slideWidth = slides.children[0].offsetWidth;
+            slides.style.transform = `translateX(-${slideIndex * slideWidth}px)`;
+        }
+    
+        function plusSlides(n) {
+            let slides = document.getElementsByClassName("slides")[0];
+            let slideCount = slides.children.length;
+            slideIndex += n;
+            if (slideIndex >= slideCount) { slideIndex = 0; }
+            if (slideIndex < 0) { slideIndex = slideCount - 1; }
+            showSlides(); // Update the slideshow position
+        }
+    
+        document.addEventListener("DOMContentLoaded", function() {
+            showSlides(); // Initialize the slideshow
+        });
+    
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            const weekDaysContainer = document.getElementById("week-days");
+            const prevWeekBtn = document.getElementById("prev-week");
+            const nextWeekBtn = document.getElementById("next-week");
+            const savedDateInput = document.getElementById("saved_date");
+        
+            function normalizeDateToLocal(date) {
+                const localDate = new Date(date);
+                localDate.setHours(0, 0, 0, 0); // Normalize to midnight local time
+                return localDate;
+            }
+        
+            function formatLocalDate(date) {
+                // Format date as YYYY-MM-DD in local timezone
+                return date.toLocaleDateString('en-CA'); // 'en-CA' produces YYYY-MM-DD format
+            }
+        
+            function getCurrentDate() {
+                return normalizeDateToLocal(new Date());
+            }
+        
+            let currentDate = getCurrentDate(); // The current date in local time
+            let displayedDate = new Date(currentDate); // Displayed date can change while navigating weeks
+            let selectedDate = getCurrentDate(); // Auto-select the current date initially
+        
+            function generateWeekDays(date) {
+                weekDaysContainer.innerHTML = "";
+                const startOfWeek = new Date(date);
+                startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1);
+                startOfWeek.setHours(0, 0, 0, 0); // Normalize startOfWeek to midnight local time
+        
+                let isCurrentDateInWeek = false; // Track if currentDate is in the displayed week
+        
+                for (let i = 0; i < 7; i++) {
+                    const day = new Date(startOfWeek);
+                    day.setDate(startOfWeek.getDate() + i);
+                    const localDay = normalizeDateToLocal(day);
+        
+                    const dayElement = document.createElement("div");
+                    dayElement.className = "week-day";
+        
+                    if (localDay < currentDate) {
+                        dayElement.classList.add("disabled");
+                        dayElement.style.pointerEvents = "none"; // Prevent selection of past dates
+                    } else if (localDay.getTime() === selectedDate.getTime()) {
+                        dayElement.classList.add("active"); // Highlight the selected date
+                    }
+        
+                    dayElement.addEventListener("click", function() {
+                        if (localDay >= currentDate) {
+                            selectDay(dayElement, localDay);
+                        }
+                    });
+        
+                    const dayName = document.createElement("h4");
+                    dayName.textContent = day.toLocaleDateString("en-US", { weekday: 'short' });
+        
+                    const dayNumber = document.createElement("p");
+                    dayNumber.textContent = `${day.getDate()}\n${day.toLocaleDateString("en-US", { month: 'short' })}`;
+        
+                    dayElement.appendChild(dayName);
+                    dayElement.appendChild(dayNumber);
+                    weekDaysContainer.appendChild(dayElement);
+        
+                    // Check if currentDate is within the displayed week
+                    if (localDay.getTime() === currentDate.getTime()) {
+                        isCurrentDateInWeek = true;
+                    }
+                }
+        
+                // Auto-select the current date if it's within the displayed week
+                if (isCurrentDateInWeek) {
+                    const activeDayElement = document.querySelector('.week-day.active');
+                    if (activeDayElement) {
+                        selectDay(activeDayElement, currentDate);
+                    }
+                }
+            }
+        
+            function selectDay(element, date) {
+                if (!element) return; // Handle case where element might be null
+            
+                const currentlyActive = document.querySelector('.week-day.active');
+                if (currentlyActive) {
+                    currentlyActive.classList.remove('active');
+                }
+                element.classList.add('active');
+                selectedDate = date;
+                // Format date to YYYY-MM-DD in local time
+                savedDateInput.value = formatLocalDate(date);
+                console.log("Selected Date: " + savedDateInput.value); // Debug output
+            }
+            
+        
+            prevWeekBtn.addEventListener("click", function() {
+                displayedDate.setDate(displayedDate.getDate() - 7); // Navigate to previous week
+                generateWeekDays(displayedDate);
+            });
+        
+            nextWeekBtn.addEventListener("click", function() {
+                displayedDate.setDate(displayedDate.getDate() + 7); // Navigate to next week
+                generateWeekDays(displayedDate);
+            });
+        
+            // Initialize calendar and auto-select the current date
+            generateWeekDays(displayedDate);
+        });
+        
     </script>
+    
     
 </body>
 </html>

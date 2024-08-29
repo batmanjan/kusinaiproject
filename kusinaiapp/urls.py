@@ -30,4 +30,7 @@ urlpatterns = [
     path('verify_signup/', views.verify_signup, name='verify_signup'),
     path('save_dish/', views.save_dish, name='save_dish'),
     path('addrecipe/', views.addrecipe, name='addrecipe'),
+    path('check_recipe/<int:dish_id>/', views.check_recipe, name='check_recipe'),
+    path('check_if_saved/<int:dish_id>/', views.check_if_saved, name='check_if_saved'),
+    
 ]

@@ -112,6 +112,7 @@
                 <a href="{% url 'home' %}">Home</a>
                 <a href="{% url 'saved' %}">Saved</a>
                 <a href="{% url 'cooked' %}">Cooked</a>
+                <a href="{% url 'addrecipe' %}">Add Recipe</a>
                 <a href="{% url 'settings' %}">Settings</a>
             </div>
         </div>
@@ -194,6 +195,7 @@
                 <input type="hidden" name="meal_type" value="{{ request.GET.meal_type }}">
                 <input type="hidden" name="budget" value="{{ request.GET.budget }}">
                 <input type="hidden" name="referrer" value="{{ request.META.HTTP_REFERER }}"> <!-- Capture referrer -->
+                <input type="hidden" name="saved_date" id="saved_date" value="{{ selected_date }}">
                 <div class="category-buttons">
                     <button type="button" onclick="setCategory('Breakfast')">Breakfast</button>
                     <button type="button" onclick="setCategory('Lunch')">Lunch</button>
@@ -207,22 +209,44 @@
         let currentStep = 0;
         const steps = document.querySelectorAll('.flash-card');
         const progressBar = document.getElementById('progress-bar');
-    
+        
+        // Function to open the modal and set hidden input values
         function openModal(dishId) {
             document.getElementById('dish_id').value = dishId;
+            document.getElementById('saved_date').value = getQueryParam('selected_date'); // Set selected date from query params
             document.getElementById('myModal').style.display = "block";
         }
-    
+        
+        // Function to close the modal
         function closeModal() {
             document.getElementById('myModal').style.display = "none";
         }
+        
+        // Function to set the category and submit the form
+        async function setCategory(category) {
+            const dishId = document.getElementById('dish_id').value;
     
-        function setCategory(category) {
+            // Make an AJAX request to check if the dish is already saved
+            const response = await fetch(`/check_if_saved/${dishId}/`);
+            const data = await response.json();
+    
+            if (data.isAlreadySaved) {
+                alert("OOPS! Recipe already in the saved page");
+                return;
+            }
+    
             document.getElementById('category').value = category;
             document.getElementById('categoryForm').submit();
             alert("Recipe already on saved page, thanks for choosing!");
         }
-    
+        
+        // Function to get query parameters
+        function getQueryParam(name) {
+            const urlParams = new URLSearchParams(window.location.search);
+            return urlParams.get(name);
+        }
+        
+        // Event listeners for tab switching
         document.querySelectorAll('.tab').forEach(tab => {
             tab.addEventListener('click', function() {
                 const selectedTab = this.getAttribute('data-tab');
@@ -248,22 +272,24 @@
                 }
             });
         });
-    
+        
+        // Function to show the selected tab content
         function showTab(tabContent) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             tabContent.classList.add('active');
-    
+        
             document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
             const activeTab = document.querySelector(`.tab[data-tab="${tabContent.classList[1]}"]`);
             activeTab.classList.add('active');
-    
+        
             // Initialize steps for Directions tab
             if (tabContent.classList.contains('directions')) {
                 currentStep = 0; // Set the current step to 0 to show the first step
                 updateSteps();
             }
         }
-    
+        
+        // Function to update steps visibility
         function updateSteps() {
             // Hide all steps
             steps.forEach(step => step.classList.remove('active'));
@@ -273,28 +299,34 @@
                 updateProgressBar();
             }
         }
-    
+        
+        // Function to go to the previous step
         function prevStep() {
             if (currentStep > 0) {
                 currentStep--;
                 updateSteps();
             }
         }
-    
+        
+        // Function to go to the next step
         function nextStep() {
             if (currentStep < steps.length - 1) {
                 currentStep++;
                 updateSteps();
             }
         }
-    
+        
+        // Function to update the progress bar
         function updateProgressBar() {
             const progress = ((currentStep + 1) / steps.length) * 100;
             progressBar.style.width = `${progress}%`;
         }
-    
+        
         // Initialize steps visibility on page load
         updateSteps();
-    </script>    
+    </script>
+    
+    
+    
 </body>
 </html>
