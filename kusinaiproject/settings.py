@@ -46,11 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'kusinaiapp',
     'django.contrib.sites',
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
-    'allauth.socialaccount.providers.facebook',
-    'social_django',
+    
     
 ]
 
@@ -62,7 +58,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
+    
 ]
 
 ROOT_URLCONF = 'kusinaiproject.urls'
@@ -165,13 +161,10 @@ TWILIO_VERIFY_SERVICE_SID = 'VAbe18575d5da4a1bff47e03e719f7e721'
 django_heroku.settings(locals())
 
 
-SOCIAL_AUTH_FACEBOOK_KEY = '1373575073618705'
-SOCIAL_AUTH_FACEBOOK_SECRET = '97697b81f6afdb12e3623dfa4fff9e12'
 
-SOCIAL_AUTH_JSONFIELD_ENABLED = True
 
 AUTHENTICATION_BACKENDS = [
-    'social_core.backends.facebook.FacebookOAuth2',
+    
     'django.contrib.auth.backends.ModelBackend',
 ]
 
