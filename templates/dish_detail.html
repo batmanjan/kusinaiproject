@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dish Details</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<style>
+    main {
+        max-width: 600px;
+        margin: 100px auto; 
+        padding: 30px;
+        background-color: #ffffff; 
+        border-radius: 12px;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        font-family: 'Montserrat', sans-serif;
+    }
+
+    /* Ensure main takes full width on mobile */
+    @media (max-width: 600px) {
+        main {
+            width: 80%; /* Make main full-width */
+            margin: 25px; /* Reduce margins */
+            padding: 20px; /* Adjust padding */
+        }
+    }
+
+    h1.settings-title {
+        font-size: 2.2em;
+        text-align: center;
+        color: #4CAF50;
+        margin-bottom: 30px; 
+    }
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 20px;
+    }
+
+    .form-group {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    label {
+        font-weight: 600;
+        color: #333;
+        font-size: 1em; 
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="file"],
+    textarea,
+    select {
+        padding: 12px;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        font-size: 1em;
+        width: 100%;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        background-color: #ffffff; 
+    }
+
+    input[type="text"]:focus,
+    input[type="number"]:focus,
+    input[type="file"]:focus,
+    textarea:focus,
+    select:focus {
+        border-color: #4CAF50;
+        box-shadow: 0 0 8px rgba(76, 175, 80, 0.2);
+        outline: none;
+    }
+
+    textarea {
+        resize: vertical;
+        min-height: 120px; 
+    }
+
+    .button-container {
+        display: flex;
+        justify-content: center;
+    }
+
+    button[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 12px 24px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.2em;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    button[type="submit"]:hover {
+        background-color: #45a049;
+        transform: translateY(-2px); 
+    }
+
+    .checkbox-group,
+    .radio-group {
+        display: flex;
+        flex-direction: column;
+        gap: 8px; 
+    }
+
+    .checkbox-group label,
+    .radio-group label {
+        font-weight: 500;
+        font-size: 0.95em;
+    }
+
+    .flex-container-horizontal {
+        display: flex;
+        gap: 12px;
+        align-items: center;
+    }
+
+    .flex-container-horizontal input[type="text"] {
+        width: 60px;
+        text-align: center;
+        border-radius: 5px;
+    }
+
+    .note {
+        font-size: 0.85em;
+        color: #555; 
+        margin-top: -5px;
+    }
+
+    .time-input-container {
+        display: flex;
+        align-items: center;
+        gap: 0.7em; 
+    }
+</style>
+<body>
+    <main>
+        <h1>Edit Dish Details</h1>
+        <form id="dish-form" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            
+            <!-- Render other fields normally -->
+            <div class="form-group">
+                {{ form.dish_name.label_tag }} {{ form.dish_name }}
+            </div>
+            
+            <div class="form-group">
+                <label for="id_ingredient_table">Ingredients</label>
+                <table id="ingredient_table" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Ingredient</th>
+                            <th>Alternatives</th>
+                            <th></th> <!-- Empty header for delete button column -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Rows will be inserted dynamically by JS -->
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-secondary" onclick="addRow()">Add Row</button>
+            </div>
+        
+            <!-- Hidden field to store JSON data -->
+            <input type="hidden" id="id_ingredient_list" name="ingredient_list">
+
+            <div class="form-group">
+                <label for="id_preparation_time">Preparation time:</label>
+                <div class="time-input-container">
+                    {{ form.preparation_time }}
+                </div>
+            </div>
+            
+            <div class="form-group">
+                {{ form.number_of_servings.label_tag }} {{ form.number_of_servings }}
+            </div>
+            <div class="form-group">
+                {{ form.procedure.label_tag }} {{ form.procedure }}
+            </div>
+            <div class="form-group">
+                {{ form.nutritional_guide.label_tag }} {{ form.nutritional_guide }}
+            </div>
+            <div class="form-group">
+                {{ form.skills_needed.label_tag }} {{ form.skills_needed }}
+            </div>
+            <div class="form-group">
+                {{ form.age_range_that_can_eat.label_tag }} {{ form.age_range_that_can_eat }}
+            </div>
+            <div class="form-group">
+                {{ form.cost.label_tag }} {{ form.cost }}
+            </div>
+            <div class="form-group">
+                {{ form.dish_image.label_tag }} {{ form.dish_image }}
+            </div>
+            <div class="form-group">
+                {{ form.meal_type.label_tag }} {{ form.meal_type }}
+            </div>
+            
+            <div class="button-container">
+                <button type="submit">Update Dish</button>
+            </div>
+        </form>
+        <script>
+            // Pre-populated data from the view
+            const ingredientsData = {{ ingredients_data|safe }};
+            
+            // Function to load existing ingredients into the table
+            function loadIngredients() {
+                const tableBody = document.querySelector('#ingredient_table tbody');
+                ingredientsData.forEach((item) => {
+                    const newRow = `
+                        <tr>
+                            <td><input type="text" name="ingredient" class="form-control" value="${item.ingredient}" placeholder="Ingredient"></td>
+                            <td><input type="text" name="alternatives" class="form-control" value="${item.alternatives.join(', ')}" placeholder="Alternatives (comma-separated)"></td>
+                            <td><button type="button" class="btn btn-danger btn-sm" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>`;
+                    tableBody.insertAdjacentHTML('beforeend', newRow);
+                });
+            }
+            
+            // Function to add a new row to the ingredient table
+            function addRow() {
+                const tableBody = document.querySelector('#ingredient_table tbody');
+                const newRow = `
+                    <tr>
+                        <td><input type="text" name="ingredient" class="form-control" placeholder="Ingredient"></td>
+                        <td><input type="text" name="alternatives" class="form-control" placeholder="Alternatives (comma-separated)"></td>
+                        <td><button type="button" class="btn btn-danger btn-sm" onclick="deleteRow(this)">Delete</button></td>
+                    </tr>`;
+                tableBody.insertAdjacentHTML('beforeend', newRow);
+            }
+            
+            // Function to delete a row from the table
+            function deleteRow(button) {
+                button.closest('tr').remove();
+            }
+            
+            // Function to gather the ingredients list and store it as JSON
+            function gatherIngredients() {
+                const rows = document.querySelectorAll('#ingredient_table tbody tr');
+                const ingredients = [];
+                
+                rows.forEach(row => {
+                    const ingredient = row.querySelector('input[name="ingredient"]').value.trim();
+                    const alternatives = row.querySelector('input[name="alternatives"]').value.trim().split(',');
+                    if (ingredient) {
+                        ingredients.push({
+                            ingredient: ingredient,
+                            alternatives: alternatives.map(alt => alt.trim()) // Trim each alternative
+                        });
+                    }
+                });
+            
+                // Store the JSON in the hidden input field
+                document.querySelector('#id_ingredient_list').value = JSON.stringify(ingredients);
+            }
+            
+            // Listen for form submission and gather ingredient data
+            document.querySelector('form').addEventListener('submit', function (e) {
+                gatherIngredients();  // Gather the ingredients before submitting the form
+            });
+            
+            // Load the existing ingredients data on page load
+            window.onload = function() {
+                loadIngredients();
+            };
+            </script>
+    </main>
+</body>
+</html>

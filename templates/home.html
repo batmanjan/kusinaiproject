@@ -95,8 +95,8 @@
 
 /* Community Picks Slideshow */
 .community-picks {
-    margin: 40px auto;
-    padding: 20px;
+    margin: 50px auto; /* Reduced margin for smaller screens */
+    padding: 10px; /* Reduced padding for smaller screens */
     max-width: 1000px;
     background-color: #ffffff;
     border-radius: 15px;
@@ -110,7 +110,7 @@
     position: relative;
     overflow: hidden;
     width: 100%;
-    height: 480px;
+    height: auto; /* Adjust height based on content */
     margin-bottom: 20px;
     border-radius: 15px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
@@ -133,21 +133,18 @@
 
 .community-dish-card {
     flex: 1;
-    margin: 0 15px;
+    margin: 0 10px; /* Reduced margin for smaller screens */
     background-color: #f9f9f9;
     border-radius: 10px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    padding: 20px; /* Increased padding for better spacing */
-    max-width: 240px;
+    padding: 15px; /* Adjusted padding for better spacing on smaller screens */
+    max-width: 100%; /* Ensures cards are responsive */
     display: flex;
     flex-direction: column;
     align-items: center; /* Horizontally center content */
-    justify-content: space-between; /* Distribute space evenly between elements */
-    text-align: center; /* Center align text within the card */
-    height: 100%; /* Ensure the card takes up full height */
-    box-sizing: border-box;
+    justify-content: space-between;
 }
 
 .community-dish-card img {
@@ -171,7 +168,32 @@
     margin: 5px 0;
     width: 100%;
     opacity: 0.85;
+    display: flex;  /* Align items horizontally */
+    align-items: center;  /* Vertically center align */
+    justify-content: flex-start;  /* Align items to the left */
+    padding-left: 0;  /* Remove any extra padding on the left if needed */
 }
+
+.community-dish-card i {
+    margin-right: 8px; /* Space between the icon and the text */
+    font-size: 1rem; /* Adjust icon size */
+}
+
+.community-dish-card .prep-time {
+    margin-left: 0;  /* Align to the left */
+    padding-left: 0; /* Remove padding */
+    text-align: left; /* Align text to the left */
+    display: flex; /* Flexbox to align icon and text */
+    align-items: center; /* Center align vertically */
+}
+
+.community-dish-card .prep-time i {
+    margin-right: 8px; /* Add some space between the icon and text */
+}
+
+
+
+
 
 .community-dish-card:hover {
     transform: translateY(-10px);
@@ -245,6 +267,10 @@
     transform: translateX(5px);
 }
 
+
+
+
+
 .seven-day-calendar {
     display: flex;
     justify-content: center;
@@ -274,7 +300,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #f8f8f8;
+    background-color: #66bb6a;
     border-radius: 8px;
     padding: 5px;
 }
@@ -288,19 +314,19 @@
 
 .week-day h4 {
     margin: 0;
-    color: #333;
+    color: #fff;
 }
 
 .week-day p {
     margin: 0;
-    color: #7b7b7b;
+    color: #fff;
     font-size: 12px;
     line-height: 1.2;
     white-space: pre-line; /* This ensures the date and month appear on separate lines */
 }
 
 .week-day.active {
-    background-color: #6a5acd;
+    background-color: #ffbe30;
     color: #fff;
     border-radius: 8px;
     padding: 5px 0;
@@ -457,9 +483,17 @@
                         <img src="{{ dish.dish_image.url }}" alt="{{ dish.dish_name }}">
                     </div>
                     <h3>{{ dish.dish_name }}</h3>
-                    <p>Preparation Time: {{ dish.preparation_time }}</p>
-                    <p>Cost: {{ dish.cost }}</p>
-                    <p>Rating: {{ dish.avg_rating|floatformat:1 }}</p> <!-- Display average rating -->
+                    <p class="prep-time">
+                        <i class="fas fa-clock" style="color: #FFBE30;"></i> Time: {{ dish.preparation_time }}
+                    </p>
+                    <p>
+                        <i class="fas fa-money-bill-wave" style="color: #FFBE30;"></i> Cost: {{ dish.cost }}
+                    </p>
+                    <p>
+                        <i class="fas fa-star" style="color: #FFBE30;"></i> Rating: {{ dish.avg_rating|floatformat:1 }}
+                    </p>
+                    
+
                 </div>
                 {% empty %}
                 <p>No community picks available.</p>
@@ -472,9 +506,15 @@
                         <img src="{{ dish.dish_image.url }}" alt="{{ dish.dish_name }}">
                     </div>
                     <h3>{{ dish.dish_name }}</h3>
-                    <p>Preparation Time: {{ dish.preparation_time }}</p>
-                    <p>Cost: {{ dish.cost }}</p>
-                    <p>Rating: {{ dish.avg_rating|floatformat:1 }}</p> <!-- Display average rating -->
+                    <p class="prep-time">
+                        <i class="fas fa-clock" style="color: #FFBE30;"></i> Time: {{ dish.preparation_time }}
+                    </p>
+                    <p>
+                        <i class="fas fa-money-bill-wave" style="color: #FFBE30;"></i> Cost: {{ dish.cost }}
+                    </p>
+                    <p>
+                        <i class="fas fa-star" style="color: #FFBE30;"></i> Rating: {{ dish.avg_rating|floatformat:1 }}
+                    </p>
                 </div>
                 {% empty %}
                 <p>No community picks available.</p>
@@ -487,6 +527,7 @@
         <button class="next" onclick="plusSlides(1)">&#10095;</button>
     </div>
 </section>
+
 
 
 
@@ -585,20 +626,21 @@
     
         async function setCategory(category) {
             const dishId = document.getElementById('dish_id').value;
-    
+        
             // Make an AJAX request to check if the dish is already saved
-            const response = await fetch(`/check_if_saved/${dishId}/`);
+            const response = await fetch(`/check_if_saved/${dishId}/`); // Ensure proper URL structure
             const data = await response.json();
-    
+        
             if (data.isAlreadySaved) {
                 alert("OOPS! Recipe already in the saved page");
                 return;
             }
-    
+        
             document.getElementById('category').value = category;
             document.getElementById('categoryForm').submit();
-            alert("Recipe already on saved page, thanks for choosing!");
+            alert("Recipe has been successfully saved!");
         }
+        
     
         window.onclick = function(event) {
             if (event.target == document.getElementById('myModal')) {
@@ -629,135 +671,153 @@
             document.getElementById('mealTypeForm').submit();
         }
     
-        let slideIndex = 0;
+        let slideIndex = 0; // Initialize slide index to 0
+
+function showSlides() {
+    let slides = document.getElementsByClassName("slides")[0];
+    let slideWidth = slides.children[0].offsetWidth;
+    slides.style.transform = `translateX(-${slideIndex * slideWidth}px)`;
+}
+
+function plusSlides(n) {
+    let slides = document.getElementsByClassName("slides")[0];
+    let slideCount = slides.children.length;
     
-        function showSlides() {
-            let slides = document.getElementsByClassName("slides")[0];
-            let slideWidth = slides.children[0].offsetWidth;
-            slides.style.transform = `translateX(-${slideIndex * slideWidth}px)`;
+    // Update the slide index but restrict it within valid range
+    slideIndex += n;
+    
+    if (slideIndex >= slideCount - 1) {
+        slideIndex = slideCount - 1; // Restrict to last slide
+    } else if (slideIndex <= 0) {
+        slideIndex = 0; // Restrict to first slide
+    }
+    
+    showSlides(); // Update the slideshow position
+}
+
+document.addEventListener("DOMContentLoaded", function() {
+    showSlides(); // Initialize the slideshow
+});
+
+    
+        
+document.addEventListener("DOMContentLoaded", function() {
+    const weekDaysContainer = document.getElementById("week-days");
+    const prevWeekBtn = document.getElementById("prev-week");
+    const nextWeekBtn = document.getElementById("next-week");
+    const savedDateInput = document.getElementById("saved_date");
+
+    function normalizeDateToLocal(date) {
+        const localDate = new Date(date);
+        localDate.setHours(0, 0, 0, 0); // Normalize to midnight local time
+        return localDate;
+    }
+
+    function formatLocalDate(date) {
+        // Format date as YYYY-MM-DD in local timezone
+        return date.toLocaleDateString('en-CA'); // 'en-CA' produces YYYY-MM-DD format
+    }
+
+    function getCurrentDate() {
+        return normalizeDateToLocal(new Date());
+    }
+
+    let currentDate = getCurrentDate(); // The current date in local time
+    let displayedDate = new Date(currentDate); // Displayed date can change while navigating weeks
+    let selectedDate = getCurrentDate(); // Auto-select the current date initially
+
+    function generateWeekDays(date) {
+        weekDaysContainer.innerHTML = "";
+        const startOfWeek = new Date(date);
+        
+        // Adjust start of week to Monday, but handle Sunday as the last day of the previous week
+        const dayOfWeek = startOfWeek.getDay(); // Sunday = 0, Monday = 1, ..., Saturday = 6
+        if (dayOfWeek === 0) {
+            // If today is Sunday, go back 6 days to get to Monday of the same week
+            startOfWeek.setDate(startOfWeek.getDate() - 6);
+        } else {
+            // Otherwise, adjust to Monday of the current week
+            startOfWeek.setDate(startOfWeek.getDate() - dayOfWeek + 1);
         }
-    
-        function plusSlides(n) {
-            let slides = document.getElementsByClassName("slides")[0];
-            let slideCount = slides.children.length;
-            slideIndex += n;
-            if (slideIndex >= slideCount) { slideIndex = 0; }
-            if (slideIndex < 0) { slideIndex = slideCount - 1; }
-            showSlides(); // Update the slideshow position
+        startOfWeek.setHours(0, 0, 0, 0); // Normalize startOfWeek to midnight local time
+
+        let isCurrentDateInWeek = false; // Track if currentDate is in the displayed week
+
+        for (let i = 0; i < 7; i++) {
+            const day = new Date(startOfWeek);
+            day.setDate(startOfWeek.getDate() + i);
+            const localDay = normalizeDateToLocal(day);
+
+            const dayElement = document.createElement("div");
+            dayElement.className = "week-day";
+
+            if (localDay < currentDate) {
+                dayElement.classList.add("disabled");
+                dayElement.style.pointerEvents = "none"; // Prevent selection of past dates
+            } else if (localDay.getTime() === selectedDate.getTime()) {
+                dayElement.classList.add("active"); // Highlight the selected date
+            }
+
+            dayElement.addEventListener("click", function() {
+                if (localDay >= currentDate) {
+                    selectDay(dayElement, localDay);
+                }
+            });
+
+            const dayName = document.createElement("h4");
+            dayName.textContent = day.toLocaleDateString("en-US", { weekday: 'short' });
+
+            const dayNumber = document.createElement("p");
+            dayNumber.textContent = `${day.getDate()}\n${day.toLocaleDateString("en-US", { month: 'short' })}`;
+
+            dayElement.appendChild(dayName);
+            dayElement.appendChild(dayNumber);
+            weekDaysContainer.appendChild(dayElement);
+
+            // Check if currentDate is within the displayed week
+            if (localDay.getTime() === currentDate.getTime()) {
+                isCurrentDateInWeek = true;
+            }
         }
+
+        // Auto-select the current date if it's within the displayed week
+        if (isCurrentDateInWeek) {
+            const activeDayElement = document.querySelector('.week-day.active');
+            if (activeDayElement) {
+                selectDay(activeDayElement, currentDate);
+            }
+        }
+    }
+
+    function selectDay(element, date) {
+        if (!element) return; // Handle case where element might be null
     
-        document.addEventListener("DOMContentLoaded", function() {
-            showSlides(); // Initialize the slideshow
-        });
+        const currentlyActive = document.querySelector('.week-day.active');
+        if (currentlyActive) {
+            currentlyActive.classList.remove('active');
+        }
+        element.classList.add('active');
+        selectedDate = date;
+        // Format date to YYYY-MM-DD in local time
+        savedDateInput.value = formatLocalDate(date);
+        console.log("Selected Date: " + savedDateInput.value); // Debug output
+    }
     
-        
-        document.addEventListener("DOMContentLoaded", function() {
-            const weekDaysContainer = document.getElementById("week-days");
-            const prevWeekBtn = document.getElementById("prev-week");
-            const nextWeekBtn = document.getElementById("next-week");
-            const savedDateInput = document.getElementById("saved_date");
-        
-            function normalizeDateToLocal(date) {
-                const localDate = new Date(date);
-                localDate.setHours(0, 0, 0, 0); // Normalize to midnight local time
-                return localDate;
-            }
-        
-            function formatLocalDate(date) {
-                // Format date as YYYY-MM-DD in local timezone
-                return date.toLocaleDateString('en-CA'); // 'en-CA' produces YYYY-MM-DD format
-            }
-        
-            function getCurrentDate() {
-                return normalizeDateToLocal(new Date());
-            }
-        
-            let currentDate = getCurrentDate(); // The current date in local time
-            let displayedDate = new Date(currentDate); // Displayed date can change while navigating weeks
-            let selectedDate = getCurrentDate(); // Auto-select the current date initially
-        
-            function generateWeekDays(date) {
-                weekDaysContainer.innerHTML = "";
-                const startOfWeek = new Date(date);
-                startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay() + 1);
-                startOfWeek.setHours(0, 0, 0, 0); // Normalize startOfWeek to midnight local time
-        
-                let isCurrentDateInWeek = false; // Track if currentDate is in the displayed week
-        
-                for (let i = 0; i < 7; i++) {
-                    const day = new Date(startOfWeek);
-                    day.setDate(startOfWeek.getDate() + i);
-                    const localDay = normalizeDateToLocal(day);
-        
-                    const dayElement = document.createElement("div");
-                    dayElement.className = "week-day";
-        
-                    if (localDay < currentDate) {
-                        dayElement.classList.add("disabled");
-                        dayElement.style.pointerEvents = "none"; // Prevent selection of past dates
-                    } else if (localDay.getTime() === selectedDate.getTime()) {
-                        dayElement.classList.add("active"); // Highlight the selected date
-                    }
-        
-                    dayElement.addEventListener("click", function() {
-                        if (localDay >= currentDate) {
-                            selectDay(dayElement, localDay);
-                        }
-                    });
-        
-                    const dayName = document.createElement("h4");
-                    dayName.textContent = day.toLocaleDateString("en-US", { weekday: 'short' });
-        
-                    const dayNumber = document.createElement("p");
-                    dayNumber.textContent = `${day.getDate()}\n${day.toLocaleDateString("en-US", { month: 'short' })}`;
-        
-                    dayElement.appendChild(dayName);
-                    dayElement.appendChild(dayNumber);
-                    weekDaysContainer.appendChild(dayElement);
-        
-                    // Check if currentDate is within the displayed week
-                    if (localDay.getTime() === currentDate.getTime()) {
-                        isCurrentDateInWeek = true;
-                    }
-                }
-        
-                // Auto-select the current date if it's within the displayed week
-                if (isCurrentDateInWeek) {
-                    const activeDayElement = document.querySelector('.week-day.active');
-                    if (activeDayElement) {
-                        selectDay(activeDayElement, currentDate);
-                    }
-                }
-            }
-        
-            function selectDay(element, date) {
-                if (!element) return; // Handle case where element might be null
-            
-                const currentlyActive = document.querySelector('.week-day.active');
-                if (currentlyActive) {
-                    currentlyActive.classList.remove('active');
-                }
-                element.classList.add('active');
-                selectedDate = date;
-                // Format date to YYYY-MM-DD in local time
-                savedDateInput.value = formatLocalDate(date);
-                console.log("Selected Date: " + savedDateInput.value); // Debug output
-            }
-            
-        
-            prevWeekBtn.addEventListener("click", function() {
-                displayedDate.setDate(displayedDate.getDate() - 7); // Navigate to previous week
-                generateWeekDays(displayedDate);
-            });
-        
-            nextWeekBtn.addEventListener("click", function() {
-                displayedDate.setDate(displayedDate.getDate() + 7); // Navigate to next week
-                generateWeekDays(displayedDate);
-            });
-        
-            // Initialize calendar and auto-select the current date
-            generateWeekDays(displayedDate);
-        });
+
+    prevWeekBtn.addEventListener("click", function() {
+        displayedDate.setDate(displayedDate.getDate() - 7); // Navigate to previous week
+        generateWeekDays(displayedDate);
+    });
+
+    nextWeekBtn.addEventListener("click", function() {
+        displayedDate.setDate(displayedDate.getDate() + 7); // Navigate to next week
+        generateWeekDays(displayedDate);
+    });
+
+    // Initialize calendar and auto-select the current date
+    generateWeekDays(displayedDate);
+});
+
         
     </script>
     

@@ -40,9 +40,17 @@
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                             <img src="{{ plan.dish.dish_image.url }}" alt="{{ plan.dish.dish_name }}">
+                            {% if plan.saved_date <= today %}
                             <button class="done-button" onclick="event.stopPropagation(); handleAction('done', '{{ plan.id }}', this)">
                                 <i class="fas fa-check"></i>
                             </button>
+                        {% else %}
+                        <button class="done-button" 
+                        onclick="event.stopPropagation(); handleAction('done', '{{ plan.id }}', this)"
+                        {% if plan.saved_date > now|date:"Y-m-d" %}disabled{% endif %}>
+                        <i class="fas fa-check"></i>
+                    </button>
+                        {% endif %}
                         </div>
                         <h3>{{ plan.dish.dish_name }}</h3>
                         <p>Preparation Time: {{ plan.dish.preparation_time }}</p>
@@ -55,7 +63,6 @@
             </div> <!-- End of grid container -->
         </section>
 
-        <!-- Lunch Section -->
         <section class="saved-dishes">
             <h2>Lunch</h2>
             <div class="dish-grid"> <!-- Grid container -->
@@ -66,9 +73,11 @@
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                             <img src="{{ plan.dish.dish_image.url }}" alt="{{ plan.dish.dish_name }}">
-                            <button class="done-button" onclick="event.stopPropagation(); handleAction('done', '{{ plan.id }}', this)">
-                                <i class="fas fa-check"></i>
-                            </button>
+                            <button class="done-button" 
+                        onclick="event.stopPropagation(); handleAction('done', '{{ plan.id }}', this)"
+                        {% if plan.saved_date > now|date:"Y-m-d" %}disabled{% endif %}>
+                        <i class="fas fa-check"></i>
+                    </button>
                         </div>
                         <h3>{{ plan.dish.dish_name }}</h3>
                         <p>Preparation Time: {{ plan.dish.preparation_time }}</p>
@@ -80,6 +89,10 @@
                 {% endfor %}
             </div> <!-- End of grid container -->
         </section>
+        
+        
+
+
 
         <!-- Dinner Section -->
         <section class="saved-dishes">
@@ -92,9 +105,11 @@
                                 <i class="fas fa-trash-alt"></i>
                             </button>
                             <img src="{{ plan.dish.dish_image.url }}" alt="{{ plan.dish.dish_name }}">
-                            <button class="done-button" onclick="event.stopPropagation(); handleAction('done', '{{ plan.id }}', this)">
-                                <i class="fas fa-check"></i>
-                            </button>
+                            <button class="done-button" 
+                        onclick="event.stopPropagation(); handleAction('done', '{{ plan.id }}', this)"
+                        {% if plan.saved_date > now|date:"Y-m-d" %}disabled{% endif %}>
+                        <i class="fas fa-check"></i>
+                    </button>
                         </div>
                         <h3>{{ plan.dish.dish_name }}</h3>
                         <p>Preparation Time: {{ plan.dish.preparation_time }}</p>
@@ -147,37 +162,47 @@
     </footer>
 
     <script>
+        // Function to handle the action for done and delete buttons
         function handleAction(action, dishPlanId, buttonElement) {
             console.log(`Handling action: ${action}, dishPlanId: ${dishPlanId}`);
-        
-            // Corrected querySelector syntax
+            console.log(`Done button clicked for dishPlanId: ${dishPlanId}`);
+
+    
+            // Find the dish element by its ID
             const dishElement = document.querySelector(`#dish-${dishPlanId}`);
             console.log(`Dish element found: ${dishElement}`);
-        
+    
+            // Prepare the fetch request
             fetch('{% url "saved" %}', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/x-www-form-urlencoded',
-                    'X-CSRFToken': '{{ csrf_token }}'
+                    'X-CSRFToken': '{{ csrf_token }}' // Make sure this is properly set
                 },
                 body: new URLSearchParams({
                     'action': action,
                     'dish_plan_id': dishPlanId
                 })
             })
-            .then(response => response.json())
+            .then(response => {
+                console.log('Response status:', response.status);
+                return response.json(); // Parse the response as JSON
+            })
             .then(data => {
-                console.log('Response data:', data);
-        
+                console.log('Response data:', data); // Log the response data
+    
                 if (data.success) {
+                    // Action was successful
                     if (action === 'done') {
                         alert(data.error || 'Dish marked as cooked and removed from saved.');
                     }
+                    // Remove the dish element from the DOM
                     if (dishElement) {
-                        dishElement.remove();  // Remove the element from the DOM
+                        dishElement.remove();
                     }
                 } else {
-                    alert('Error performing action: ' + data.error);
+                    // Handle any errors returned from the server
+                    alert('Error performing action: ' + (data.error || 'Unknown error'));
                 }
             })
             .catch(error => {
@@ -185,14 +210,14 @@
                 alert('Error performing action');
             });
         }
-        
-    </script>
-    <script>
+    
+        // Toggle navigation for mobile view
         document.querySelector('.burger-menu').addEventListener('click', function() {
             const navLinks = document.querySelector('.nav-links');
             navLinks.classList.toggle('active');
         });
     </script>
+    
     
 
 </body>

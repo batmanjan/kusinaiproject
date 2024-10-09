@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import AppUser, Dish, DishPlan, CookedDish
+from .models import AppUser, Dish, DishPlan, CookedDish, ChefAccount
 from django import forms
 import datetime
 from django_select2.forms import Select2MultipleWidget
@@ -92,3 +92,9 @@ class DishAdminForm(forms.ModelForm):
             except ValueError:
                 raise forms.ValidationError("Invalid duration format. Use HH:MM format.")
         return value
+    
+@admin.register(ChefAccount)
+class ChefAccountAdmin(admin.ModelAdmin):
+    list_display = ('id', 'username', 'password')
+    search_fields = ('username',)
+

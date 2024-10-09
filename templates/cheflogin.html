@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>Chef Login</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
@@ -16,33 +16,11 @@
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        height: 100vh;
+        height: 100vh; /* Full viewport height */
         width: 100%;
-        animation: fadeIn 1s ease-in;
-        background-color: #D8EFC8;
+        animation: fadeIn 1s ease-in; /* Fade-in animation */
+        background-color: #D8EFC8; /* Set the background color */
     }
-
-    .chef-login-link {
-    font-size: 16px; 
-    color: #4caf50;; 
-    margin: 20px 0; 
-    text-align: center; 
-}
-
-.chef-login-link a {
-    color: #34a338; 
-    text-decoration: none; 
-    transition: color 0.3s; 
-}
-
-.chef-login-link a:hover {
-    color:#34a338; 
-    text-decoration: underline; 
-}
-
-
-    
-
 </style>
 
 <body>
@@ -51,8 +29,8 @@
             <img src="{% static 'images/logo.png' %}" alt="KusinAI Ready Logo">
         </div>
         <div class="login-card">
-            <h2>Welcome</h2>
-            <p>Login to access your account.</p>
+            <h2>Welcome Chef</h2>
+            <p>Login to access your chef account.</p>
             <form method="post">
                 {% csrf_token %}
                 <div class="input-group">
@@ -65,14 +43,13 @@
                     <input type="password" id="password" name="password" placeholder="Enter password" required>
                     <i class="fas fa-eye toggle-password" id="toggle-password"></i>
                 </div>
-                <p class="forgot-password"><a href="{% url 'forgetpass' %}">Forgot your password?</a></p>
                 <button type="submit" class="login-button">Login</button>
             </form>
-            <p class="signup-link">Don’t have an account? <a href="{% url 'signup' %}">Sign up</a>.</p>
-            <p class="chef-login-link">Are you a chef? <a href="{% url 'cheflogin' %}">Login as Chef</a>.</p> <!-- New line for chef login -->
+            <p class="signup-link"><a href="{% url 'login' %}">Login as User</a>.</p>
         </div>
     </div>
 
+    <!-- JavaScript for alerts and password toggle -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             {% if messages %}

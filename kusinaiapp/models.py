@@ -30,7 +30,7 @@ class Dish(models.Model):
     id = models.AutoField(primary_key=True)
     dish_name = models.CharField(max_length=200)
     preparation_time = models.DurationField()
-    ingredient_list = models.TextField()
+    ingredient_list = models.JSONField(null=True, blank=True)  # Allow NULL and blank
     number_of_servings = models.CharField(max_length=50)
     procedure = models.TextField()
     nutritional_guide = models.TextField()
@@ -43,6 +43,7 @@ class Dish(models.Model):
 
     def __str__(self):
         return self.dish_name
+
 
 class DishPlan(models.Model):
     id = models.AutoField(primary_key=True)
@@ -61,3 +62,11 @@ class CookedDish(models.Model):
 
     class Meta:
         unique_together = ('user', 'dish')
+        
+class ChefAccount(models.Model):
+    username = models.CharField(max_length=50, unique=True)
+    password = models.CharField(max_length=128)
+
+    def __str__(self):
+        return self.username
+

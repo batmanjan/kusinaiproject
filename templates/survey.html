@@ -168,6 +168,11 @@
     
 </style>
 <body>
+    {% if user.appuser.survey_completed %}
+        <div class="previous-button-container">
+            <a href="{% url 'settings' %}" class="previous-button">Previous</a>
+        </div>
+    {% endif %}
     <main>
         <h1>Survey - Step {{ current_step }} of {{ total_steps }}</h1>
         <form method="post">

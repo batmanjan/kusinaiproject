@@ -6,50 +6,273 @@
     <title>Saved Dish Details</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+   
     <style>
-        /* Add necessary styles for tabs and content */
+        main {
+            padding: 20px;
+        }
+        .back-button {
+    background-color: #48ff00;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    margin-top: 60px;
+    position: relative;
+    z-index: 1;
+    transition: background-color 0.3s, transform 0.3s; 
+}
+
+.back-button:hover {
+    background-color: #FFC700; 
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+.back-button:active {
+    transform: scale(0.95); /* Slightly shrink the button when pressed */
+}
+        .dish-details {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .dish-details h1 {
+            font-size: 24px;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .dish-info {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            font-size: 16px;
+            color: #555;
+        }
+        .dish-details img {
+            width: 30%;
+            height: auto;
+            max-width: 350px;
+        }
+        .info-row {
+            display: flex;
+            gap: 20px;
+        }
+        .info-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .info-item span.icon {
+            color: #FFC107;
+            font-size: 18px;
+        }
+        .panel {
+            background-color: #ffffff00;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0);
+        }
         .tabs {
             display: flex;
-            border-bottom: 2px solid #ddd;
-            background-color: #fff; /* White background for the tabs */
+            justify-content: space-around;
+            margin-bottom: 0;
+            padding-bottom: 0;
+            position: relative;
+            background-color: #E4F4E4;
+            border-radius: 10px 10px 0 0;
+            overflow: hidden;
         }
         .tab {
             flex: 1;
+            text-align: center;
             padding: 10px;
             cursor: pointer;
-            text-align: center;
-            background-color: #f1f1f1;
-            border: 1px solid #ddd;
+            font-weight: bold;
+            font-size: 20px;
+            color: white;
+            background-color: #66BB6A;
+            border-right: 1px solid rgba(255, 255, 255, 0);
+            border-radius: 10px 10px 0 0;
+            z-index: 1;
         }
         .tab.active {
-            background-color: #fff;
-            border-bottom: 2px solid #fff;
+            background-color: #FFFFFF;
+            color: #01A407;
+            border-bottom: 0;
+            z-index: 2;
         }
         .tab-content {
             display: none;
-            background-color: #fff; /* White background for content */
+            background-color: #FFFFFF;
+            border-radius: 0 0 10px 10px;
             padding: 20px;
-            border: 1px solid #ddd;
-            border-top: none;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
         .tab-content.active {
             display: block;
         }
-        .step {
+        .ingredient-list {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .ingredient-item {
+            display: flex;
+            align-items: center;
+            background-color: #fff;
+            border: 2px solid #66BB6A;
+            border-radius: 8px;
+            padding: 10px 15px;
+            transition: background-color 0.3s ease;
+            box-shadow: 0 4px 6px rgba(76, 175, 80, 0.4),
+                        0 0 10px rgba(76, 175, 80, 0.4);
+        }
+        .ingredient-checkbox {
+            opacity: 0; /* Make the checkbox invisible */
+            position: absolute; /* Position it off-screen */
+            width: 24px; /* Set width and height for accessibility */
+            height: 24px; 
+        }
+        
+        .ingredient-icon {
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background-color: #A2D5AB; /* Default color */
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 15px;
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+        
+        /* Change the icon color when the checkbox is checked */
+        .ingredient-checkbox:checked + label .ingredient-icon {
+            background-color: #66BB6A; /* Change to green when checked */
+        }
+        
+        /* Optional: Add a tick icon or text inside the circle when checked */
+        .ingredient-checkbox:checked + label .ingredient-icon::after {
+            content: '✓'; /* You can also use an SVG or FontAwesome icon */
+            color: white; /* Color of the tick */
+            font-size: 16px; /* Adjust size as needed */
+        }
+        
+        .ingredient-item label {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            color: #333;
+            width: 100%;
+            cursor: pointer;
+        }
+        .ingredient-item:hover {
+            background-color: #f1f1f1;
+        }
+        .flash-card {
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            background-color: #f9f9f9;
+            font-size: 18px;
+            color: #555;
+            text-align: center;
+            transition: opacity 0.5s ease;
             display: none;
         }
-        .step.active {
+        .flash-card.active {
             display: block;
         }
         .progress-bar {
-            height: 5px;
-            background-color: #ddd;
-            margin-top: 10px;
+            width: 100%;
+            height: 10px;
+            background: #EEE;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            position: relative;
         }
-        .progress {
+        .progress-bar .progress {
             height: 100%;
-            background-color: #4caf50;
-            width: 0;
+            background: #FFCC00;
+            border-radius: 5px;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+        button {
+            background-color: #4CAF50;
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 10px;
+        }
+        button:disabled {
+            background-color: #CCC;
+            cursor: not-allowed;
+        }
+        .arrow-buttons-container {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .arrow-button {
+            background-color: #66BB6A;
+            border: none;
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 20px;
+        }
+        .arrow-button:disabled {
+            background-color: #CCC;
+            cursor: not-allowed;
+        }
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            border-radius: 8px;
+        }
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+        }
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+        .category-buttons button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            margin: 5px;
+            cursor: pointer;
         }
         .modal-overlay {
             position: fixed;
@@ -67,10 +290,7 @@
             background: #fff;
             padding: 20px;
             border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }
-        .modal button {
-            margin: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
     </style>
 </head>
@@ -96,53 +316,103 @@
         <div class="dish-details">
             <img src="{{ dish.dish_image.url }}" alt="{{ dish.dish_name }}">
             <h1>{{ dish.dish_name }}</h1>
-            <p>Preparation Time: {{ dish.preparation_time }}</p>
-            <p>Family Size: {{ dish.number_of_servings }}</p>
-            <p>Cost: {{ dish.cost }}</p>
-            <p>Cooking Skill: {{ dish.skills_needed }}</p>
-            <p>Age Range: {{ dish.age_range_that_can_eat }}</p>
-
+            <div class="dish-details">
+                <div class="dish-info">
+                    <div class="info-row">
+                        <div class="info-item">
+                            <span class="icon">⏰</span>{{ dish.preparation_time }}
+                        </div>
+                        <div class="info-item">
+                            <span class="icon">🍴</span>{{ dish.number_of_servings }}
+                        </div>
+                        <div class="info-item">
+                            <span class="icon">🛒</span>{{ dish.cost }}
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-item">
+                            <span class="icon">📚</span>{{ dish.skills_needed }}
+                        </div>
+                        <div class="info-item">
+                            <span class="icon">👶👦👨</span>{{ dish.age_range_that_can_eat|join:", " }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="panel">
             <div class="tabs">
-                <div class="tab" onclick="showTab('ingredients')">Ingredients</div>
+                <div class="tab active" onclick="showTab('ingredients')">Ingredients</div>
                 <div class="tab" onclick="showTab('directions')">Directions</div>
-                <div class="tab" onclick="showTab('nutritional_guide')">Nutritional Guide</div>
+                <div class="tab" onclick="showTab('nutritional')">Nutritional Guide</div>
             </div>
-
-            <div id="ingredients" class="tab-content">
-                <h2>Ingredients</h2>
-                {% for ingredient in ingredients %}
-                    <label>
-                        <input type="checkbox" name="ingredients" value="{{ ingredient }}" /> {{ ingredient }}
-                    </label><br/>
-                {% endfor %}
-            </div>
-
-            <div id="directions" class="tab-content">
-                <h2>Directions</h2>
-                <div class="progress-bar"><div class="progress"></div></div>
-                <div id="directions-steps">
-                    {% for step in procedure_steps %}
-                        <div class="step {% if forloop.first %}active{% endif %}">
-                            <p>{{ step }}</p>
+            <div id="ingredients" class="tab-content ingredients active">          
+                <div class="ingredient-list">
+                    {% for ingredient, alternatives in ingredients %}
+                        <div class="ingredient-item" id="ingredient_{{ forloop.counter }}">
+                            <input type="checkbox" id="checkbox_{{ forloop.counter }}" class="ingredient-checkbox">
+                            <label for="checkbox_{{ forloop.counter }}">
+                                <span class="ingredient-icon"></span><span class="ingredient-name">{{ ingredient }}</span>
+                            </label>
+            
+                            {% if alternatives|length > 0 %}
+                                <select class="ingredient-alternative" onchange="updateIngredient(this, {{ forloop.counter }}, '{{ ingredient }}')">
+                                    <option value="">Select alternative</option>
+                                    {% for alternative in alternatives %}
+                                        <option value="{{ alternative }}">{{ alternative }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% endif %}
                         </div>
                     {% endfor %}
                 </div>
-                <button onclick="prevStep()">Previous</button>
-                <button onclick="nextStep()">Next</button>
             </div>
-
-            <div id="nutritional_guide" class="tab-content">
+            <div id="directions" class="tab-content directions">
+                <h2>Cooking Progress</h2>
+                <div class="progress-bar">
+                    <div class="progress" id="progress-bar"></div>
+                </div>
+                <div id="directions-steps">
+                    {% if procedure_steps %}
+                        {% for step in procedure_steps %}
+                            <div class="flash-card step {% if forloop.first %}active{% endif %}">{{ step }}</div>
+                        {% endfor %}
+                    {% else %}
+                        <p>No directions available for this dish.</p>
+                    {% endif %}
+                </div>
+                <div class="arrow-buttons-container">
+                    <button class="arrow-button" onclick="prevStep()"><i class="fas fa-chevron-left"></i></button>
+                    <button class="arrow-button" onclick="nextStep()"><i class="fas fa-chevron-right"></i></button>
+                </div>
+            </div>
+            <div id="nutritional" class="tab-content nutritional">
                 <h2>Nutritional Guide</h2>
                 <p>{{ dish.nutritional_guide }}</p>
             </div>
-
-            <form id="dish-form" method="POST">
-                {% csrf_token %}
-                <input type="hidden" name="dish_plan_id" value="{{ dish_plan_id }}">
-                <button type="button" onclick="handleAction('delete')">Delete</button>
-                <button type="button" onclick="handleAction('done')">Done</button>
-            </form>
         </div>
+
+        <form id="dish-form" method="POST">
+            {% csrf_token %}
+            <input type="hidden" name="dish_plan_id" value="{{ dish_plan_id }}">
+            <input type="hidden" name="saved_date" value="{{ saved_date }}">  <!-- Hidden input for saved date -->
+            
+            <button type="button" onclick="handleAction('delete')">Delete</button>
+            
+            <p>Current Date: {{ current_date }}</p> <!-- Displaying the current date -->
+            <p>Saved Date: {{ saved_date }}</p> <!-- Displaying the saved date -->
+            
+            <button type="button" 
+                onclick="handleAction('done')" 
+                {% if saved_date and saved_date > current_date %}disabled{% endif %}>
+                Done
+            </button>
+        </form>
+        
+        
+        
+        
+
     </main>
     <footer>
         <div class="footer-left">kusinAIready</div>
@@ -159,106 +429,111 @@
     <script>
         let currentStep = 0;
 
-function showTab(tabId) {
-    // Hide all tab contents
-    document.querySelectorAll('.tab-content').forEach(tabContent => {
-        tabContent.classList.remove('active');
-    });
+        function showTab(tabId) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(tabContent => {
+                tabContent.classList.remove('active');
+            });
 
-    // Remove active class from all tabs
-    document.querySelectorAll('.tab').forEach(tab => {
-        tab.classList.remove('active');
-    });
+            // Remove active class from all tabs
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
 
-    // Check if navigating away from Ingredients tab
-    if (tabId === 'directions' && !areAllIngredientsChecked()) {
-        // Alert box
-        if (confirm("Oops! Seems like you don't have all the ingredients. Do you still want to continue?")) {
-            // Proceed to Directions tab
-            document.getElementById(tabId).classList.add('active');
-            document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
-        } else {
-            // Stay on Ingredients tab
-            showTab('ingredients');
-        }
-    } else {
-        // Show the selected tab content
-        document.getElementById(tabId).classList.add('active');
-        document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
-    }
-}
-
-function areAllIngredientsChecked() {
-    const checkboxes = document.querySelectorAll('#ingredients input[type="checkbox"]');
-    return Array.from(checkboxes).every(checkbox => checkbox.checked);
-}
-
-function showStep(index) {
-    const steps = document.querySelectorAll('#directions-steps .step');
-    if (index >= 0 && index < steps.length) {
-        steps.forEach((step, i) => {
-            step.classList.toggle('active', i === index);
-        });
-        currentStep = index;
-        updateProgressBar();
-    }
-}
-
-function prevStep() {
-    showStep(currentStep - 1);
-}
-
-function nextStep() {
-    showStep(currentStep + 1);
-}
-
-function updateProgressBar() {
-    const progress = document.querySelector('.progress');
-    const totalSteps = document.querySelectorAll('#directions-steps .step').length;
-    const percentage = ((currentStep + 1) / totalSteps) * 100;
-    progress.style.width = percentage + '%';
-}
-
-function handleAction(action) {
-    const form = document.getElementById('dish-form');
-    const formData = new FormData(form);
-    formData.append('action', action);
-
-    const url = form.action; // Use form action URL directly
-
-    fetch(url, {
-        method: 'POST',
-        body: formData,
-        headers: {
-            'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]').value
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            if (action === 'done' && data.cooked) {
-                
-                // Show alert that dish is marked as cooked and removed from saved
-                alert('Dish marked as cooked and removed from saved.');
-                // Simulate a delete action
-                handleAction('delete'); // Trigger the delete action
+            // Check if navigating away from Ingredients tab
+            if (tabId === 'directions' && !areAllIngredientsChecked()) {
+                if (confirm("Oops! Seems like you don't have all the ingredients. Do you still want to continue?")) {
+                    document.getElementById(tabId).classList.add('active');
+                    document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
+                } else {
+                    showTab('ingredients');
+                }
             } else {
-                // Redirect to the saved dishes page
-                window.location.href = "{% url 'saved' %}";
+                document.getElementById(tabId).classList.add('active');
+                document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
             }
-        } else {
-            alert(data.error);
         }
-    })
-    .catch(error => {
-        console.error('Error:', error);
-        alert('An error occurred');
-    });
-}
 
-// Show the first tab initially
-showTab('ingredients');
+        function areAllIngredientsChecked() {
+            const checkboxes = document.querySelectorAll('#ingredients input[type="checkbox"]');
+            return Array.from(checkboxes).every(checkbox => checkbox.checked);
+        }
 
+        function showStep(index) {
+            const steps = document.querySelectorAll('#directions-steps .step');
+            if (index >= 0 && index < steps.length) {
+                steps.forEach((step, i) => {
+                    step.classList.toggle('active', i === index);
+                });
+                currentStep = index;
+                updateProgressBar();
+            }
+        }
+
+        function prevStep() {
+            showStep(currentStep - 1);
+        }
+
+        function nextStep() {
+            showStep(currentStep + 1);
+        }
+
+        function updateProgressBar() {
+            const progress = document.querySelector('.progress');
+            const totalSteps = document.querySelectorAll('#directions-steps .step').length;
+            const percentage = ((currentStep + 1) / totalSteps) * 100;
+            progress.style.width = percentage + '%';
+        }
+
+        function handleAction(action) {
+            const form = document.getElementById('dish-form');
+            const formData = new FormData(form);
+            formData.append('action', action);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-CSRFToken': form.querySelector('input[name="csrfmiddlewaretoken"]').value
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    if (action === 'done' && data.cooked) {
+                        alert('Dish marked as cooked and removed from saved.');
+                        handleAction('delete'); // Trigger the delete action
+                    } else {
+                        window.location.href = "{% url 'saved' %}";
+                    }
+                } else {
+                    alert(data.error);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred');
+            });
+        }
+
+        // Show the first tab initially
+        showTab('ingredients');
+
+        function toggleMenu() {
+            var navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
+
+        function updateIngredient(selectElement, index, originalIngredient) {
+            const selectedAlternative = selectElement.value;
+            const ingredientNameSpan = document.querySelector(`#ingredient_${index} .ingredient-name`);
+
+            if (selectedAlternative) {
+                ingredientNameSpan.textContent = selectedAlternative; // Replace with selected alternative
+            } else {
+                ingredientNameSpan.textContent = originalIngredient; // Revert back to original if no selection
+            }
+        }
     </script>
 </body>
 </html>

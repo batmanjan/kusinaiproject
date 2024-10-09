@@ -4,6 +4,8 @@ from .models import AppUser, MealType
 from django.core.validators import RegexValidator
 from .models import Dish
 from django.forms.widgets import TextInput
+import json
+from django.core.exceptions import ValidationError
 
 class SignUpForm(forms.Form):
     name = forms.CharField(
@@ -373,8 +375,18 @@ class DishForm(forms.ModelForm):
             'meal_type',
         ]
         widgets = {
-            'ingredient_list': forms.Textarea(attrs={'placeholder': 'Add ingredients, press Enter to add each one.'}),
+            'ingredient_list': forms.HiddenInput(),  # Hidden field to store the JSON data
             'procedure': forms.Textarea(attrs={'placeholder': 'Add steps, press Enter to add each one.'}),
             'nutritional_guide': forms.Textarea(attrs={'rows': 5, 'placeholder': 'Nutritional guide'}),
             'cost': forms.NumberInput(attrs={'placeholder': 'Cost range should be 100-1000 only'}),
         }
+
+    def clean_ingredient_list(self):
+        # Get the ingredient_list directly as it is (it's already a list)
+        ingredient_list_data = self.cleaned_data['ingredient_list']
+
+        if not isinstance(ingredient_list_data, list):
+            raise ValidationError("Invalid format for ingredients list.")
+
+        # You could perform additional validation if needed
+        return ingredient_list_data

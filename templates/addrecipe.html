@@ -163,9 +163,34 @@
             <div class="form-group">
                 {{ form.dish_name.label_tag }} {{ form.dish_name }}
             </div>
+
             <div class="form-group">
-                {{ form.ingredient_list.label_tag }} {{ form.ingredient_list }}
+                <label for="id_ingredient_table">Ingredients</label>
+                <table id="ingredient_table" class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Ingredient</th>
+                            <th>Alternatives</th>
+                            <th></th> <!-- Empty header for delete button column -->
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Example of an initial row, you can add rows dynamically -->
+                        <tr>
+                            <td><input type="text" name="ingredient" class="form-control" placeholder="Ingredient"></td>
+                            <td><input type="text" name="alternatives" class="form-control" placeholder="Alternatives (comma-separated)"></td>
+                            <td><button type="button" class="btn btn-danger btn-sm" onclick="deleteRow(this)">Delete</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <button type="button" class="btn btn-secondary" onclick="addRow()">Add Row</button>
             </div>
+        
+            <!-- Hidden field to store JSON data -->
+            <input type="hidden" id="id_ingredient_list" name="ingredient_list">
+        
+            
+
             <div class="form-group">
                 <label for="id_preparation_time_0">Preparation time:</label>
                 <div class="time-input-container">
@@ -266,6 +291,47 @@
                 // Show success message if all validations pass
                 alert('Thank you for adding your recipe! Please wait till your recipe is approved and will be available for everyone!');
             });
+
+            function addRow() {
+                const tableBody = document.querySelector('#ingredient_table tbody');
+                const newRow = `
+                    <tr>
+                        <td><input type="text" name="ingredient" class="form-control" placeholder="Ingredient"></td>
+                        <td><input type="text" name="alternatives" class="form-control" placeholder="Alternatives (comma-separated)"></td>
+                        <td><button type="button" class="btn btn-danger btn-sm" onclick="deleteRow(this)">Delete</button></td>
+                    </tr>`;
+                tableBody.insertAdjacentHTML('beforeend', newRow);
+            }
+            
+            // Function to delete a row from the table
+            function deleteRow(button) {
+                button.closest('tr').remove();
+            }
+            
+            // Function to gather the ingredients list and store it as JSON
+            function gatherIngredients() {
+                const rows = document.querySelectorAll('#ingredient_table tbody tr');
+                const ingredients = [];
+                
+                rows.forEach(row => {
+                    const ingredient = row.querySelector('input[name="ingredient"]').value.trim();
+                    const alternatives = row.querySelector('input[name="alternatives"]').value.trim().split(',');
+                    if (ingredient) {
+                        ingredients.push({
+                            ingredient: ingredient,
+                            alternatives: alternatives.map(alt => alt.trim()) // Trim each alternative
+                        });
+                    }
+                });
+            
+                // Store the JSON in the hidden input field
+                document.querySelector('#id_ingredient_list').value = JSON.stringify(ingredients);
+            }
+            
+            // Listen for form submission and gather ingredient data
+            document.querySelector('form').addEventListener('submit', function (e) {
+                gatherIngredients();  // Gather the ingredients before submitting the form
+            });
         </script>
         
     </main>
@@ -321,6 +387,11 @@
                 procedureInput.addEventListener('blur', removeTrailingComma);
             }
         });
+
+        function toggleMenu() {
+            var navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
         </script>
 </body>
 </html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chef Home</title>
+    {% load static %}
+    {% load custom_filters %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        .dish-cards-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            max-width: 1200px;
+            padding: 20px;
+            margin: auto;
+            gap: 20px;
+        }
+        .dish-card-container {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            width: 300px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            text-decoration: none;
+            transition: transform 0.2s;
+        }
+        .dish-card-container:hover {
+            transform: scale(1.02);
+        }
+        .dish-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+        .dish-card h2 {
+            margin-top: 10px;
+            font-size: 18px;
+            color: #4CAF50;
+        }
+        .dish-card p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #555;
+        }
+        .approve-button, .delete-buttonn {
+            background-color: #4CAF50;
+            margin-top: 10px; /* Reduced margin to bring buttons closer */
+            padding: 10px 15px;
+            border: none;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 14px;
+            font-weight: bold;
+            transition: background-color 0.3s;
+            color: white;
+            width: 100%; /* Set both buttons to take full width of their container */
+        }
+        
+        .approve-button:hover, .delete-buttonn:hover {
+            background-color: #45a049;
+        }
+        
+        .logout-button {
+            background-color: #f44336;
+        }
+        
+        .logout-button:hover {
+            background-color: #d32f2f;
+        }
+        
+    
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .dish-card-container {
+                width: 90%; /* Adjust width for smaller screens */
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .approve-button, .logout-button {
+                font-size: 12px; /* Smaller buttons for very small screens */
+            }
+        }
+    </style>
+    
+</head>
+<body>
+    <form action="{% url 'logout' %}" method="post" style="text-align: center;">
+        {% csrf_token %}
+        <button type="submit" class="logout-button">Logout</button>
+    </form>
+    <main>
+        <h1>Non-Approved Dishes</h1>
+
+        <!-- Logout Form -->
+        
+
+        <div class="dish-cards-container">
+            {% for dish in non_approved_dishes %}
+                <div class="dish-card-container">
+                    <a href="{% url 'dish_detail' dish.id %}" class="dish-card">
+                        <img src="{{ dish.dish_image.url }}" alt="{{ dish.dish_name }}">
+                        <h2>{{ dish.dish_name }}</h2>
+                        <p>Preparation Time: {{ dish.preparation_time }}</p>
+                        <p>Number of Servings: {{ dish.number_of_servings }}</p>
+                        <p>Cost: ${{ dish.cost }}</p>
+                        
+                    </a>
+                   <!-- Approve Button -->
+                   <form action="{% url 'approve_dish' dish.id %}" method="post" style="margin-top: 10px;">
+                    {% csrf_token %}
+                    <button type="submit" class="approve-button">Approve</button>
+                </form>
+
+                <!-- Delete Button -->
+                <form action="{% url 'delete_dish' dish.id %}" method="post" >
+                    {% csrf_token %}
+                    <button type="submit" class="delete-buttonn">Delete</button>
+                </form>
+                </div>
+            {% empty %}
+                <p>No non-approved dishes found.</p>
+            {% endfor %}
+        </div>
+    </main>
+</body>
+</html>

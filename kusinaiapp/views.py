@@ -7,10 +7,10 @@ from django.contrib import messages
 from django.contrib.auth.models import User
 from django.db import IntegrityError
 from django.urls import reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseNotFound, HttpResponseRedirect
 from django.contrib.auth.hashers import make_password, check_password
 from django.contrib.auth import update_session_auth_hash
-from .models import CookedDish, Dish
+from .models import ChefAccount, CookedDish, Dish
 from .models import Dish, DishPlan
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import JsonResponse
@@ -611,9 +611,23 @@ def save_dish(request):
 
     return HttpResponse('Invalid request', status=400)
 
+@login_required
 def check_if_saved(request, dish_id):
-    is_saved = DishPlan.objects.filter(dish_id=dish_id).exists()
+    # Get the AppUser instance for the current user
+    try:
+        app_user = AppUser.objects.get(user=request.user)
+    except AppUser.DoesNotExist:
+        return JsonResponse({'isAlreadySaved': False})  # If user not found, treat as not saved
+
+    # Check if the dish is already saved by the current user
+    is_saved = DishPlan.objects.filter(dish_id=dish_id, user=app_user).exists()
     return JsonResponse({'isAlreadySaved': is_saved})
+
+
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.contrib.auth.decorators import login_required
+import json
 
 @login_required
 def homedish(request, dish_id):
@@ -622,8 +636,9 @@ def homedish(request, dish_id):
     except Dish.DoesNotExist:
         return HttpResponse('Dish not found', status=404)
     
-    # Process the ingredient_list to split it into a list
-    ingredients = dish.ingredient_list.split(',')
+    # Process the ingredient_list as JSON
+    ingredients_data = dish.ingredient_list  # This is already a list of dicts
+    ingredients = [(item['ingredient'], item['alternatives']) for item in ingredients_data]
     
     # Process the procedure to split it into steps
     steps = dish.procedure.split('\n') if dish.procedure else []
@@ -638,13 +653,15 @@ def homedish(request, dish_id):
 
     context = {
         'dish': dish,
-        'ingredients': ingredients,  # Add processed ingredients to context
+        'ingredients': ingredients,  # List of tuples (ingredient, alternatives)
         'steps': steps,  # Add processed steps to context
         'selected_meal_type': meal_type,
         'selected_budget': budget,
         'selected_date': selected_date  # Pass selected date to template
     }
     return render(request, 'homedish.html', context)
+
+
 
 
 
@@ -675,6 +692,10 @@ def saved(request):
             try:
                 dish_plan = get_object_or_404(DishPlan, id=dish_plan_id, user=app_user)
                 dish = dish_plan.dish
+                
+                # Check if the current date is past or matches the saved_date
+                if dish_plan.saved_date > timezone.now().date():
+                    return JsonResponse({'success': False, 'error': 'Dish cannot be marked as cooked until the saved date is met'}, status=400)
 
                 if CookedDish.objects.filter(user=app_user, dish=dish).exists():
                     dish_plan.delete()  # Remove from saved dishes
@@ -695,10 +716,12 @@ def saved(request):
         return HttpResponse('AppUser not found', status=404)
 
     saved_dishes = {
-        'breakfast': DishPlan.objects.filter(user=app_user, plan='Breakfast'),
-        'lunch': DishPlan.objects.filter(user=app_user, plan='Lunch'),
-        'dinner': DishPlan.objects.filter(user=app_user, plan='Dinner'),
+        'breakfast': DishPlan.objects.filter(user=app_user, plan='Breakfast').order_by('saved_date'),
+        'lunch': DishPlan.objects.filter(user=app_user, plan='Lunch').order_by('saved_date'),
+        'dinner': DishPlan.objects.filter(user=app_user, plan='Dinner').order_by('saved_date'),
     }
+
+    logger.debug(f"Saved dishes: {saved_dishes}")  # Logging saved dishes
 
     context = {'saved_dishes': saved_dishes}
     return render(request, 'saved.html', context)
@@ -728,25 +751,33 @@ def saveddish(request, dish_id):
         elif action == 'done':
             cooked_dish = CookedDish.objects.filter(user=user, dish=dish).first()
             if cooked_dish:
-                # Dish already marked as cooked
                 return JsonResponse({'success': True, 'cooked': True})
 
             CookedDish.objects.create(user=user, dish=dish)
-            dish_plan.delete()  # Remove from saved dishes
+            dish_plan.delete()
             return JsonResponse({'success': True})
 
         return JsonResponse({'success': False, 'error': 'Invalid action'}, status=400)
 
     dish_plan = DishPlan.objects.filter(dish=dish, user=user).first()
 
-    ingredients = dish.ingredient_list.split(',') if dish.ingredient_list else []
+    ingredients_data = dish.ingredient_list  
+    ingredients = [(item['ingredient'], item['alternatives']) for item in ingredients_data]
     procedure_steps = dish.procedure.split('\n') if dish.procedure else []
+
+    # Format saved_date
+    saved_date = dish_plan.saved_date.strftime("%b. %d, %Y") if dish_plan else None
+    
+    # Get the current date
+    current_date = timezone.now().strftime("%b. %d, %Y")  # Format current date similarly
 
     return render(request, 'saveddish.html', {
         'dish': dish,
         'dish_plan_id': dish_plan.id if dish_plan else None,
         'ingredients': ingredients,
         'procedure_steps': procedure_steps,
+        'saved_date': saved_date,  # Pass formatted saved date to the template
+        'current_date': current_date,  # Pass the current date to the template
     })
 
 
@@ -991,6 +1022,83 @@ def addrecipe(request):
 
 
 
+def chefhome(request):
+    if not request.session.get('chef_id'):
+        return redirect('cheflogin')
+
+    chef = ChefAccount.objects.get(id=request.session['chef_id'])
+    # Fetch non-approved dishes
+    non_approved_dishes = Dish.objects.filter(approved=False)
+    
+    return render(request, 'chefhome.html', {'chef': chef, 'non_approved_dishes': non_approved_dishes})
+
+
+
+def cheflogin(request):
+    if request.method == "POST":
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        try:
+            chef = ChefAccount.objects.get(username=username)
+
+            if chef.password == password:  # Simple password check
+                request.session['chef_id'] = chef.id  # Store chef ID in session
+                return redirect('chefhome')  # Redirect to chef home page
+            else:
+                messages.error(request, 'Invalid password. Please try again.')
+        
+        except ChefAccount.DoesNotExist:
+            messages.error(request, 'Account does not exist. Please try again.')
+
+    return render(request, 'cheflogin.html')
+
+
+def dish_detail(request, dish_id):
+    dish = get_object_or_404(Dish, id=dish_id)
+
+    if request.method == "POST":
+        form = DishForm(request.POST, request.FILES, instance=dish)
+        if form.is_valid():
+            form.save()
+            return redirect('chefhome')
+    else:
+        # Convert preparation_time from timedelta if necessary
+        initial_data = {}
+        if dish.preparation_time:
+            # Example conversion if preparation_time is stored as timedelta
+            initial_data['preparation_time'] = convert_timedelta_to_str(dish.preparation_time)
+
+        form = DishForm(instance=dish, initial=initial_data)
+
+    # Prepare ingredients data to pass to the template
+    ingredients_data = dish.ingredient_list if dish.ingredient_list else []
+
+    return render(request, 'dish_detail.html', {
+        'form': form,
+        'ingredients_data': ingredients_data
+    })
+
+
+def convert_timedelta_to_str(timedelta_obj):
+    total_seconds = int(timedelta_obj.total_seconds())
+    hours, remainder = divmod(total_seconds, 3600)
+    minutes, seconds = divmod(remainder, 60)
+    return f"{hours:02}:{minutes:02}:{seconds:02}"
+
+def approve_dish(request, dish_id):
+    if request.method == "POST":
+        dish = get_object_or_404(Dish, id=dish_id)
+        dish.approved = True
+        dish.save()
+        return redirect('chefhome')
+    else:
+        return HttpResponseNotFound("Invalid request")
+    
+def delete_dish(request, dish_id):
+    dish = get_object_or_404(Dish, id=dish_id)
+    dish.delete()
+    return redirect('chefhome')
 
 
 

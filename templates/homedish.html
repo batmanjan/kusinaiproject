@@ -6,98 +6,324 @@
     <title>Dish Details</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <style>
        
         
         
-        /* Panel styles */
-        
-        
-        .tabs {
-            display: flex;
-            border-bottom: 2px solid #ddd;
-            background-color: #fff; /* White background for the tabs */
-        }
-        .tab {
-            flex: 1;
-            padding: 10px;
-            cursor: pointer;
-            text-align: center;
-            background-color: #f1f1f1;
-            border: 1px solid #ddd;
-        }
-        .tab.active {
-            background-color: #fff;
-            border-bottom: 2px solid #fff;
-        }
-        .tab-content {
-            display: none;
-            background-color: #fff; /* White background for content */
-            padding: 20px;
-            border: 1px solid #ddd;
-            border-top: none;
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .ingredient-checkbox {
-            margin-right: 10px;
-        }
-        .flash-card {
-            display: none;
-            padding: 10px;
-            border: 1px solid #ccc;
-            margin-bottom: 10px;
-        }
-        .flash-card.active {
-            display: block;
-        }
-        .progress-bar {
-            width: 100%;
-            height: 5px;
-            background: #eee;
-            margin-bottom: 10px;
-            position: relative;
-        }
-        .progress-bar .progress {
-            height: 100%;
-            background: #4caf50;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgb(0,0,0);
-            background-color: rgba(0,0,0,0.4);
-            padding-top: 60px;
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
+       main {
+    padding: 20px;
+}
+
+.back-button {
+    background-color: #FFCC00;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    margin-top: 60px; /* Increase this value to lower the button more */
+    position: relative;
+    z-index: 1; /* Ensure it stays above other elements */
+}
+
+.dish-details {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.dish-details h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.dish-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+    color: #555;
+}
+
+.dish-details img {
+    width: 30%; /* Adjust to the desired width (e.g., 300px) */
+    height: auto; /* Maintains aspect ratio */
+    max-width: 350px; /* Optional: Limit the maximum width */
+}
+
+.info-row {
+    display: flex;
+    gap: 20px;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.info-item span.icon {
+    color: #FFC107; /* Adjust icon color as needed */
+    font-size: 18px;
+}
+
+.panel {
+    background-color: #ffffff00;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0);
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 0; /* No space below the tabs */
+    padding-bottom: 0; /* No padding below the tabs */
+    position: relative;
+    background-color: #E4F4E4; /* Background color for the tabs container */
+    border-radius: 10px 10px 0 0; /* Rounded top corners for the container */
+    overflow: hidden; /* Ensures tabs stay within the rounded corners */
+}
+
+.tab {
+    flex: 1;
+    text-align: center;
+    padding: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 20px; /* Increase the font size here */
+    color: white;
+    background-color: #66BB6A; /* Default background for inactive tabs */
+    border-right: 1px solid rgba(255, 255, 255, 0); /* Adds separation between tabs */
+    border-radius: 10px 10px 0 0; /* Rounded top corners for tabs */
+    z-index: 1; /* Helps with stacking tabs */
+}
+
+.tab:first-child {
+    border-top-left-radius: 10px; /* Rounded corner for first tab */
+}
+
+.tab:last-child {
+    border-top-right-radius: 10px; /* Rounded corner for last tab */
+    border-right: none; /* Removes right border from the last tab */
+}
+
+.tab.active {
+    background-color: #FFFFFF; /* Background color for the active tab */
+    color: #01A407; /* Text color for active tab */
+    border-top: 3px solid #4caf4f00; /* Top border for the active tab */
+    border-bottom: 0; /* Remove bottom border */
+    z-index: 2; /* Ensures active tab sits on top of others */
+}
+
+.tab:hover {
+    background-color: #45a049; /* Slightly darker background on hover for inactive tabs */
+}
+
+.tab-content {
+    display: none; /* Hidden by default */
+    background-color: #FFFFFF;
+    border-radius: 0 0 10px 10px; /* Rounded bottom corners for content */
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow for the content */
+}
+
+.tab-content.active {
+    display: block; /* Displays content when tab is active */
+}
+
+
+.ingredient-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ingredient-item {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border: 2px solid #66BB6A;
+    border-radius: 8px;
+    padding: 10px 15px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(76, 175, 80, 0.4), /* Green shadow */
+              0 0 10px rgba(76, 175, 80, 0.4); /* Outer green shadow */
+}
+
+.ingredient-checkbox {
+    opacity: 0; /* Make the checkbox invisible */
+    position: absolute; /* Position it off-screen */
+    width: 24px; /* Set width and height for accessibility */
+    height: 24px; 
+}
+
+.ingredient-icon {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-color: #A2D5AB; /* Default color */
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+/* Change the icon color when the checkbox is checked */
+.ingredient-checkbox:checked + label .ingredient-icon {
+    background-color: #66BB6A; /* Change to green when checked */
+}
+
+/* Optional: Add a tick icon or text inside the circle when checked */
+.ingredient-checkbox:checked + label .ingredient-icon::after {
+    content: '✓'; /* You can also use an SVG or FontAwesome icon */
+    color: white; /* Color of the tick */
+    font-size: 16px; /* Adjust size as needed */
+}
+
+.ingredient-item label {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #333;
+    width: 100%;
+    cursor: pointer;
+}
+
+.ingredient-item:hover {
+    background-color: #f1f1f1; /* Lighten background on hover */
+}
+
+.flash-card {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    font-size: 18px;
+    color: #555;
+    text-align: center;
+    transition: opacity 0.5s ease; /* Smooth transition for visibility changes */
+    display: none; /* Initially hide all steps */
+}
+
+.flash-card.active {
+    display: block; /* Show the active step */
+}
+
+.progress-bar {
+    width: 100%;
+    height: 10px;
+    background: #EEE;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.progress-bar .progress {
+    height: 100%;
+    background: #FFCC00;
+    border-radius: 5px;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+button {
+    background-color: #4CAF50;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 10px;
+}
+
+button:disabled {
+    background-color: #CCC;
+    cursor: not-allowed;
+}
+
+.add-button {
+    display: block;
+    margin: 20px auto;
+}
+
+.arrow-buttons-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.arrow-button {
+    background-color: #66BB6A;
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    margin: 0 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.arrow-button:hover {
+    background-color: #45a049;
+}
+
+.arrow-button:disabled {
+    background-color: #CCC;
+    cursor: not-allowed;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    border-radius: 8px;
+}
+
+.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.category-buttons button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    margin: 5px;
+    cursor: pointer;
+}
+
     </style>
 </head>
 <body>
@@ -122,11 +348,29 @@
         <div class="dish-details">
             <img src="{{ dish.dish_image.url }}" alt="{{ dish.dish_name }}">
             <h1>{{ dish.dish_name }}</h1>
-            <p>Prep Time: {{ dish.preparation_time }}</p>
-            <p>Family Size: {{ dish.number_of_servings }}</p>
-            <p>Cost: {{ dish.cost }}</p>
-            <p>Cooking Skill: {{ dish.skills_needed }}</p>
-            <p>Age Range: {{ dish.age_range_that_can_eat }}</p>
+            <div class="dish-details">
+                <div class="dish-info">
+                    <div class="info-row">
+                        <div class="info-item">
+                            <span class="icon">⏰</span>{{ dish.preparation_time }}
+                        </div>
+                        <div class="info-item">
+                            <span class="icon">🍴</span>{{ dish.number_of_servings }}
+                        </div>
+                        <div class="info-item">
+                            <span class="icon">🛒</span>{{ dish.cost }}
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-item">
+                            <span class="icon">📚</span>{{ dish.skills_needed }}
+                        </div>
+                        <div class="info-item">
+                            <span class="icon">👶👦👨</span>{{ dish.age_range_that_can_eat|join:", " }}
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
         <div class="panel">
             <div class="tabs">
@@ -135,18 +379,32 @@
                 <div class="tab" data-tab="nutritional">Nutritional Guide</div>
             </div>
 
-            <div class="tab-content ingredients active">
-                <h2>Ingredients</h2>
-                {% for ingredient in ingredients %}
-                    <div>
-                        <input type="checkbox" id="ingredient_{{ forloop.counter }}" class="ingredient-checkbox">
-                        <label for="ingredient_{{ forloop.counter }}">{{ ingredient }}</label>
-                    </div>
-                {% endfor %}
+            <div class="tab-content ingredients active">          
+                <div class="ingredient-list">
+                    {% for ingredient, alternatives in ingredients %}
+                        <div class="ingredient-item" id="ingredient_{{ forloop.counter }}">
+                            <input type="checkbox" id="checkbox_{{ forloop.counter }}" class="ingredient-checkbox">
+                            <label for="checkbox_{{ forloop.counter }}">
+                                <span class="ingredient-icon"></span><span class="ingredient-name">{{ ingredient }}</span>
+                            </label>
+            
+                            {% if alternatives|length > 0 %}
+                                <!-- Dropdown for alternatives if available -->
+                                <select class="ingredient-alternative" onchange="updateIngredient(this, {{ forloop.counter }}, '{{ ingredient }}')">
+                                    <option value="">Select alternative</option>
+                                    {% for alternative in alternatives %}
+                                        <option value="{{ alternative }}">{{ alternative }}</option>
+                                    {% endfor %}
+                                </select>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                </div>
             </div>
-
+            
+            
             <div class="tab-content directions">
-                <h2>Directions</h2>
+                <h2>Cooking Progress</h2>
                 <div class="progress-bar">
                     <div class="progress" id="progress-bar"></div>
                 </div>
@@ -157,9 +415,13 @@
                 {% else %}
                     <p>No directions available for this dish.</p>
                 {% endif %}
-                <button onclick="prevStep()">Previous</button>
-                <button onclick="nextStep()">Next</button>
+                <div class="arrow-buttons-container">
+                    <button class="arrow-button" onclick="prevStep()"><i class="fas fa-chevron-left"></i></button>
+                    <button class="arrow-button" onclick="nextStep()"><i class="fas fa-chevron-right"></i></button>
+                </div>
             </div>
+            
+            
 
             <div class="tab-content nutritional">
                 <h2>Nutritional Guide</h2>
@@ -324,6 +586,23 @@
         
         // Initialize steps visibility on page load
         updateSteps();
+
+        function toggleMenu() {
+            var navLinks = document.querySelector('.nav-links');
+            navLinks.classList.toggle('active');
+        }
+
+        function updateIngredient(selectElement, index, originalIngredient) {
+    const selectedAlternative = selectElement.value;
+    const ingredientNameSpan = document.querySelector(`#ingredient_${index} .ingredient-name`);
+    
+    // Update the ingredient name in the UI
+    if (selectedAlternative) {
+        ingredientNameSpan.textContent = selectedAlternative; // Replace with selected alternative
+    } else {
+        ingredientNameSpan.textContent = originalIngredient; // Revert back to original if no selection
+    }
+}
     </script>
     
     

@@ -32,5 +32,10 @@ urlpatterns = [
     path('addrecipe/', views.addrecipe, name='addrecipe'),
     path('check_recipe/<int:dish_id>/', views.check_recipe, name='check_recipe'),
     path('check_if_saved/<int:dish_id>/', views.check_if_saved, name='check_if_saved'),
+    path('chefhome/', views.chefhome, name='chefhome'),
+    path('cheflogin/', views.cheflogin, name='cheflogin'),
+    path('dish/<int:dish_id>/', views.dish_detail, name='dish_detail'),
+    path('approve_dish/<int:dish_id>/', views.approve_dish, name='approve_dish'),
+    path('delete-dish/<int:dish_id>/', views.delete_dish, name='delete_dish'),
     
 ]
