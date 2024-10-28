@@ -15,283 +15,460 @@
         main {
             padding: 20px;
         }
-        .back-button {
-    background-color: #48ff00;
+
+.back-button {
+    background-color: #66BB6A;
     border: none;
     color: white;
     padding: 10px 20px;
     border-radius: 8px;
     cursor: pointer;
     margin-bottom: 20px;
-    margin-top: 60px;
+    margin-top: 80px;
     position: relative;
     z-index: 1;
     transition: background-color 0.3s, transform 0.3s; 
 }
 
 .back-button:hover {
-    background-color: #FFC700; 
+    background-color: #FFCC00; 
     transform: scale(1.05); /* Slightly enlarge the button on hover */
 }
 
 .back-button:active {
     transform: scale(0.95); /* Slightly shrink the button when pressed */
 }
-        .dish-details {
-            text-align: center;
-            margin-top: 20px;
-        }
-        .dish-details h1 {
-            font-size: 24px;
-            color: #333;
-            margin-bottom: 10px;
-        }
-        .dish-info {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 10px;
-            font-size: 16px;
-            color: #555;
-        }
-        .dish-details img {
-            width: 30%;
-            height: auto;
-            max-width: 350px;
-        }
-        .info-row {
-            display: flex;
-            gap: 20px;
-        }
-        .info-item {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-        .info-item span.icon {
-            color: #FFC107;
-            font-size: 18px;
-        }
-        .panel {
-            background-color: #ffffff00;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0);
-        }
-        .tabs {
-            display: flex;
-            justify-content: space-around;
-            margin-bottom: 0;
-            padding-bottom: 0;
-            position: relative;
-            background-color: #E4F4E4;
-            border-radius: 10px 10px 0 0;
-            overflow: hidden;
-        }
-        .tab {
-            flex: 1;
-            text-align: center;
-            padding: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            font-size: 20px;
-            color: white;
-            background-color: #66BB6A;
-            border-right: 1px solid rgba(255, 255, 255, 0);
-            border-radius: 10px 10px 0 0;
-            z-index: 1;
-        }
-        .tab.active {
-            background-color: #FFFFFF;
-            color: #01A407;
-            border-bottom: 0;
-            z-index: 2;
-        }
-        .tab-content {
-            display: none;
-            background-color: #FFFFFF;
-            border-radius: 0 0 10px 10px;
-            padding: 20px;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-        }
-        .tab-content.active {
-            display: block;
-        }
-        .ingredient-list {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .ingredient-item {
-            display: flex;
-            align-items: center;
-            background-color: #fff;
-            border: 2px solid #66BB6A;
-            border-radius: 8px;
-            padding: 10px 15px;
-            transition: background-color 0.3s ease;
-            box-shadow: 0 4px 6px rgba(76, 175, 80, 0.4),
-                        0 0 10px rgba(76, 175, 80, 0.4);
-        }
-        .ingredient-checkbox {
-            opacity: 0; /* Make the checkbox invisible */
-            position: absolute; /* Position it off-screen */
-            width: 24px; /* Set width and height for accessibility */
-            height: 24px; 
-        }
+
+.dish-details {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.dish-details h1 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 10px;
+}
+
+.dish-info {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px; /* Increased gap for better spacing between rows */
+    font-size: 16px;
+    color: #555;
+}
+
+.dish-details img {
+    width: 30%;
+    height: auto;
+    max-width: 350px;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 15px; /* Padding inside the card */
+    display: flex;
+}
+
+.info-row {
+    display: flex;
+    gap: 20px;
+    justify-content: space-between; /* Ensures items are spaced evenly across the row */
+    align-items: center; /* Aligns items vertically in the center */
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 16px; /* Font size for text next to the icons */
+    color: #555; /* Text color */
+}
+
+.info-item span.icon {
+    color: #FFBE30; /* Yellow color for the icons */
+    font-size: 20px; /* Larger font size for the icons */
+}
+
+.info-item .icon i {
+    font-size: 20px; /* Ensures Font Awesome icons are sized correctly */
+    color: #FFBE30; /* Matches the icon color with the existing yellow theme */
+}
+
+
+.panel {
+    background-color: #ffffff00;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0);
+}
+
+.tabs {
+    display: flex;
+    justify-content: space-around;
+    margin-bottom: 0;
+    padding-bottom: 0;
+    position: relative;
+    background-color: #e4f4e400;
+    border-radius: 10px 10px 0 0;
+    overflow: hidden;
+}
+
+.tab {
+    flex: 1;
+    text-align: center;
+    padding: 10px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 20px;
+    color: white;
+    background-color: #66BB6A;
+    border-right: 1px solid rgba(255, 255, 255, 0);
+    border-radius: 10px 10px 0 0;
+    z-index: 1;
+}
+
+.tab.active {
+    background-color: #FFFFFF;
+    color: #66BB6A;
+    border-bottom: 0;
+    z-index: 2;
+}
+
+.tab:hover {
+    background-color: #45a049; /* Slightly darker background on hover for inactive tabs */
+    color: #FFFFFF; 
+}
+
+.tab-content {
+    display: none;
+    text-align: center; /* Center align text within the tab content */
+    background-color: #FFFFFF;
+    border-radius: 0 0 10px 10px;
+    padding: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.tab-content h2 {
+    margin-bottom: 20px; /* Add space below the heading */
+    font-size: 24px; /* Optional: adjust font size */
+    color: #66BB6A; /* Optional: adjust color */
+}
+
+.tab-content.active {
+    display: block;
+}
+
+.ingredient-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.ingredient-item {
+    display: flex;
+    align-items: center;
+    background-color: #fff;
+    border: 2px solid #66BB6A;
+    border-radius: 8px;
+    padding: 10px 15px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 4px 6px rgba(76, 175, 80, 0.4),
+                0 0 10px rgba(76, 175, 80, 0.4);
+}
+
+.ingredient-checkbox {
+    opacity: 0; /* Make the checkbox invisible */
+    position: absolute; /* Position it off-screen */
+    width: 24px; /* Set width and height for accessibility */
+    height: 24px; 
+}
         
-        .ingredient-icon {
-            display: inline-block;
-            width: 24px;
-            height: 24px;
-            background-color: #A2D5AB; /* Default color */
-            color: white;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            transition: background-color 0.3s ease; /* Smooth transition */
-        }
-        
-        /* Change the icon color when the checkbox is checked */
-        .ingredient-checkbox:checked + label .ingredient-icon {
-            background-color: #66BB6A; /* Change to green when checked */
-        }
-        
-        /* Optional: Add a tick icon or text inside the circle when checked */
-        .ingredient-checkbox:checked + label .ingredient-icon::after {
-            content: '✓'; /* You can also use an SVG or FontAwesome icon */
-            color: white; /* Color of the tick */
-            font-size: 16px; /* Adjust size as needed */
-        }
-        
-        .ingredient-item label {
-            display: flex;
-            align-items: center;
-            font-size: 16px;
-            color: #333;
-            width: 100%;
-            cursor: pointer;
-        }
-        .ingredient-item:hover {
-            background-color: #f1f1f1;
-        }
-        .flash-card {
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            background-color: #f9f9f9;
-            font-size: 18px;
-            color: #555;
-            text-align: center;
-            transition: opacity 0.5s ease;
-            display: none;
-        }
-        .flash-card.active {
-            display: block;
-        }
-        .progress-bar {
-            width: 100%;
-            height: 10px;
-            background: #EEE;
-            border-radius: 5px;
-            margin-bottom: 10px;
-            position: relative;
-        }
-        .progress-bar .progress {
-            height: 100%;
-            background: #FFCC00;
-            border-radius: 5px;
-            position: absolute;
-            top: 0;
-            left: 0;
-        }
-        button {
-            background-color: #4CAF50;
-            border: none;
-            color: white;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 16px;
-            margin: 10px;
-        }
-        button:disabled {
-            background-color: #CCC;
-            cursor: not-allowed;
-        }
-        .arrow-buttons-container {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            margin-top: 20px;
-        }
-        .arrow-button {
-            background-color: #66BB6A;
-            border: none;
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            font-size: 20px;
-        }
-        .arrow-button:disabled {
-            background-color: #CCC;
-            cursor: not-allowed;
-        }
-        .modal-content {
-            background-color: #fefefe;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            width: 80%;
-            border-radius: 8px;
-        }
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-        }
-        .close:hover,
-        .close:focus {
-            color: black;
-            text-decoration: none;
-            cursor: pointer;
-        }
-        .category-buttons button {
-            background-color: #4CAF50;
-            color: white;
-            padding: 10px 20px;
-            border: none;
-            border-radius: 8px;
-            margin: 5px;
-            cursor: pointer;
-        }
-        .modal-overlay {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            z-index: 1000;
-        }
-        .modal {
-            background: #fff;
-            padding: 20px;
-            border-radius: 5px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
+.ingredient-icon {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    background-color: #A2D5AB; /* Default color */
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 15px;
+    transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+/* Change the icon color when the checkbox is checked */
+.ingredient-checkbox:checked + label .ingredient-icon {
+    background-color: #66BB6A; /* Change to green when checked */
+}
+
+/* Optional: Add a tick icon or text inside the circle when checked */
+.ingredient-checkbox:checked + label .ingredient-icon::after {
+    content: '✓'; /* You can also use an SVG or FontAwesome icon */
+    color: white; /* Color of the tick */
+    font-size: 16px; /* Adjust size as needed */
+}
+
+.ingredient-item label {
+    display: flex;
+    align-items: center;
+    font-size: 16px;
+    color: #333;
+    width: 100%;
+    cursor: pointer;
+}
+.ingredient-item:hover {
+    background-color: #f1f1f1;
+}
+
+.flash-card {
+    padding: 20px;
+    border: 1px solid #45a049;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    background-color: #fff;
+    font-size: 18px;
+    color: #555;
+    text-align: center;
+    transition: opacity 0.5s ease;
+    display: none;
+}
+
+.flash-card.active {
+    display: block;
+}
+
+.progress-bar {
+    width: 100%; /* Full width of the parent container */
+    height: 25px; /* Adjust height for visibility */
+    background: transparent; /* Transparent background */
+    border: 2px solid #45a049; /* Green border for the bar */
+    border-radius: 15px; /* Rounded edges for the overall bar */
+    margin-bottom: 10px;
+    position: relative; /* Positioning for inner progress */
+    overflow: hidden; /* Prevent overflow */
+}
+
+.progress-bar .progress {
+    height: 100%; /* Full height of the progress bar */
+    background: #FFBE30; /* Fill color for the progress */
+    position: absolute; /* Absolute positioning to fill the container */
+    top: 0;
+    left: 0;
+    transition: width 0.3s ease; /* Smooth transition for width changes */
+    border-radius: 15px 0 0 15px; /* Rounded edges on the left side only */
+}
+
+/* Add this to create rounded ends on the right */
+.progress-bar .progress::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0; /* Align to the right */
+    width: 15px; /* Adjust width for rounded cap */
+    height: 100%; /* Full height */
+    background: #FFBE30; /* Same fill color */
+    border-radius: 0 15px 15px 0; /* Round the right edges */
+}
+
+
+button {
+    background-color: #66BB6A;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    margin: 10px;
+}
+
+button:disabled {
+    background-color: #CCC;
+    cursor: not-allowed;
+}
+
+.arrow-buttons-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.arrow-button {
+    background-color: #66BB6A;
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 20px;
+    margin: 0 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.arrow-button:hover {
+    background-color: #45a049;
+}
+
+.arrow-button:disabled {
+    background-color: #CCC;
+    cursor: not-allowed;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 2px solid #66BB6A; /* Green border */
+    width: 80%;
+    border-radius: 8px;
+}
+
+/* Style for the message modal content */
+#messageContent {
+    text-align: center;
+    font-size: 18px;
+}
+.modal-content {
+    padding-top: 30px; /* Adds more space at the top of the modal */
+}
+
+#confirm-yes, #confirm-no {
+    background-color: #66BB6A; /* Green background */
+    border: none;
+    color: white; /* White text */
+    padding: 10px 20px; /* Padding inside the button */
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size */
+    margin: 10px; /* Margin around the button */
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+#confirm-yes:hover, #confirm-no:hover {
+    background-color: #45a049; /* Darker green on hover for Yes button */
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+.close {
+    position: absolute;
+    top: -5px; /* Adjusts distance from the top */
+    right: 15px; /* Adjusts distance from the right */
+    color: #45a049;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.category-buttons button {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    margin: 5px;
+    cursor: pointer;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal {
+    
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for the select dropdown */
+select.ingredient-alternative {
+    background-color: #66BB6A; /* Light green background */
+    border: 2px solid #66BB6A; /* Green border */
+    color: white; /* Text color */
+    padding: 1px; /* Increase padding for thickness */
+    font-size: 16px; /* Adjust font size */
+    font-weight: bold;
+    text-align: center; /* Center the text */
+    border-radius: 8px; /* Rounded corners */
+    width: 30%; /* Full width */
+    box-sizing: border-box; /* Ensure padding is included in the width */
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* Smooth transition for hover */
+}
+
+/* Change background and border on focus (when clicked) */
+select.ingredient-alternative:focus {
+    background-color: #66BB6A; /* Darker green background when active */
+    border-color: #66BB6A; /* Darker green border when active */
+    outline: none; /* Remove the default outline */
+}
+
+/* Optional: Hover effect */
+select.ingredient-alternative:hover {
+    background-color: #45a049; 
+}
+
+/* Style for the options inside the dropdown */
+select.ingredient-alternative option {
+    background-color: #66BB6A; /* White background for the dropdown options */
+    color: white; 
+    padding: 10px; /* Padding for options */
+    font-weight: normal; /* Regular font weight for options */
+}
+
+
+/* Wrapper for the Delete and Done buttons */
+.button-container {
+    display: flex;
+    justify-content: center; /* Center the buttons horizontally */
+    gap: 10px; /* Space between the buttons */
+    margin-top: 20px; /* Optional: Space above the buttons */
+}
+
+/* Styling for the date information */
+.date-info {
+    text-align: center; /* Center align the date text */
+    margin-top: 15px; /* Space between the buttons and the date */
+}
+
+.date-info p {
+    margin: 5px 0; /* Adjust margin for the paragraphs */
+}
+
+.date-info .note {
+    font-style: italic; /* Italicize the note */
+    font-size: 14px; /* Make the note smaller */
+    color: #696969; /* Optional: Slightly lighter color for the note */
+}
+
+.button-confirm{
+    text-align: center;
+}
+
     </style>
 </head>
 <body>
@@ -313,6 +490,7 @@
     </header>
     <main>
         <button class="back-button" onclick="window.history.back()">Back</button>
+        <button class="print-button" type="button" onclick="printRecipe()">Print Recipe</button>
         <div class="dish-details">
             <img src="{{ dish.dish_image.url }}" alt="{{ dish.dish_name }}">
             <h1>{{ dish.dish_name }}</h1>
@@ -320,21 +498,21 @@
                 <div class="dish-info">
                     <div class="info-row">
                         <div class="info-item">
-                            <span class="icon">⏰</span>{{ dish.preparation_time }}
+                            <span class="icon"><i class="fas fa-clock"></i></span> Time: {{ dish.preparation_time }}
                         </div>
                         <div class="info-item">
-                            <span class="icon">🍴</span>{{ dish.number_of_servings }}
+                            <span class="icon"><i class="fas fa-concierge-bell"></i></span> Servings: {{ dish.number_of_servings }}
                         </div>
                         <div class="info-item">
-                            <span class="icon">🛒</span>{{ dish.cost }}
+                            <span class="icon"><i class="fas fa-peso-sign"></i></span> Cost: {{ dish.cost }}
                         </div>
                     </div>
                     <div class="info-row">
                         <div class="info-item">
-                            <span class="icon">📚</span>{{ dish.skills_needed }}
+                            <span class="icon"><i class="fas fa-tools"></i></span> Skills: {{ dish.skills_needed }}
                         </div>
                         <div class="info-item">
-                            <span class="icon">👶👦👨</span>{{ dish.age_range_that_can_eat|join:", " }}
+                            <span class="icon"><i class="fas fa-users"></i></span> {{ dish.age_range_that_can_eat|join:", " }}
                         </div>
                     </div>
                 </div>
@@ -397,20 +575,43 @@
             <input type="hidden" name="dish_plan_id" value="{{ dish_plan_id }}">
             <input type="hidden" name="saved_date" value="{{ saved_date }}">  <!-- Hidden input for saved date -->
             
-            <button type="button" onclick="handleAction('delete')">Delete</button>
+            <div class="button-container">
+                <button type="button" onclick="handleAction('delete')">Delete</button>
+                <button type="button" 
+                    onclick="handleAction('done')" 
+                    {% if saved_date and saved_date > current_date %}disabled{% endif %}>
+                    Done
+                </button>
+            </div>
             
-            <p>Current Date: {{ current_date }}</p> <!-- Displaying the current date -->
-            <p>Saved Date: {{ saved_date }}</p> <!-- Displaying the saved date -->
+            <div class="date-info">
+                <p>Current Date: {{ current_date }}</p> <!-- Displaying the current date -->
+                <p>Saved Date: {{ saved_date }}</p> <!-- Displaying the saved date -->
+                <p class="note">Note: You can't click "done" before the saved date.</p>
+            </div>
             
-            <button type="button" 
-                onclick="handleAction('done')" 
-                {% if saved_date and saved_date > current_date %}disabled{% endif %}>
-                Done
-            </button>
+            
         </form>
         
-        
-        
+                <!-- Message Modal -->
+        <div id="messageModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeMessageModal()">&times;</span>
+                <p id="messageContent"></p>
+            </div>
+        </div>
+
+        <div id="confirm-modal" class="modal">
+            <div class="modal-content">
+                <span class="close" id="close-modal">&times;</span>
+                <p>Oops! Seems like you don't have all the ingredients. Do you still want to continue?</p>
+                <div class="button-confirm">
+                    <button id="confirm-yes">Yes</button>
+                    <button id="confirm-no">No</button>
+                </div>
+            </div>
+        </div>
+
         
 
     </main>
@@ -429,67 +630,174 @@
     <script>
         let currentStep = 0;
 
+        function printRecipe() {
+    // Create a new window
+    const printWindow = window.open('', '', 'height=600,width=800');
+
+    // Prepare the content for printing
+    let content = `
+        <html>
+        <head>
+            <title>Print Recipe</title>
+            <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"> 
+            <style>
+                @media print {
+                    .nav-menu, .burger-menu, .print-button, .add-button {
+                        display: none; /* Hide buttons */
+                    }
+                    body {
+                        font-family: Arial, sans-serif;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+    `;
+
+    // Check for the dish name
+    const dishName = document.querySelector('h1');
+    if (dishName) {
+        content += `<h1>${dishName.innerText}</h1>`;
+    } else {
+        console.error("Dish name not found.");
+        return; // Exit if the dish name is not found
+    }
+
+    const dishImage = document.querySelector('.dish-details img'); // Adjust selector for specificity
+if (dishImage) {
+    content += `<img src="${dishImage.src}" alt="${dishName.innerText}" style="max-width: 100%;">`;
+} else {
+    console.error("Dish image not found.");
+    return; // Exit if the dish image is not found
+}
+
+
+    // Gather other information safely
+    const infoItems = document.querySelectorAll('.info-item');
+    content += '<div>';
+    if (infoItems.length >= 5) {
+        content += `
+            <strong>Preparation Time:</strong> ${infoItems[0]?.innerText || 'N/A'}<br>
+            <strong>Servings:</strong> ${infoItems[1]?.innerText || 'N/A'}<br>
+            <strong>Cost:</strong> ${infoItems[2]?.innerText || 'N/A'}<br>
+            <strong>Skills Needed:</strong> ${infoItems[3]?.innerText || 'N/A'}<br>
+            <strong>Age Range:</strong> ${infoItems[4]?.innerText || 'N/A'}<br>
+        `;
+    } else {
+        console.error("Not enough info items found.");
+    }
+    content += '</div><h2>Ingredients</h2><ul>';
+
+    // Gather ingredients and alternatives
+    const ingredients = document.querySelectorAll('.ingredient-item');
+    ingredients.forEach(item => {
+        const ingredientName = item.querySelector('.ingredient-name')?.innerText || 'Unknown Ingredient';
+        content += `<li><input type="checkbox" disabled> ${ingredientName}`; // Add checkbox
+        const alternatives = item.querySelector('.ingredient-alternative');
+        if (alternatives && alternatives.options.length > 1) {
+            const altList = Array.from(alternatives.options).map(opt => opt.value).join(", ");
+            content += ` (Alternatives: ${altList})`;
+        }
+        content += `</li>`;
+    });
+
+    content += `</ul><h2>Cooking Steps</h2><ol>`;
+
+    // Gather steps and number them
+    const steps = document.querySelectorAll('.flash-card');
+    steps.forEach((step, index) => {
+        content += `<li>${index + 1}. ${step.innerText}</li>`;
+    });
+
+    content += `</ol></body></html>`;
+
+    // Debugging: log the content before printing
+    console.log("Printing content: ", content);
+
+    // Write the content to the new window
+    printWindow.document.write(content);
+
+    // Close the document and trigger the print dialog
+    printWindow.document.close();
+
+    // Ensure the content is loaded before printing
+    printWindow.onload = function() {
+        console.log("Window loaded, triggering print.");
+        printWindow.print();
+        printWindow.close(); // Close the window after printing
+    };
+
+    // Debugging: check if printWindow is opened
+    if (!printWindow) {
+        console.error("Failed to open print window.");
+    }
+}
+
+    
         function showTab(tabId) {
             // Hide all tab contents
             document.querySelectorAll('.tab-content').forEach(tabContent => {
                 tabContent.classList.remove('active');
             });
-
+        
             // Remove active class from all tabs
             document.querySelectorAll('.tab').forEach(tab => {
                 tab.classList.remove('active');
             });
-
+        
             // Check if navigating away from Ingredients tab
             if (tabId === 'directions' && !areAllIngredientsChecked()) {
-                if (confirm("Oops! Seems like you don't have all the ingredients. Do you still want to continue?")) {
-                    document.getElementById(tabId).classList.add('active');
-                    document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
-                } else {
-                    showTab('ingredients');
-                }
+                // Open the confirmation modal instead of the showModal function
+                openConfirmModal(tabId, 'ingredients');
             } else {
+                // Activate the tab if the user has all the ingredients or it's not the directions tab
                 document.getElementById(tabId).classList.add('active');
                 document.querySelector(`.tab[onclick="showTab('${tabId}')"]`).classList.add('active');
             }
         }
-
+        
+    
         function areAllIngredientsChecked() {
             const checkboxes = document.querySelectorAll('#ingredients input[type="checkbox"]');
             return Array.from(checkboxes).every(checkbox => checkbox.checked);
         }
-
+    
         function showStep(index) {
-            const steps = document.querySelectorAll('#directions-steps .step');
-            if (index >= 0 && index < steps.length) {
-                steps.forEach((step, i) => {
-                    step.classList.toggle('active', i === index);
-                });
-                currentStep = index;
-                updateProgressBar();
-            }
-        }
+    const steps = document.querySelectorAll('#directions-steps .step');
+    if (index >= 0 && index < steps.length) {
+        steps.forEach((step, i) => {
+            step.classList.toggle('active', i === index);
+        });
+        currentStep = index; // Update currentStep to the passed index
+        updateProgressBar();
+    }
+}
 
+// To set currentStep to 0
+currentStep = 0;
+showStep(currentStep); // Call the function with currentStep set to 0
+
+    
         function prevStep() {
             showStep(currentStep - 1);
         }
-
+    
         function nextStep() {
             showStep(currentStep + 1);
         }
-
+    
         function updateProgressBar() {
             const progress = document.querySelector('.progress');
             const totalSteps = document.querySelectorAll('#directions-steps .step').length;
             const percentage = ((currentStep + 1) / totalSteps) * 100;
             progress.style.width = percentage + '%';
         }
-
+    
         function handleAction(action) {
             const form = document.getElementById('dish-form');
             const formData = new FormData(form);
             formData.append('action', action);
-
+    
             fetch(form.action, {
                 method: 'POST',
                 body: formData,
@@ -501,39 +809,103 @@
             .then(data => {
                 if (data.success) {
                     if (action === 'done' && data.cooked) {
-                        alert('Dish marked as cooked and removed from saved.');
-                        handleAction('delete'); // Trigger the delete action
+                        showModal('Dish marked as cooked and removed from saved.', () => {
+                            handleAction('delete');
+                        });
                     } else {
                         window.location.href = "{% url 'saved' %}";
                     }
                 } else {
-                    alert(data.error);
+                    showModal(data.error);
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                alert('An error occurred');
+                showModal('An error occurred');
             });
         }
-
+    
         // Show the first tab initially
         showTab('ingredients');
-
+    
         function toggleMenu() {
             var navLinks = document.querySelector('.nav-links');
             navLinks.classList.toggle('active');
         }
-
+    
         function updateIngredient(selectElement, index, originalIngredient) {
             const selectedAlternative = selectElement.value;
             const ingredientNameSpan = document.querySelector(`#ingredient_${index} .ingredient-name`);
-
+    
             if (selectedAlternative) {
                 ingredientNameSpan.textContent = selectedAlternative; // Replace with selected alternative
             } else {
                 ingredientNameSpan.textContent = originalIngredient; // Revert back to original if no selection
             }
         }
+    
+        // Function to show the message modal
+        function showModal(message, callback) {
+            const modal = document.getElementById('messageModal');
+            const messageContent = document.getElementById('messageContent');
+            const closeButton = document.querySelector('#messageModal .close');
+    
+            // Set the message content
+            messageContent.textContent = message;
+    
+            // Show the modal
+            modal.style.display = 'block';
+    
+            // Clear previous event listeners to avoid conflicts
+            closeButton.onclick = null;
+    
+            // Attach event listener to close the modal and trigger callback if needed
+            closeButton.onclick = () => {
+                closeMessageModal();
+                if (callback) {
+                    callback();
+                }
+            };
+        }
+    
+        // Function to close the message modal
+        function closeMessageModal() {
+            document.getElementById('messageModal').style.display = 'none';
+        }
+
+        function openConfirmModal(directionsTab, ingredientsTab) {
+            const modal = document.getElementById('confirm-modal');
+            modal.style.display = "block";
+        
+            // Handle yes button
+            document.getElementById('confirm-yes').onclick = function() {
+                document.getElementById(directionsTab).classList.add('active');
+                document.querySelector(`.tab[onclick="showTab('${directionsTab}')"]`).classList.add('active');
+                modal.style.display = "none"; // Close the modal
+            }
+        
+            // Handle no button
+            document.getElementById('confirm-no').onclick = function() {
+                document.getElementById(ingredientsTab).classList.add('active');
+                document.querySelector(`.tab[onclick="showTab('${ingredientsTab}')"]`).classList.add('active');
+                modal.style.display = "none"; // Close the modal
+            }
+        
+            // Close modal when clicking on <span> (x)
+            document.getElementById('close-modal').onclick = function() {
+                modal.style.display = "none";
+            }
+        
+            // Close modal when clicking anywhere outside of the modal
+            window.onclick = function(event) {
+                if (event.target === modal) {
+                    modal.style.display = "none";
+                }
+            }
+        }
+        
     </script>
+    
+    
 </body>
 </html>

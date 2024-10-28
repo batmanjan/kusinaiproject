@@ -6,38 +6,184 @@
     <title>Edit Profile</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        .form-group {
-            margin-bottom: 1em;
+        body {
+            font-family: 'Montserrat', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #D8EFC8;
+            padding-bottom: 60px;
+            margin: 0 auto;
+            max-width: 1200px;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
         }
+
+        .login-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #D8EFC8;
+            height: 100vh;
+        }
+
+        /* Styling similar to signup.html */
+        .edit-profile-container {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 500px;
+            margin: 2rem auto;
+            text-align: center;
+            box-sizing: border-box;
+            animation: fadeInUp 1s ease-in-out;
+        }
+
+        h1 {
+            color: #FF9900;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-group {
+            position: relative;
+            margin-bottom: 1rem;
+            text-align: left;
+        }
+
+        .form-group i {
+            position: absolute;
+            top: 70%;
+            transform: translateY(-50%);
+            color: #FF9900;
+            font-size: 1.25rem;
+            z-index: 1;
+            right: 1rem;
+        }
+
+        .form-group input{
+            width: 100%;
+            padding: 0.75rem 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 1rem;
+            color: #333;
+            transition: border-color 0.3s ease;
+        }
+
+        .form-group input:focus {
+            border-color: #FF9900;
+            outline: none;
+        }
+
         .phone-wrapper {
             display: flex;
             align-items: center;
+            position: relative;
         }
+        
         .phone-prefix {
-            display: inline-block;
-            padding: 0.5em;
-            background: #f1f1f1;
-            border: 1px solid #ccc;
-            border-radius: 5px 0 0 5px;
-            box-sizing: border-box;
-            font-size: 1em;
-            line-height: 1.5;
+            background-color: #ddd;
+            padding: 0.75rem;
+            border-radius: 4px 0 0 4px;
+            border: 1px solid #ddd;
+            border-right: none;
             color: #333;
-            width: 3em; /* Adjust width to fit your prefix */
-            text-align: center;
-            margin-right: -1px; /* Remove the gap between prefix and input */
         }
+        
         .phone-input {
-            flex: 1; /* Take up the remaining space */
-            padding: 0.5em;
-            border: 1px solid #ccc;
-            border-radius: 0 5px 5px 0;
-            box-sizing: border-box;
+            border-radius: 0 4px 4px 0;
+            border: 1px solid #ddd;
+            flex: 1;
+            padding: 0.75rem 2.5rem 0.75rem 0.75rem; /* Adjusted padding */
         }
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5em; /* Space between label and input */
+        
+        .phone-wrapper i.fa-phone {
+            position: absolute; 
+            top: 50%; /* Center it vertically */
+            transform: translateY(-50%); /* Adjusts to ensure it is centered */
+            color: #FF9900; /* Keep the existing color */
+            font-size: 1.25rem; /* Existing font size */
+            z-index: 1; /* Keep it above other elements */
+            right: 1rem; /* Right position remains the same */
+        }
+        
+        
+
+        .button-container {
+            display: flex;
+            justify-content: space-between; /* Space between buttons */
+            margin-top: 1rem; /* Add some space above the buttons */
+        }
+        
+        button {
+            background-color: #FF9900; /* Change to your desired color */
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 0.75rem;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        button.cancel {
+            width: 45%; /* Set width for Cancel button */
+            background-color: #4caf50; /* Cancel button color */
+        }
+        
+        button.cancel:hover {
+            background-color: #45a049; /* Hover color for cancel button */
+        }
+        
+        button.save {
+            width: 45%; /* Set width for Save button */
+        }
+        
+        button:hover {
+            background-color: #e68a00; /* Hover color (slightly darker) */
+            transform: scale(1.02);
+        }
+        
+        
+
+        .signup-link {
+            margin-top: 1rem;
+            font-size: 0.9rem;
+            color: #555;
+        }
+
+        .signup-link a {
+            color: #ff9800;
+            text-decoration: none;
+        }
+
+        .signup-link a:hover {
+            color: #ff5722;
+        }
+
+        /* Responsive styles */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            button {
+                padding: 0.5rem;
+                font-size: 0.875rem;
+            }
+
+            .signup-link {
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
@@ -59,6 +205,8 @@
         </div>
     </header>
     <main>
+<div class="login-container">
+    <div class="edit-profile-container">
         <h1>Edit Profile</h1>
         {% if form.errors %}
             <p style="color: red;">Please correct the errors below.</p>
@@ -80,11 +228,24 @@
                     <input type="text" name="phone_number" id="phone_number" class="phone-input" value="{{ form.phone_number.value|default_if_none:'' }}" placeholder="{{ form.phone_number.field.widget.attrs.placeholder }}">
                 </div>
             </div>
-            {{ form.password }}
-            {{ form.repassword }}
-            <button type="button" onclick="window.history.back()">Cancel</button>
-            <button type="submit">Save</button>
+            <div class="form-group">
+                <label for="{{ form.password.id_for_label }}">Password</label>
+                {{ form.password }}
+                <i class="fas fa-eye toggle-password" id="toggle-password" onclick="togglePasswordVisibility('{{ form.password.id_for_label }}')"></i>
+            </div>
+            
+            <div class="form-group">
+                <label for="{{ form.repassword.id_for_label }}">Confirm Password</label>
+                {{ form.repassword }}
+                <i class="fas fa-eye toggle-password" id="toggle-repassword" onclick="togglePasswordVisibility('{{ form.repassword.id_for_label }}')"></i>
+            </div>
+        <div class="button-container">
+            <button type="button" class="cancel" onclick="window.history.back()">Cancel</button>
+            <button type="submit" class="save">Save</button>
+        </div>
         </form>
+    </div>
+</div>
     </main>
     <footer>
         <div class="footer-left">kusinAIready</div>
@@ -102,6 +263,15 @@
         function toggleMenu() {
             var navLinks = document.querySelector('.nav-links');
             navLinks.classList.toggle('active');
+        }
+
+        function togglePasswordVisibility(fieldId) {
+            var passwordField = document.getElementById(fieldId);
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+            } else {
+                passwordField.type = "password";
+            }
         }
     </script>
 </body>

@@ -6,54 +6,161 @@
     <title>Forgot Password</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        .form-group {
-            margin-bottom: 1em;
+        body {
+            font-family: Arial, sans-serif; /* Clean font for the entire page */
+            background-color: #D8EFC8; /* Softer background color */
+            padding: 2em; /* Padding around the body for spacing */
         }
+        
+        .form-group {
+            margin-bottom: 1.5em;
+            background-color: #ffffff;
+            padding: 1.5em;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.08);
+            transition: box-shadow 0.3s ease, transform 0.3s ease;
+            max-width: 500px; /* Set maximum width */
+            width: 100%; /* Allow responsiveness */
+            margin: 1em auto; /* Center the form */
+        }
+        
+        
+        .form-group:hover {
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Enhanced shadow on hover */
+            transform: translateY(-2px); /* Slight lift on hover */
+        }
+        
         .phone-wrapper {
             display: flex;
             align-items: center;
+            width: 100%; /* Full width */
         }
+        
         .phone-prefix {
             display: inline-block;
-            padding: 0.5em;
-            background: #f1f1f1;
+            padding: 0.75em; /* Padding for a better touch target */
+            background: #F0F7EE; /* Accent background for contrast */
             border: 1px solid #ccc;
             border-radius: 5px 0 0 5px;
             box-sizing: border-box;
             font-size: 1em;
             line-height: 1.5;
             color: #333;
-            width: 3em; /* Adjust width to fit your prefix */
+            width: 4em; /* Adjusted width for balance */
             text-align: center;
-            margin-right: -1px; /* Remove the gap between prefix and input */
+            margin-right: -1px; /* Remove gap between prefix and input */
         }
+        
         .phone-input {
-            flex: 1; /* Take up the remaining space */
-            padding: 0.5em;
+            flex: 1; /* Remaining space */
+            padding: 0.75em;
             border: 1px solid #ccc;
             border-radius: 0 5px 5px 0;
             box-sizing: border-box;
+            font-size: 1em; /* Consistent font size with prefix */
+            transition: border-color 0.3s, transform 0.2s; /* Smooth transition on focus */
         }
+        
+        .phone-input:focus {
+            border-color: #66BB6A; /* Accent color on focus */
+            transform: scale(1.02); /* Slight scale for interaction */
+            outline: none; /* Remove default outline */
+        }
+        
         .form-group label {
             display: block;
             margin-bottom: 0.5em; /* Space between label and input */
+            font-weight: bold; /* Bold labels for readability */
+            color: #66BB6A; /* Accent label color for clarity */
+            font-size: 1.1em; /* Slightly larger font for clarity */
         }
+        
+        @media (max-width: 600px) {
+            .phone-wrapper {
+                flex-direction: column; /* Stack elements on small screens */
+            }
+            .phone-prefix {
+                width: 100%; /* Full width on small screens */
+                margin-bottom: 0.5em; /* Spacing below the prefix */
+                border-radius: 5px; /* Round corners on mobile */
+            }
+            .phone-input {
+                width: 100%; /* Full width on small screens */
+            }
+        }
+        
+        button[type="submit"] {
+            padding: 0.75em 1.5em;
+            font-size: 1em;
+            background-color: #66BB6A; /* Accent color */
+            color: #fff;
+            border: none;
+            border-radius: 8px; /* Rounder corners for softer look */
+            cursor: pointer;
+            transition: background-color 0.3s ease, box-shadow 0.2s ease;
+            width: 25%; /* Adjust width as needed */
+            display: block;
+            margin: 1em auto; /* Center button horizontally */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+        }
+        
+        button[type="submit"]:hover {
+            background-color: #45a049; /* Darker shade on hover */
+        }
+        
+        .back-button {
+            position: absolute; /* Keep absolute positioning */
+            bottom: 100px; /* Distance from the bottom edge */
+            font-size: 15px; /* Increase font size for larger button */
+            padding: 0.5em 1em; /* Add padding for larger click area */
+            text-decoration: none;
+            color: white; /* Text color */
+            background-color: #66BB6A; /* Background color */
+            border: 2px solid #66BB6A; /* Border color and thickness */
+            border-radius: 5px; /* Rounded corners */
+            z-index: 1000; /* Ensure it's on top */
+            transition: transform 0.2s ease, color 0.3s ease, background-color 0.3s ease; /* Add background transition */
+        }
+        
+        .back-button:hover {
+            color: white; /* Text color on hover */
+            background-color: #4caf50; /* Light background on hover */
+            transform: scale(1.15); /* Slightly larger on hover */
+        }
+        
+        
+        
+        
+          
+        
+
+        
+
+        
+    
     </style>
 </head>
 <body>
     <header>
         <nav>
-            <div class="logo">kusinAIready</div>
+            <div class="logo">KusinAIready</div>
             <div class="nav-menu">
-                <a href="{% url 'login' %}">Login</a>
-                <a href="{% url 'signup' %}">Sign Up</a>
+               
             </div>
         </nav>
     </header>
     <main>
+        <!-- Back button with an arrow in the upper left corner -->
+        <a href="{% url 'login' %}" class="back-button">Back</a>
         <h1>Forgot Password</h1>
 
+    
+        
+    
         <form method="post">
             {% csrf_token %}
             <div class="form-group">
@@ -66,10 +173,10 @@
             </div>
             <button type="submit">Get Code</button>
         </form>
-
     </main>
+    
     <footer>
-        <div class="footer-left">kusinAIready</div>
+        <div class="footer-left">KusinAIready</div>
         <div class="footer-right">
             <a href="{% url 'home' %}">Home</a>
             <a href="{% url 'saved' %}">Saved</a>

@@ -147,64 +147,96 @@
         <form id="dish-form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             
-            <!-- Render other fields normally -->
-            <div class="form-group">
-                {{ form.dish_name.label_tag }} {{ form.dish_name }}
-            </div>
-            
-            <div class="form-group">
-                <label for="id_ingredient_table">Ingredients</label>
-                <table id="ingredient_table" class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Ingredient</th>
-                            <th>Alternatives</th>
-                            <th></th> <!-- Empty header for delete button column -->
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Rows will be inserted dynamically by JS -->
-                    </tbody>
-                </table>
-                <button type="button" class="btn btn-secondary" onclick="addRow()">Add Row</button>
-            </div>
-        
-            <!-- Hidden field to store JSON data -->
-            <input type="hidden" id="id_ingredient_list" name="ingredient_list">
-
-            <div class="form-group">
-                <label for="id_preparation_time">Preparation time:</label>
-                <div class="time-input-container">
-                    {{ form.preparation_time }}
+            <!-- Dish Information Section -->
+            <section class="form-section" id="section-1">
+                <h2>Dish Information</h2>
+                <div class="form-group">
+                    {{ form.dish_name.label_tag }} {{ form.dish_name }}
                 </div>
-            </div>
-            
-            <div class="form-group">
-                {{ form.number_of_servings.label_tag }} {{ form.number_of_servings }}
-            </div>
-            <div class="form-group">
-                {{ form.procedure.label_tag }} {{ form.procedure }}
-            </div>
-            <div class="form-group">
-                {{ form.nutritional_guide.label_tag }} {{ form.nutritional_guide }}
-            </div>
-            <div class="form-group">
-                {{ form.skills_needed.label_tag }} {{ form.skills_needed }}
-            </div>
-            <div class="form-group">
-                {{ form.age_range_that_can_eat.label_tag }} {{ form.age_range_that_can_eat }}
-            </div>
-            <div class="form-group">
-                {{ form.cost.label_tag }} {{ form.cost }}
-            </div>
-            <div class="form-group">
-                {{ form.dish_image.label_tag }} {{ form.dish_image }}
-            </div>
-            <div class="form-group">
-                {{ form.meal_type.label_tag }} {{ form.meal_type }}
-            </div>
-            
+                <div class="form-group">
+                    {{ form.preparation_time.label_tag }}
+                    <div class="time-input-container">
+                        {{ form.preparation_time }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form.number_of_servings.label_tag }} {{ form.number_of_servings }}
+                </div>
+            </section>
+    
+            <!-- Ingredients Section -->
+            <section class="form-section" id="section-2">
+                <h2>Ingredients</h2>
+                <div class="form-group">
+                    <label for="id_ingredient_table">Ingredients</label>
+                    <table id="ingredient_table" class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th>Ingredient</th>
+                                <th>Alternatives</th>
+                                <th></th> <!-- Empty header for delete button column -->
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Rows will be inserted dynamically by JS -->
+                        </tbody>
+                    </table>
+                    <button type="button" class="btn btn-secondary" onclick="addRow()">Add Row</button>
+                </div>
+    
+                <!-- Hidden field to store JSON data -->
+                <input type="hidden" id="id_ingredient_list" name="ingredient_list">
+            </section>
+    
+            <!-- Procedure and Skills Section -->
+            <section class="form-section" id="section-3">
+                <h2>Procedure and Skills</h2>
+                <div class="form-group">
+                    {{ form.procedure.label_tag }} {{ form.procedure }}
+                </div>
+                <div class="form-group">
+                    {{ form.skills_needed.label_tag }} {{ form.skills_needed }}
+                </div>
+            </section>
+    
+            <!-- Nutritional Guide and Age Range Section -->
+            <section class="form-section" id="section-4">
+                <h2>Nutritional Information and Age Range</h2>
+                <div class="form-group">
+                    {{ form.nutritional_guide.label_tag }} {{ form.nutritional_guide }}
+                </div>
+                <div class="form-group">
+                    {{ form.age_range_that_can_eat.label_tag }} {{ form.age_range_that_can_eat }}
+                </div>
+            </section>
+    
+            <!-- Cost and Image Section -->
+            <section class="form-section" id="section-5">
+                <h2>Cost and Image</h2>
+                <div class="form-group">
+                    {{ form.cost.label_tag }} {{ form.cost }}
+                </div>
+                <div class="form-group">
+                    {{ form.dish_image.label_tag }} {{ form.dish_image }}
+                </div>
+            </section>
+    
+            <!-- Meal Type Section -->
+            <section class="form-section" id="section-6">
+                <h2>Meal Type</h2>
+                <div class="form-group">
+                    {{ form.meal_type.label_tag }} {{ form.meal_type }}
+                </div>
+            </section>
+    
+            <!-- Navigation Buttons -->
             <div class="button-container">
+                <button type="button" id="prevBtn" onclick="prevSection()" style="display:none;">Back</button>
+                <button type="button" id="nextBtn" onclick="nextSection()">Next</button>
+            </div>
+    
+            <!-- Submit Button -->
+            <div class="submit-container" style="display:none;">
                 <button type="submit">Update Dish</button>
             </div>
         </form>
@@ -272,6 +304,50 @@
             window.onload = function() {
                 loadIngredients();
             };
+
+            let currentSection = 1;
+    const totalSections = 6;
+
+    function showSection(n) {
+        // Hide all sections
+        for (let i = 1; i <= totalSections; i++) {
+            document.getElementById('section-' + i).style.display = 'none';
+        }
+        // Show the current section
+        document.getElementById('section-' + n).style.display = 'block';
+
+        // Handle the Next and Back button visibility
+        if (n === 1) {
+            document.getElementById('prevBtn').style.display = 'none';
+        } else {
+            document.getElementById('prevBtn').style.display = 'inline';
+        }
+
+        if (n === totalSections) {
+            document.getElementById('nextBtn').style.display = 'none';
+            document.querySelector('.submit-container').style.display = 'block';
+        } else {
+            document.getElementById('nextBtn').style.display = 'inline';
+            document.querySelector('.submit-container').style.display = 'none';
+        }
+    }
+
+    function nextSection() {
+        if (currentSection < totalSections) {
+            currentSection++;
+            showSection(currentSection);
+        }
+    }
+
+    function prevSection() {
+        if (currentSection > 1) {
+            currentSection--;
+            showSection(currentSection);
+        }
+    }
+
+    // Show the first section initially
+    showSection(currentSection);
             </script>
     </main>
 </body>

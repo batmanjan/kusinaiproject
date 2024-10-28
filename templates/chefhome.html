@@ -3,100 +3,169 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chef Home</title>
+    <title>Moderator Home</title>
     {% load static %}
     {% load custom_filters %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
     <style>
+    
         .dish-cards-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
+            display: grid; /* Use grid for better layout control */
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Responsive columns */
+            gap: 20px; /* Space between cards */
             max-width: 1200px;
-            padding: 20px;
-            margin: auto;
-            gap: 20px;
+            margin: auto; /* Centering the container */
+            padding: 20px; /* Padding around the container */
         }
+    
         .dish-card-container {
             background: #fff;
             border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            width: 300px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Softer shadow */
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: center; /* Center items */
             text-align: center;
             text-decoration: none;
-            transition: transform 0.2s;
+            transition: transform 0.2s ease, box-shadow 0.2s ease; /* Smooth transform and shadow */
+            overflow: hidden; /* Hide overflow for rounded corners */
         }
+    
         .dish-card-container:hover {
-            transform: scale(1.02);
+            transform: translateY(-5px); /* Move up slightly */
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* More pronounced shadow on hover */
         }
+    
         .dish-card img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 10px;
+            width: 100%; /* Full width */
+            height: 150px; /* Fixed height */
+            object-fit: cover; /* Cover space without distortion */
+            border-radius: 10px 10px 0 0; /* Rounded corners only on top */
         }
+    
         .dish-card h2 {
-            margin-top: 10px;
-            font-size: 18px;
-            color: #4CAF50;
+            margin: 10px 0; /* Top and bottom margin */
+            font-size: 22px; /* Increased font size for visibility */
+            color: #4CAF50; /* Title color */
+            font-weight: bold; /* Bold title */
         }
+    
         .dish-card p {
-            margin: 5px 0;
-            font-size: 14px;
-            color: #555;
-        }
-        .approve-button, .delete-buttonn {
-            background-color: #4CAF50;
-            margin-top: 10px; /* Reduced margin to bring buttons closer */
-            padding: 10px 15px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 14px;
-            font-weight: bold;
-            transition: background-color 0.3s;
-            color: white;
-            width: 100%; /* Set both buttons to take full width of their container */
+            margin: 5px 10px; /* Vertical and horizontal spacing */
+            font-size: 15px; /* Standard font size */
+            color: #555; /* Description color */
         }
         
-        .approve-button:hover, .delete-buttonn:hover {
-            background-color: #45a049;
+    
+        /* Button styling */
+        /* Button styling */
+        .approve-button,
+        .delete-buttonn {
+            margin-top: 10px; /* Space above buttons */
+            padding: 10px 15px; /* Button padding */
+            border: none; /* No border */
+            cursor: pointer; /* Pointer on hover */
+            border-radius: 5px; /* Rounded corners */
+            font-size: 14px;
+            font-weight: bold; /* Bold text */
+            transition: background-color 0.3s, transform 0.2s; /* Transition effects */
+            color: white; /* Text color */
+            width: 150px; /* Fixed width */
+            height: 50px; /* Fixed height */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow effect */
+            display: flex; /* Flex for centering text */
+            align-items: center; /* Center text vertically */
+            justify-content: center; /* Center text horizontally */
         }
-        
+    
+        .approve-button {
+            background-color: #4CAF50; /* Green */
+        }
+    
+        .delete-buttonn {
+            background-color: #f44336; /* Red */
+        }
+    
+        .approve-button:hover {
+            background-color: #45a049; /* Darker green on hover */
+            transform: translateY(-2px); /* Lift effect */
+        }
+    
+        .delete-buttonn:hover {
+            background-color: #e53935; /* Darker red on hover */
+            transform: translateY(-2px); /* Lift effect */
+        }
+    
+        .approve-button:focus,
+        .delete-buttonn:focus {
+            outline: 2px solid #1E88E5; /* Outline for accessibility */
+        }
+    
+        .approve-button:active,
+        .delete-buttonn:active {
+            transform: scale(0.98); /* Shrink effect on click */
+        }
+
+        /* Logout button styling */
         .logout-button {
-            background-color: #f44336;
+            background-color: #f44336; /* Red */
+            width: 120px; /* Fixed width */
+            height: 40px; /* Fixed height */
+            padding: 10px; /* Padding */
+            border: none; /* No border */
+            color: white; /* Text color */
+            font-size: 16px; /* Font size */
+            cursor: pointer; /* Pointer on hover */
+            margin-top: 20px; /* Space above */
+            display: block; /* Center button below cards */
+            margin-left: auto; /* Center horizontally */
+            margin-right: auto; /* Center horizontally */
         }
-        
+    
         .logout-button:hover {
-            background-color: #d32f2f;
+            background-color: #d32f2f; /* Darker red on hover */
         }
-        
     
         /* Responsive Styles */
         @media (max-width: 768px) {
             .dish-card-container {
-                width: 90%; /* Adjust width for smaller screens */
+                min-height: 350px; /* Optional: Reduce height for medium screens */
             }
         }
-        
+    
         @media (max-width: 480px) {
-            .approve-button, .logout-button {
+            .dish-card-container {
+                min-height: 300px; /* Further reduce height for small screens */
+            }
+    
+            .approve-button,
+            .delete-button,
+            .logout-button {
                 font-size: 12px; /* Smaller buttons for very small screens */
             }
         }
+
+       
+        .dish-card {
+            text-decoration: none;  /* Remove underline */
+            color: inherit;         /* Keep text color as it is */
+            
+        }
+            
+        .dish-card:hover {
+            text-decoration: none;  /* Ensure no underline on hover */
+        }
+        
+        
     </style>
     
 </head>
 <body>
-    <form action="{% url 'logout' %}" method="post" style="text-align: center;">
-        {% csrf_token %}
-        <button type="submit" class="logout-button">Logout</button>
-    </form>
+   
     <main>
         <h1>Non-Approved Dishes</h1>
 
@@ -109,9 +178,18 @@
                     <a href="{% url 'dish_detail' dish.id %}" class="dish-card">
                         <img src="{{ dish.dish_image.url }}" alt="{{ dish.dish_name }}">
                         <h2>{{ dish.dish_name }}</h2>
-                        <p>Preparation Time: {{ dish.preparation_time }}</p>
-                        <p>Number of Servings: {{ dish.number_of_servings }}</p>
-                        <p>Cost: ${{ dish.cost }}</p>
+                        <p>
+                            <i class="fas fa-clock" style="color: #FFBE30;"></i> 
+                            Preparation Time: {{ dish.preparation_time }}
+                        </p>
+                        <p>
+                            <i class="fas fa-concierge-bell" style="color: #FFBE30;"></i> 
+                            Number of Servings: {{ dish.number_of_servings }}
+                        </p>
+                        <p>
+                            <i class="fas fa-money-bill-wave" style="color: #FFBE30;"></i> 
+                            Cost: {{ dish.cost }}
+                        </p>
                         
                     </a>
                    <!-- Approve Button -->
@@ -130,6 +208,13 @@
                 <p>No non-approved dishes found.</p>
             {% endfor %}
         </div>
+        <form action="{% url 'logout' %}" method="post" style="text-align: center;">
+            {% csrf_token %}
+            <button type="submit" class="logout-button">Logout</button>
+        </form>
+
+        
+
     </main>
 </body>
 </html>

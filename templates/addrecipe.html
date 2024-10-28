@@ -23,7 +23,7 @@
         h1.settings-title {
             font-size: 2.2em;
             text-align: center;
-            color: #4CAF50;
+            color: #45a049;
             margin-bottom: 30px; /* Increased margin for better spacing */
         }
         
@@ -41,7 +41,7 @@
         
         label {
             font-weight: 600;
-            color: #333;
+            color: #45a049;
             font-size: 1em; /* Slightly increased font size for better readability */
         }
         
@@ -75,26 +75,43 @@
             min-height: 120px; /* Slightly increased height for better appearance */
         }
         
+        
+       
+
+        /* Flexbox container for buttons */
         .button-container {
             display: flex;
-            justify-content: center;
+            justify-content: space-between; /* Add space between the buttons */
+            justify-content: center; /* Centers the button horizontally */
+            gap: 10px; /* Optional: Add some space between the buttons */
+            width: 100%; /* Ensure the buttons take full width */
         }
-        
-        button[type="submit"] {
-            background-color: #4CAF50;
-            color: white;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 1.2em;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.3s ease;
+
+        /* Adjust the width of the buttons equally */
+        .button-container button {
+            width: 48%; /* Make both buttons take up 48% of the container */
         }
-        
-        button[type="submit"]:hover {
-            background-color: #45a049;
-            transform: translateY(-2px); /* Adds a slight lift on hover for interactivity */
+
+        /* Ensure no overriding styles affect buttons differently */
+        button.btn-secondary, button[type="submit"] {
+            background-color: #66BB6A; /* Ensure consistent color for both buttons */
         }
+
+        button.btn-secondary:hover, button[type="submit"]:hover {
+            background-color: #45a049; /* Same hover effect for both buttons */
+        }
+
+        /* Ensure the Delete button has the same styling */
+        button.btn-danger {
+            background-color: #66BB6A; /* Make the delete button the same green */
+            padding: 8px 16px; /* Adjust padding to make it proportional */
+        }
+
+        /* Hover effect for the Delete button */
+        button.btn-danger:hover {
+            background-color: #45a049; /* Same hover effect for consistency */
+        }
+
         
         .checkbox-group,
         .radio-group {
@@ -132,6 +149,100 @@
             align-items: center;
             gap: 0.7em; /* Increased gap for better spacing between time inputs */
         }
+
+        .custom-alert {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000; /* Ensure it's above other content */
+        }
+        
+        .alert-content {
+            background-color: white;
+            border: 2px solid #45a049;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            width: 350px; /* Set a fixed width for the alert box */
+            max-width: 90%; /* Ensure it is responsive */
+    
+        }
+        
+        #alert-close-button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            margin-top: 5px;
+            width: 35%;
+            background-color: #66BB6A;
+            color: white;
+            cursor: pointer;
+        }
+
+        #alert-close-button:hover {
+            background-color: #45a049; /* Darker on hover */
+        }
+
+        /* Green border for the fieldset (entire form section) */
+        fieldset {
+            border: 2px solid #45a049; /* Green border for the entire fieldset */
+            border-radius: 8px; /* Rounded corners for the fieldset */
+            padding: 20px; /* Add padding inside the fieldset */
+            margin-bottom: 20px; /* Space below the fieldset */
+        }
+
+        /* Optional: Style for the legend (title of the fieldset) */
+        legend {
+            font-weight: bold;
+            color: #45a049; /* Optional: Green text for the legend */
+            padding: 0 10px; /* Add some padding to the legend text */
+        }
+
+        #ingredient_table th {
+        background-color: #4caf4f00; /* Green background for the headers */
+        color: #45a049; /* White text color for contrast */
+        padding: 0px; /* Add padding inside the header cells */
+        border: 2px solid #4caf4f00; /* Green border around the headers */
+        text-align: center; /* Left-align text inside the header */
+        font-weight: bold; /* Make header text bold */
+    }
+
+    /* Reduce padding for the table rows */
+    #ingredient_table td {
+        padding: 5px; /* Reduce padding inside the table cells */
+    }
+
+    /* Reduce the margin between input fields and table rows */
+    #ingredient_table input[type="text"] {
+        margin: 0; /* Remove margin to reduce space between the input fields and rows */
+        padding: 8px; /* Maintain enough padding inside the input fields for readability */
+        border-radius: 6px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+    /* Optional: Reduce overall height of table rows */
+    #ingredient_table tr {
+        margin-bottom: 5px; /* Reduce the space between rows */
+    }
+
+    /* Optional: Style for the delete button */
+    #ingredient_table td:nth-child(3) button {
+        width: 80px; /* Control the width of the delete button */
+        padding: 8px 12px;
+        margin: 0; /* Remove unnecessary margins */
+    }
+
+
+    
+        
     </style>
 </head>
 <body>
@@ -156,83 +267,144 @@
         <form id="recipe-form" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             
-            <!-- Manually render the preparation time field with labels -->
-            
-            
-            <!-- Render other fields normally -->
-            <div class="form-group">
-                {{ form.dish_name.label_tag }} {{ form.dish_name }}
-            </div>
-
-            <div class="form-group">
-                <label for="id_ingredient_table">Ingredients</label>
-                <table id="ingredient_table" class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Ingredient</th>
-                            <th>Alternatives</th>
-                            <th></th> <!-- Empty header for delete button column -->
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Example of an initial row, you can add rows dynamically -->
-                        <tr>
-                            <td><input type="text" name="ingredient" class="form-control" placeholder="Ingredient"></td>
-                            <td><input type="text" name="alternatives" class="form-control" placeholder="Alternatives (comma-separated)"></td>
-                            <td><button type="button" class="btn btn-danger btn-sm" onclick="deleteRow(this)">Delete</button></td>
-                        </tr>
-                    </tbody>
-                </table>
-                <button type="button" class="btn btn-secondary" onclick="addRow()">Add Row</button>
-            </div>
-        
-            <!-- Hidden field to store JSON data -->
-            <input type="hidden" id="id_ingredient_list" name="ingredient_list">
-        
-            
-
-            <div class="form-group">
-                <label for="id_preparation_time_0">Preparation time:</label>
-                <div class="time-input-container">
-                    {{ form.preparation_time.subwidgets.0 }} 
-                    {{ form.preparation_time.subwidgets.1 }} 
-                    {{ form.preparation_time.subwidgets.2 }}
+            <!-- Container for the whole form -->
+            <div class="form-container">
+    
+                <!-- Slide 1: Basic Information -->
+                <div class="slide" id="slide-1">
+                    <fieldset>
+                        <legend>Basic Information</legend>
+                        <div class="form-group">
+                            {{ form.dish_name.label_tag }} {{ form.dish_name }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.number_of_servings.label_tag }} {{ form.number_of_servings }}
+                        </div>
+                    </fieldset>
+                    <div class="button-container">
+                        <button type="button" class="btn btn-secondary" onclick="nextSlide(2)">Next</button>
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                {{ form.number_of_servings.label_tag }} {{ form.number_of_servings }}
-            </div>
-            <div class="form-group">
-                {{ form.procedure.label_tag }} {{ form.procedure }}
-            </div>
-            <div class="form-group">
-                {{ form.nutritional_guide.label_tag }} {{ form.nutritional_guide }}
-            </div>
-            <div class="form-group">
-                {{ form.skills_needed.label_tag }} {{ form.skills_needed }}
-            </div>
-            <div class="form-group">
-                {{ form.age_range_that_can_eat.label_tag }} {{ form.age_range_that_can_eat }}
-            </div>
-            <div class="form-group">
-                {{ form.cost.label_tag }} {{ form.cost }}
-            </div>
-            <div class="form-group">
-                {{ form.dish_image.label_tag }} {{ form.dish_image }}
-            </div>
-            <div class="form-group">
-                {{ form.meal_type.label_tag }} {{ form.meal_type }}
-            </div>
-            
-            <div class="button-container">
-                <button type="submit">Add Recipe</button>
+    
+                <!-- Slide 2: Ingredients -->
+                <div class="slide" id="slide-2" style="display: none;">
+                    <fieldset>
+                        <legend>Ingredients</legend>
+                        <div class="form-group">
+                            <label for="id_ingredient_table"></label>
+                            <table id="ingredient_table" class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th>Ingredient</th>
+                                        <th>Alternatives</th>
+                                        <th></th> <!-- Empty header for delete button column -->
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- Example of an initial row, you can add rows dynamically -->
+                                    <tr>
+                                        <td><input type="text" name="ingredient" class="form-control" placeholder="Ingredient"></td>
+                                        <td><input type="text" name="alternatives" class="form-control" placeholder="Alternatives (comma-separated)"></td>
+                                        <td><button type="button" class="btn btn-danger btn-sm" onclick="deleteRow(this)">Delete</button></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <button type="button" class="btn btn-secondary" onclick="addRow()">Add Row</button>
+                        </div>
+                        <input type="hidden" id="id_ingredient_list" name="ingredient_list">
+                    </fieldset>
+                    <div class="button-container">
+                        <button type="button" class="btn btn-secondary" onclick="prevSlide(1)">Back</button>
+                        <button type="button" class="btn btn-secondary" onclick="nextSlide(3)">Next</button>
+                    </div>
+                </div>
+    
+                <!-- Slide 3: Preparation Time -->
+                <div class="slide" id="slide-3" style="display: none;">
+                    <fieldset>
+                        <legend>Preparation Time</legend>
+                        <div class="form-group">
+                            <label for="id_preparation_time_0"></label>
+                            <div class="time-input-container">
+                                {{ form.preparation_time.subwidgets.0 }} 
+                                {{ form.preparation_time.subwidgets.1 }} 
+                                {{ form.preparation_time.subwidgets.2 }}
+                            </div>
+                        </div>
+                    </fieldset>
+                    <div class="button-container">
+                        <button type="button" class="btn btn-secondary" onclick="prevSlide(2)">Back</button>
+                        <button type="button" class="btn btn-secondary" onclick="nextSlide(4)">Next</button>
+                    </div>
+                </div>
+    
+                <!-- Slide 4: Procedure and Additional Info -->
+                <div class="slide" id="slide-4" style="display: none;">
+                    <fieldset>
+                        <legend>Procedure and Additional Information</legend>
+                        <div class="form-group">
+                            {{ form.procedure.label_tag }} {{ form.procedure }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.nutritional_guide.label_tag }} {{ form.nutritional_guide }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.skills_needed.label_tag }} {{ form.skills_needed }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.age_range_that_can_eat.label_tag }} {{ form.age_range_that_can_eat }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.cost.label_tag }} {{ form.cost }}
+                        </div>
+                    </fieldset>
+                    <div class="button-container">
+                        <button type="button" class="btn btn-secondary" onclick="prevSlide(3)">Back</button>
+                        <button type="button" class="btn btn-secondary" onclick="nextSlide(5)">Next</button>
+                    </div>
+                </div>
+    
+                <!-- Slide 5: Dish Image and Meal Type -->
+                <div class="slide" id="slide-5" style="display: none;">
+                    <fieldset>
+                        <legend>Image and Meal Type</legend>
+                        <div class="form-group">
+                            {{ form.dish_image.label_tag }} {{ form.dish_image }}
+                        </div>
+                        <div class="form-group">
+                            {{ form.meal_type.label_tag }} {{ form.meal_type }}
+                        </div>
+                    </fieldset>
+                    <div class="button-container">
+                        <button type="button" class="btn btn-secondary" onclick="prevSlide(4)">Back</button>
+                        <button type="submit" class="btn btn-primary">Add Recipe</button>
+                    </div>
+                </div>
+    
             </div>
         </form>
     
+        <!-- Custom alert message -->
+        <div id="custom-alert" class="custom-alert" style="display:none;">
+            <div class="alert-content">
+                <p id="alert-message"></p>
+                <button id="alert-close-button">Close</button>
+            </div>
+        </div>
+    
+    
+        
+    
         <script>
+            let formEvent = null; // To store the form submission event
+
             document.getElementById('recipe-form').addEventListener('submit', function(event) {
                 let form = event.target;
                 let isValid = true;
+                formEvent = event; // Store the event to use later
+
+                // Prevent form submission initially
+                event.preventDefault();
         
                 // Check if all required fields are filled except preparation time
                 form.querySelectorAll('input, textarea, select').forEach(function(input) {
@@ -256,7 +428,7 @@
         
                 if (!isValid) {
                     event.preventDefault();
-                    alert('Answer all forms');
+                    showAlert('Answer all forms');
                     return;
                 }
         
@@ -265,7 +437,7 @@
                 if (costInput) {
                     let costValue = parseInt(costInput.value.trim());
                     if (isNaN(costValue) || costValue < 100 || costValue > 1000) {
-                        alert('Please enter a valid cost between 100 and 1000.');
+                        showAlert('Please enter a valid cost between 100 and 1000.');
                         event.preventDefault();
                         return;
                     }
@@ -283,13 +455,13 @@
                 });
         
                 if (allZero) {
-                    alert('Please enter a valid preparation time. All fields cannot be "00".');
+                    showAlert('Please enter a valid preparation time. All fields cannot be "00".');
                     event.preventDefault();
                     return;
                 }
         
                 // Show success message if all validations pass
-                alert('Thank you for adding your recipe! Please wait till your recipe is approved and will be available for everyone!');
+                showAlert('Thank you for adding your recipe! Please wait till your recipe is approved and will be available for everyone!');
             });
 
             function addRow() {
@@ -392,6 +564,38 @@
             var navLinks = document.querySelector('.nav-links');
             navLinks.classList.toggle('active');
         }
+
+        // Function to display custom alerts
+function showAlert(message) {
+    const alertBox = document.getElementById('custom-alert');
+    const alertMessage = document.getElementById('alert-message');
+    alertMessage.textContent = message;
+    alertBox.style.display = 'flex'; // Show the alert box
+}
+
+document.getElementById('alert-close-button').addEventListener('click', function() {
+    const alertBox = document.getElementById('custom-alert');
+    alertBox.style.display = 'none'; // Hide the alert box
+    
+    // Submit the form after the alert is closed
+    if (formEvent) {
+        formEvent.target.submit(); // Manually submit the form
+    }
+});
+
+ // Function to show the next slide
+ function nextSlide(slideNumber) {
+    var currentSlide = document.querySelector('.slide:not([style*="display: none"])');
+    currentSlide.style.display = 'none';
+    document.getElementById('slide-' + slideNumber).style.display = 'block';
+}
+
+// Function to show the previous slide
+function prevSlide(slideNumber) {
+    var currentSlide = document.querySelector('.slide:not([style*="display: none"])');
+    currentSlide.style.display = 'none';
+    document.getElementById('slide-' + slideNumber).style.display = 'block';
+}
         </script>
 </body>
 </html>

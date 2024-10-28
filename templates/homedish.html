@@ -10,25 +10,51 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
+    
     <style>
-       
-        
-        
+         
        main {
     padding: 20px;
 }
 
 .back-button {
-    background-color: #FFCC00;
+    background-color: #66BB6A;
     border: none;
     color: white;
     padding: 10px 20px;
     border-radius: 8px;
     cursor: pointer;
     margin-bottom: 20px;
-    margin-top: 60px; /* Increase this value to lower the button more */
+    margin-top: 80px;
     position: relative;
-    z-index: 1; /* Ensure it stays above other elements */
+    z-index: 1;
+    transition: background-color 0.3s, transform 0.3s; 
+}
+
+.add-button {
+    background-color: #66BB6A;
+    border: none;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+    transition: background-color 0.3s, transform 0.3s; 
+}
+
+.back-button:hover,
+.add-button:hover,
+.print-button:hover {
+    background-color: #FFBE30; 
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
+.back-button:active,
+.add-button:active,
+.print-button:active {
+    transform: scale(0.95); /* Slightly shrink the button when pressed */
 }
 
 .dish-details {
@@ -46,32 +72,46 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
+    gap: 20px; /* Increased gap for better spacing between rows */
     font-size: 16px;
     color: #555;
 }
 
 .dish-details img {
-    width: 30%; /* Adjust to the desired width (e.g., 300px) */
-    height: auto; /* Maintains aspect ratio */
-    max-width: 350px; /* Optional: Limit the maximum width */
+    width: 30%;
+    height: auto;
+    max-width: 350px;
+    background-color: #ffffff;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 15px; /* Padding inside the card */
+    display: flex;
 }
-
 .info-row {
     display: flex;
     gap: 20px;
+    justify-content: space-between; /* Ensures items are spaced evenly across the row */
+    align-items: center; /* Aligns items vertically in the center */
 }
 
 .info-item {
     display: flex;
     align-items: center;
     gap: 8px;
+    font-size: 16px; /* Font size for text next to the icons */
+    color: #555; /* Text color */
 }
 
 .info-item span.icon {
-    color: #FFC107; /* Adjust icon color as needed */
-    font-size: 18px;
+    color: #FFBE30; /* Yellow color for the icons */
+    font-size: 20px; /* Larger font size for the icons */
 }
+
+.info-item .icon i {
+    font-size: 20px; /* Ensures Font Awesome icons are sized correctly */
+    color: #FFBE30; /* Matches the icon color with the existing yellow theme */
+}
+
 
 .panel {
     background-color: #ffffff00;
@@ -86,7 +126,7 @@
     margin-bottom: 0; /* No space below the tabs */
     padding-bottom: 0; /* No padding below the tabs */
     position: relative;
-    background-color: #E4F4E4; /* Background color for the tabs container */
+    background-color: #e4f4e400; /* Background color for the tabs container */
     border-radius: 10px 10px 0 0; /* Rounded top corners for the container */
     overflow: hidden; /* Ensures tabs stay within the rounded corners */
 }
@@ -116,7 +156,7 @@
 
 .tab.active {
     background-color: #FFFFFF; /* Background color for the active tab */
-    color: #01A407; /* Text color for active tab */
+    color: #66BB6A; /* Text color for active tab */
     border-top: 3px solid #4caf4f00; /* Top border for the active tab */
     border-bottom: 0; /* Remove bottom border */
     z-index: 2; /* Ensures active tab sits on top of others */
@@ -124,14 +164,22 @@
 
 .tab:hover {
     background-color: #45a049; /* Slightly darker background on hover for inactive tabs */
+    color: #FFFFFF; 
 }
 
 .tab-content {
     display: none; /* Hidden by default */
+    text-align: center; /* Center align text within the tab content */
     background-color: #FFFFFF;
     border-radius: 0 0 10px 10px; /* Rounded bottom corners for content */
     padding: 20px;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Shadow for the content */
+}
+
+.tab-content h2 {
+    margin-bottom: 20px; /* Add space below the heading */
+    font-size: 24px; /* Optional: adjust font size */
+    color: #66BB6A; /* Optional: adjust color */
 }
 
 .tab-content.active {
@@ -200,15 +248,15 @@
 }
 
 .ingredient-item:hover {
-    background-color: #f1f1f1; /* Lighten background on hover */
+    background-color: #f1f1f17d; /* Lighten background on hover */
 }
 
 .flash-card {
     padding: 20px;
-    border: 1px solid #ccc;
+    border: 1px solid #45a049;
     border-radius: 8px;
     margin-bottom: 20px;
-    background-color: #f9f9f9;
+    background-color: #fff;
     font-size: 18px;
     color: #555;
     text-align: center;
@@ -221,25 +269,40 @@
 }
 
 .progress-bar {
-    width: 100%;
-    height: 10px;
-    background: #EEE;
-    border-radius: 5px;
+    width: 100%; /* Full width of the parent container */
+    height: 25px; /* Adjust height for visibility */
+    background: transparent; /* Transparent background */
+    border: 2px solid #45a049; /* Green border for the bar */
+    border-radius: 15px; /* Rounded edges for the overall bar */
     margin-bottom: 10px;
-    position: relative;
+    position: relative; /* Positioning for inner progress */
+    overflow: hidden; /* Prevent overflow */
 }
 
 .progress-bar .progress {
-    height: 100%;
-    background: #FFCC00;
-    border-radius: 5px;
-    position: absolute;
+    height: 100%; /* Full height of the progress bar */
+    background: #FFBE30; /* Fill color for the progress */
+    position: absolute; /* Absolute positioning to fill the container */
     top: 0;
     left: 0;
+    transition: width 0.3s ease; /* Smooth transition for width changes */
+    border-radius: 15px 0 0 15px; /* Rounded edges on the left side only */
+}
+
+/* Add this to create rounded ends on the right */
+.progress-bar .progress::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    right: 0; /* Align to the right */
+    width: 15px; /* Adjust width for rounded cap */
+    height: 100%; /* Full height */
+    background: #FFBE30; /* Same fill color */
+    border-radius: 0 15px 15px 0; /* Round the right edges */
 }
 
 button {
-    background-color: #4CAF50;
+    background-color: #66BB6A;
     border: none;
     color: white;
     padding: 10px 20px;
@@ -295,16 +358,43 @@ button:disabled {
     background-color: #fefefe;
     margin: 5% auto;
     padding: 20px;
-    border: 1px solid #888;
+    border: 2px solid #66BB6A; /* Green border */
     width: 80%;
     border-radius: 8px;
 }
 
+.button-confirm {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+
+#confirm-yes, #confirm-no {
+    background-color: #66BB6A; /* Green background */
+    border: none;
+    color: white; /* White text */
+    padding: 10px 20px; /* Padding inside the button */
+    border-radius: 8px; /* Rounded corners */
+    cursor: pointer; /* Pointer cursor on hover */
+    font-size: 16px; /* Font size */
+    margin: 10px; /* Margin around the button */
+    transition: background-color 0.3s, transform 0.3s;
+}
+
+#confirm-yes:hover, #confirm-no:hover {
+    background-color: #45a049; /* Darker green on hover for Yes button */
+    transform: scale(1.05); /* Slightly enlarge the button on hover */
+}
+
 .close {
-    color: #aaa;
-    float: right;
+    position: absolute;
+    top: -5px; /* Adjusts distance from the top */
+    right: 15px; /* Adjusts distance from the right */
+    color: #45a049;
     font-size: 28px;
     font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
 }
 
 .close:hover,
@@ -315,7 +405,7 @@ button:disabled {
 }
 
 .category-buttons button {
-    background-color: #4CAF50;
+    background-color: #66BB6A;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -323,6 +413,61 @@ button:disabled {
     margin: 5px;
     cursor: pointer;
 }
+
+/* Style for the message modal content */
+#messageContent {
+    text-align: center;
+    font-size: 18px;
+}
+.modal-content {
+    padding-top: 30px; /* Adds more space at the top of the modal */
+}
+
+#messageModal .modal-content {
+    text-align: center; /* Center content for this modal */
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid #66BB6A; /* Green border */
+}
+
+
+
+/* Style for the select dropdown */
+select.ingredient-alternative {
+    background-color: #66BB6A; /* Light green background */
+    border: 2px solid #66BB6A; /* Green border */
+    color: white; /* Text color */
+    padding: 1px; /* Increase padding for thickness */
+    font-size: 16px; /* Adjust font size */
+    font-weight: bold;
+    text-align: center; /* Center the text */
+    border-radius: 8px; /* Rounded corners */
+    width: 30%; /* Full width */
+    box-sizing: border-box; /* Ensure padding is included in the width */
+    transition: background-color 0.3s ease, border-color 0.3s ease; /* Smooth transition for hover */
+}
+
+/* Change background and border on focus (when clicked) */
+select.ingredient-alternative:focus {
+    background-color: #66BB6A; /* Darker green background when active */
+    border-color: #66BB6A; /* Darker green border when active */
+    outline: none; /* Remove the default outline */
+}
+
+/* Optional: Hover effect */
+select.ingredient-alternative:hover {
+    background-color: #45a049; 
+}
+
+/* Style for the options inside the dropdown */
+select.ingredient-alternative option {
+    background-color: #66BB6A; /* White background for the dropdown options */
+    color: white; 
+    padding: 10px; /* Padding for options */
+    font-weight: normal; /* Regular font weight for options */
+}
+
+
 
     </style>
 </head>
@@ -345,6 +490,8 @@ button:disabled {
     </header>
     <main>
         <button class="back-button" onclick="window.history.back()">Back</button>
+        <button class="print-button" type="button" onclick="printRecipe()">Print Recipe</button>
+
         <div class="dish-details">
             <img src="{{ dish.dish_image.url }}" alt="{{ dish.dish_name }}">
             <h1>{{ dish.dish_name }}</h1>
@@ -352,21 +499,21 @@ button:disabled {
                 <div class="dish-info">
                     <div class="info-row">
                         <div class="info-item">
-                            <span class="icon">⏰</span>{{ dish.preparation_time }}
+                            <span class="icon"><i class="fas fa-clock"></i></span> Time: {{ dish.preparation_time }}
                         </div>
                         <div class="info-item">
-                            <span class="icon">🍴</span>{{ dish.number_of_servings }}
+                            <span class="icon"><i class="fas fa-concierge-bell"></i></span> Servings: {{ dish.number_of_servings }}
                         </div>
                         <div class="info-item">
-                            <span class="icon">🛒</span>{{ dish.cost }}
+                            <span class="icon"><i class="fas fa-peso-sign"></i></span> Cost: {{ dish.cost }}
                         </div>
                     </div>
                     <div class="info-row">
                         <div class="info-item">
-                            <span class="icon">📚</span>{{ dish.skills_needed }}
+                            <span class="icon"><i class="fas fa-tools"></i></span> Skills: {{ dish.skills_needed }}
                         </div>
                         <div class="info-item">
-                            <span class="icon">👶👦👨</span>{{ dish.age_range_that_can_eat|join:", " }}
+                            <span class="icon"><i class="fas fa-users"></i></span> {{ dish.age_range_that_can_eat|join:", " }}
                         </div>
                     </div>
                 </div>
@@ -467,10 +614,138 @@ button:disabled {
         </div>
     </div>
 
+    <!-- Message Modal -->
+<div id="messageModal" class="modal">
+    <div class="modal-content">
+        <p id="messageContent"></p>
+        <span class="close" onclick="closeMessageModal()">&times;</span>
+    </div>
+</div>
+
+<div id="confirm-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" id="close-modal">&times;</span>
+        <p>Oops! Seems like you don't have all the ingredients. Do you still want to continue?</p>
+        <div class="button-confirm">
+            <button id="confirm-yes">Yes</button>
+            <button id="confirm-no">No</button>
+        </div>
+    </div>
+</div>
+
+
     <script>
         let currentStep = 0;
         const steps = document.querySelectorAll('.flash-card');
         const progressBar = document.getElementById('progress-bar');
+
+        function printRecipe() {
+    // Create a new window
+    const printWindow = window.open('', '', 'height=600,width=800');
+
+    // Prepare the content for printing
+    let content = `
+        <html>
+        <head>
+            <title>Print Recipe</title>
+            <link rel="stylesheet" type="text/css" href="{% static 'css/style.css' %}"> 
+            <style>
+                @media print {
+                    .nav-menu, .burger-menu, .print-button, .add-button {
+                        display: none; /* Hide buttons */
+                    }
+                    body {
+                        font-family: Arial, sans-serif;
+                    }
+                }
+            </style>
+        </head>
+        <body>
+    `;
+
+    // Check for the dish name
+    const dishName = document.querySelector('h1');
+    if (dishName) {
+        content += `<h1>${dishName.innerText}</h1>`;
+    } else {
+        console.error("Dish name not found.");
+        return; // Exit if the dish name is not found
+    }
+
+    const dishImage = document.querySelector('.dish-details img'); // Adjust selector for specificity
+if (dishImage) {
+    content += `<img src="${dishImage.src}" alt="${dishName.innerText}" style="max-width: 100%;">`;
+} else {
+    console.error("Dish image not found.");
+    return; // Exit if the dish image is not found
+}
+
+
+    // Gather other information safely
+    const infoItems = document.querySelectorAll('.info-item');
+    content += '<div>';
+    if (infoItems.length >= 5) {
+        content += `
+            <strong>Preparation Time:</strong> ${infoItems[0]?.innerText || 'N/A'}<br>
+            <strong>Servings:</strong> ${infoItems[1]?.innerText || 'N/A'}<br>
+            <strong>Cost:</strong> ${infoItems[2]?.innerText || 'N/A'}<br>
+            <strong>Skills Needed:</strong> ${infoItems[3]?.innerText || 'N/A'}<br>
+            <strong>Age Range:</strong> ${infoItems[4]?.innerText || 'N/A'}<br>
+        `;
+    } else {
+        console.error("Not enough info items found.");
+    }
+    content += '</div><h2>Ingredients</h2><ul>';
+
+    // Gather ingredients and alternatives
+    const ingredients = document.querySelectorAll('.ingredient-item');
+    ingredients.forEach(item => {
+        const ingredientName = item.querySelector('.ingredient-name')?.innerText || 'Unknown Ingredient';
+        content += `<li><input type="checkbox" disabled> ${ingredientName}`; // Add checkbox
+        const alternatives = item.querySelector('.ingredient-alternative');
+        if (alternatives && alternatives.options.length > 1) {
+            const altList = Array.from(alternatives.options).map(opt => opt.value).join(", ");
+            content += ` (Alternatives: ${altList})`;
+        }
+        content += `</li>`;
+    });
+
+    content += `</ul><h2>Cooking Steps</h2><ol>`;
+
+    // Gather steps and number them
+    const steps = document.querySelectorAll('.flash-card');
+    steps.forEach((step, index) => {
+        content += `<li>${index + 1}. ${step.innerText}</li>`;
+    });
+
+    content += `</ol></body></html>`;
+
+    // Debugging: log the content before printing
+    console.log("Printing content: ", content);
+
+    // Write the content to the new window
+    printWindow.document.write(content);
+
+    // Close the document and trigger the print dialog
+    printWindow.document.close();
+
+    // Ensure the content is loaded before printing
+    printWindow.onload = function() {
+        console.log("Window loaded, triggering print.");
+        printWindow.print();
+        printWindow.close(); // Close the window after printing
+    };
+
+    // Debugging: check if printWindow is opened
+    if (!printWindow) {
+        console.error("Failed to open print window.");
+    }
+}
+
+
+
+
+
         
         // Function to open the modal and set hidden input values
         function openModal(dishId) {
@@ -487,19 +762,53 @@ button:disabled {
         // Function to set the category and submit the form
         async function setCategory(category) {
             const dishId = document.getElementById('dish_id').value;
-    
+        
             // Make an AJAX request to check if the dish is already saved
-            const response = await fetch(`/check_if_saved/${dishId}/`);
+            const response = await fetch(`/check_if_saved/${dishId}/`); // Ensure proper URL structure
             const data = await response.json();
-    
+        
             if (data.isAlreadySaved) {
-                alert("OOPS! Recipe already in the saved page");
+                showMessageModal("Oops! Recipe is already saved.", "error");
                 return;
             }
+        
+             // Show success message
+    // Set the category value if it's not already saved
+    document.getElementById('category').value = category;
+
+    // Show success message
+    showMessageModal("Recipe has been successfully saved!", "success");
+
+    // We will not submit the form here; it will be submitted when the message modal is closed.
+
     
-            document.getElementById('category').value = category;
-            document.getElementById('categoryForm').submit();
-            alert("Recipe already on saved page, thanks for choosing!");
+}
+
+function showMessageModal(message, type) {
+            const messageModal = document.getElementById('messageModal');
+            const messageContent = document.getElementById('messageContent');
+        
+            if (type === 'error') {
+                messageContent.style.color = 'red';
+            } else if (type === 'success') {
+                messageContent.style.color = 'green';
+            }
+        
+            messageContent.textContent = message;
+            messageModal.style.display = 'block';
+        }
+        
+        function closeMessageModal() {
+            const messageModal = document.getElementById('messageModal');
+            messageModal.style.display = 'none';
+        
+            // Check if the category value is set before submitting
+            const categoryValue = document.getElementById('category').value;
+        
+            if (categoryValue) {
+                // Only submit the form if there is a category value
+                document.getElementById('categoryForm').submit();
+            }
         }
         
         // Function to get query parameters
@@ -509,47 +818,74 @@ button:disabled {
         }
         
         // Event listeners for tab switching
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', function() {
-                const selectedTab = this.getAttribute('data-tab');
-                const ingredientsTab = document.querySelector('.tab-content.ingredients');
-                const directionsTab = document.querySelector('.tab-content.directions');
-                const nutritionalTab = document.querySelector('.tab-content.nutritional');
-    
-                if (selectedTab === 'directions') {
-                    const allChecked = Array.from(document.querySelectorAll('.ingredient-checkbox')).every(cb => cb.checked);
-                    if (!allChecked) {
-                        if (confirm('Oops! Seems like you don\'t have all the ingredients. Do you still want to continue?')) {
-                            showTab(directionsTab);
-                        } else {
-                            showTab(ingredientsTab);
-                        }
-                    } else {
-                        showTab(directionsTab);
-                    }
-                } else if (selectedTab === 'ingredients') {
-                    showTab(ingredientsTab);
-                } else if (selectedTab === 'nutritional') {
-                    showTab(nutritionalTab);
-                }
-            });
-        });
-        
-        // Function to show the selected tab content
-        function showTab(tabContent) {
-            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
-            tabContent.classList.add('active');
-        
-            document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
-            const activeTab = document.querySelector(`.tab[data-tab="${tabContent.classList[1]}"]`);
-            activeTab.classList.add('active');
-        
-            // Initialize steps for Directions tab
-            if (tabContent.classList.contains('directions')) {
-                currentStep = 0; // Set the current step to 0 to show the first step
-                updateSteps();
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        const selectedTab = this.getAttribute('data-tab');
+        const ingredientsTab = document.querySelector('.tab-content.ingredients');
+        const directionsTab = document.querySelector('.tab-content.directions');
+        const nutritionalTab = document.querySelector('.tab-content.nutritional');
+
+        if (selectedTab === 'directions') {
+            const allChecked = Array.from(document.querySelectorAll('.ingredient-checkbox')).every(cb => cb.checked);
+            if (!allChecked) {
+                openConfirmModal(directionsTab, ingredientsTab);
+            } else {
+                showTab(directionsTab);
             }
+        } else if (selectedTab === 'ingredients') {
+            showTab(ingredientsTab);
+        } else if (selectedTab === 'nutritional') {
+            showTab(nutritionalTab);
         }
+    });
+});
+
+// Function to open the confirm modal
+function openConfirmModal(directionsTab, ingredientsTab) {
+    const modal = document.getElementById('confirm-modal');
+    modal.style.display = "block";
+
+    // Handle yes button
+    document.getElementById('confirm-yes').onclick = function() {
+        showTab(directionsTab);
+        modal.style.display = "none"; // Close the modal
+    }
+
+    // Handle no button
+    document.getElementById('confirm-no').onclick = function() {
+        showTab(ingredientsTab);
+        modal.style.display = "none"; // Close the modal
+    }
+
+    // Close modal when clicking on <span> (x)
+    document.getElementById('close-modal').onclick = function() {
+        modal.style.display = "none";
+    }
+
+    // Close modal when clicking anywhere outside of the modal
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.style.display = "none";
+        }
+    }
+}
+
+// Function to show the selected tab content
+function showTab(tabContent) {
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+    tabContent.classList.add('active');
+
+    document.querySelectorAll('.tab').forEach(tab => tab.classList.remove('active'));
+    const activeTab = document.querySelector(`.tab[data-tab="${tabContent.classList[1]}"]`);
+    activeTab.classList.add('active');
+
+    // Initialize steps for Directions tab
+    if (tabContent.classList.contains('directions')) {
+        currentStep = 0; // Set the current step to 0 to show the first step
+        updateSteps();
+    }
+}
+
         
         // Function to update steps visibility
         function updateSteps() {

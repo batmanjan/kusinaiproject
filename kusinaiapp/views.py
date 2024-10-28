@@ -20,6 +20,8 @@ from django.core.paginator import Paginator
 from .forms import DishForm
 from django.utils import timezone
 import pytz
+from .recommendation import RecommendationSystem
+
 
 
 from twilio.rest import Client
@@ -442,40 +444,61 @@ def home(request):
     max_budget = request.GET.get('max_budget', '')
     meal_type_filter = request.GET.get('meal_type', '')
 
+    print(f"Received filters - Min Budget: {min_budget}, Max Budget: {max_budget}, Meal Type: {meal_type_filter}")
+
     # Convert meal_type_filter from comma-separated string to a list
     meal_type_filters = meal_type_filter.split(',') if meal_type_filter else []
+    print(f"Meal Type Filters: {meal_type_filters}")
 
-    # Start with all approved dishes
-    dishes = Dish.objects.filter(approved=True)
+    # Get recommendations
+    appuser_id = request.user.appuser.id
+    recommender = RecommendationSystem(appuser_id)
+    recommendations = recommender.get_recommendations()  # Existing logic for recommendations
+    
+    # Debugging print statements for recommendations
+    print("Recommendations:", [dish.dish_name for dish in recommendations])  # Addition from Code 1
+    print(f"Number of recommendations: {len(recommendations)}")  # Addition from Code 1
+
+    # Start with recommended dishes that are approved
+    dishes = Dish.objects.filter(approved=True, id__in=[dish.id for dish in recommendations]).order_by('dish_name')
+    print(f"Initial approved and recommended dishes count: {dishes.count()}")
 
     # Handle budget filtering
     if min_budget and max_budget:
         try:
             min_budget = int(min_budget)
             max_budget = int(max_budget)
+            print(f"Parsed Min Budget: {min_budget}, Max Budget: {max_budget}")
             if min_budget <= max_budget and 100 <= min_budget <= 1000 and 100 <= max_budget <= 1000:
                 dishes = dishes.filter(cost__range=(min_budget, max_budget))
+                print(f"Filtered dishes count after budget: {dishes.count()}")
+            else:
+                print("Budget range is invalid.")
         except ValueError:
-            dishes = Dish.objects.filter(approved=True)
+            print("ValueError encountered during budget filtering. Resetting to initial dishes.")
+            dishes = Dish.objects.filter(approved=True, id__in=[dish.id for dish in recommendations]).order_by('dish_name')
 
     # Apply meal type filters if specified
     if meal_type_filters:
         dishes = dishes.filter(meal_type__name__in=meal_type_filters).distinct()
+        print(f"Filtered dishes count after meal type filter: {dishes.count()}")
 
     # Paginate dishes
     paginator = Paginator(dishes, 9)  # Show 9 dishes per page
     page_number = request.GET.get('page')
     page_obj = paginator.get_page(page_number)
+    print(f"Paginated dishes: Showing page {page_number} with {len(page_obj)} items.")
 
     # Get top 10 dishes based on average rating from CookedDish
     community_picks = (Dish.objects
                        .filter(approved=True)
                        .annotate(avg_rating=Avg('cookeddish__rating'))
                        .order_by('-avg_rating')[:10])
+    
+    print(f"Top community picks count: {community_picks.count()}")
 
-    # Split community picks into two sets of 5
-    community_picks_first_half = community_picks[:5]
-    community_picks_second_half = community_picks[5:]
+    # Create slides containing 2 dishes each
+    slides = [community_picks[i:i + 2] for i in range(0, len(community_picks), 2)]
 
     context = {
         'dishes': page_obj,
@@ -484,11 +507,12 @@ def home(request):
         'selected_meal_type': meal_type_filter,  # Pass the string of selected meal types
         'page_obj': page_obj,
         'meal_types': Dish.objects.values_list('meal_type__name', flat=True).distinct(),  # Fetch distinct meal types
-        'community_picks_first_half': community_picks_first_half,
-        'community_picks_second_half': community_picks_second_half,  # Pass the split community picks to the template
+        'slides': slides,  # Pass the slides to the template
+        'recommendations': recommendations,
     }
 
     return render(request, 'home.html', context)
+
 
 
 
@@ -799,6 +823,7 @@ def cooked(request):
             try:
                 cooked_dish = CookedDish.objects.get(id=dish_id)
                 cooked_dish.rating = rating
+                cooked_dish.feedback_time = timezone.now()  # Set the feedback time
                 cooked_dish.save()
                 return JsonResponse({'success': True})
             except CookedDish.DoesNotExist:
@@ -809,7 +834,15 @@ def cooked(request):
     except AppUser.DoesNotExist:
         return HttpResponse('AppUser not found', status=404)
 
+    # Fetch the cooked dishes for the current user
     cooked_dishes = CookedDish.objects.filter(user=app_user)
+    
+    # Ensure 'cooked' field is automatically set to True for each dish
+    for dish in cooked_dishes:
+        if not dish.cooked:  # Only update if not already set to True
+            dish.cooked = True
+            dish.save()
+
     ratings = range(1, 6)
 
     context = {
@@ -817,6 +850,8 @@ def cooked(request):
         'ratings': ratings
     }
     return render(request, 'cooked.html', context)
+
+
 
 
 

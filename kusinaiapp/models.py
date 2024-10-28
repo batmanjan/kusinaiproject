@@ -21,10 +21,21 @@ class AppUser(models.Model):
         return self.username
 
 class MealType(models.Model):
-    name = models.CharField(max_length=50)
+    MEAL_CHOICES = [
+        ('Soup and Pasta/Noodles', 'Soup and Pasta/Noodles'),
+        ('Appetizer', 'Appetizer'),
+        ('Dessert', 'Dessert'),
+        ('Vegetable Recipe', 'Vegetable Recipe'),
+        ('Meat Recipe', 'Meat Recipe'),
+        ('Seafood Recipe', 'Seafood Recipe'),
+    ]
+    
+    name = models.CharField(max_length=50, choices=MEAL_CHOICES)
 
     def __str__(self):
         return self.name
+
+
 
 class Dish(models.Model):
     id = models.AutoField(primary_key=True)
@@ -59,9 +70,12 @@ class CookedDish(models.Model):
     user = models.ForeignKey(AppUser, on_delete=models.CASCADE)
     dish = models.ForeignKey(Dish, on_delete=models.CASCADE)
     rating = models.IntegerField(null=True, blank=True)
+    cooked = models.BooleanField(default=False)  # Add this line
+    feedback_time = models.DateTimeField(null=True)
 
     class Meta:
         unique_together = ('user', 'dish')
+
         
 class ChefAccount(models.Model):
     username = models.CharField(max_length=50, unique=True)

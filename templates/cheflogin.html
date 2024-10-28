@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chef Login</title>
+    <title>Moderator Login</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
@@ -21,6 +21,66 @@
         animation: fadeIn 1s ease-in; /* Fade-in animation */
         background-color: #D8EFC8; /* Set the background color */
     }
+
+    .login-button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    background-color: #66BB6A; /* Green background */
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .login-button:hover {
+        background-color: #45a049; /* Darker green on hover */
+    }
+
+
+    .custom-alert {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.5);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 1000; /* Ensure it's above other content */
+    }
+     
+    .alert-content {
+        background-color: white;
+        border: 2px solid #66BB6A; /* Green border */
+        padding: 20px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+    
+    .alert-content p {
+        margin: 0 0 10px;
+    }
+    
+    #alert-close-button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 5px;
+        background-color: #66BB6A;
+        color: white;
+        cursor: pointer;
+    }
+
+    #alert-close-button:hover {
+        background-color: #45a049;
+        text-decoration: none;
+        cursor: pointer;
+        transform: scale(1.05); /* Slightly enlarge the button on hover */
+
+    }
+    
 </style>
 
 <body>
@@ -29,8 +89,8 @@
             <img src="{% static 'images/logo.png' %}" alt="KusinAI Ready Logo">
         </div>
         <div class="login-card">
-            <h2>Welcome Chef</h2>
-            <p>Login to access your chef account.</p>
+            <h2>Welcome Moderator</h2>
+            <p>Login to access your Moderator account.</p>
             <form method="post">
                 {% csrf_token %}
                 <div class="input-group">
@@ -49,16 +109,38 @@
         </div>
     </div>
 
+    <div id="custom-alert" class="custom-alert" style="display:none;">
+        <div class="alert-content">
+            <p id="alert-message"></p>
+            <button id="alert-close-button">Close</button>
+        </div>
+    </div>
+    
+
     <!-- JavaScript for alerts and password toggle -->
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             {% if messages %}
                 {% for message in messages %}
-                    alert("{{ message }}");
+                    showAlert("{{ message }}");
                 {% endfor %}
             {% endif %}
         });
-
+        
+        // Function to display custom alerts
+        function showAlert(message) {
+            const alertBox = document.getElementById('custom-alert');
+            const alertMessage = document.getElementById('alert-message');
+            alertMessage.textContent = message;
+            alertBox.style.display = 'flex'; // Show the alert box
+        }
+        
+        // Close the alert box when the close button is clicked
+        document.getElementById('alert-close-button').addEventListener('click', function() {
+            document.getElementById('custom-alert').style.display = 'none'; // Hide the alert box
+        });
+        
+        // Toggle password visibility
         document.getElementById('toggle-password').addEventListener('click', function () {
             const passwordField = document.getElementById('password');
             const type = passwordField.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -66,6 +148,7 @@
             this.classList.toggle('fa-eye');
             this.classList.toggle('fa-eye-slash');
         });
+        
     </script>
 </body>
 </html>

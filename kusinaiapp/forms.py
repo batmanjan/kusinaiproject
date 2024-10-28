@@ -155,11 +155,11 @@ class VerificationCodeForm(forms.Form):
 class NewPasswordForm(forms.Form):
     new_password = forms.CharField(
         widget=forms.PasswordInput(attrs={'placeholder': 'Enter new password'}),
-        help_text='Enter a new password for your account.'
+        
     )
     re_password = forms.CharField(
         widget=forms.PasswordInput(attrs={'placeholder': 'Re-enter new password'}),
-        help_text='Re-enter the new password for confirmation.'
+        
     )
 
     def clean_re_password(self):
@@ -194,16 +194,17 @@ class AgeRangeForm(forms.Form):
 class MealPreferenceForm(forms.Form):
     meal_preference = forms.MultipleChoiceField(
         choices=[
-            ('appetizer', 'Appetizer'),
-            ('soup', 'Soup'),
-            ('dessert', 'Dessert'),
-            ('vegetable_dish', 'Vegetable Dish'),
-            ('vegetable_seafood', 'Vegetable with Seafood'),
-            ('vegetable_meat', 'Vegetable with Meat')
+            ('Soup and Pasta/Noodles', 'Soup and Pasta/Noodles'),
+            ('Appetizer', 'Appetizer'),
+            ('Dessert', 'Dessert'),
+            ('Vegetable Recipe', 'Vegetable Recipe'),
+            ('Meat Recipe', 'Meat Recipe'),
+            ('Seafood Recipe', 'Seafood Recipe'),
         ],
         widget=forms.CheckboxSelectMultiple,
         required=False
     )
+
 
 class AllergiesForm(forms.Form):
     allergies = forms.MultipleChoiceField(

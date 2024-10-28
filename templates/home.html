@@ -133,18 +133,18 @@
 
 .community-dish-card {
     flex: 1;
-    margin: 0 10px; /* Reduced margin for smaller screens */
+    margin: 0 10px;
     background-color: #f9f9f9;
     border-radius: 10px;
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
-    padding: 15px; /* Adjusted padding for better spacing on smaller screens */
-    max-width: 100%; /* Ensures cards are responsive */
+    padding: 15px;
+    max-width: 100%;
     display: flex;
     flex-direction: column;
     align-items: center; /* Horizontally center content */
-    justify-content: space-between;
+    justify-content: center; /* Center everything vertically */
 }
 
 .community-dish-card img {
@@ -160,6 +160,7 @@
     margin: 10px 0;
     font-weight: bold;
     line-height: 1.4;
+    text-align: center; /* Center the dish name */
 }
 
 .community-dish-card p {
@@ -170,26 +171,23 @@
     opacity: 0.85;
     display: flex;  /* Align items horizontally */
     align-items: center;  /* Vertically center align */
-    justify-content: flex-start;  /* Align items to the left */
-    padding-left: 0;  /* Remove any extra padding on the left if needed */
+    justify-content: center;  /* Center the content */
+    text-align: center; /* Center the text */
 }
 
 .community-dish-card i {
-    margin-right: 8px; /* Space between the icon and the text */
-    font-size: 1rem; /* Adjust icon size */
+    margin-right: 8px;
+    font-size: 1rem;
 }
 
 .community-dish-card .prep-time {
-    margin-left: 0;  /* Align to the left */
-    padding-left: 0; /* Remove padding */
-    text-align: left; /* Align text to the left */
-    display: flex; /* Flexbox to align icon and text */
-    align-items: center; /* Center align vertically */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
 }
 
-.community-dish-card .prep-time i {
-    margin-right: 8px; /* Add some space between the icon and text */
-}
+
 
 
 
@@ -271,75 +269,268 @@
 
 
 
+/* General Calendar Container */
 .seven-day-calendar {
     display: flex;
+    flex-direction: column; /* Stack items vertically on smaller screens */
     justify-content: center;
     align-items: center;
-    margin: 20px auto; /* Centers the calendar horizontally on the page */
+    margin: 30px auto;
     background-color: #f8f8f8;
-    border-radius: 12px;
-    padding: 10px 20px;
-    width: fit-content; /* Adjust width to fit the content */
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Optional: add a shadow for better visibility */
+    border-radius: 20px;
+    padding: 20px;
+    width: 90%; /* Adjusted width for better fit */
+    max-width: 1100px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Hover effect on the whole calendar container */
+.seven-day-calendar:hover {
+    transform: scale(1.02);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Navigation Buttons */
 .calendar-nav {
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 15px; /* Space below navigation */
 }
 
 .nav-btn {
-    background-color: transparent;
+    background-color: #66bb6a00;
     border: none;
-    font-size: 24px;
+    font-size: 35px;
     cursor: pointer;
-    padding: 10px;
+    padding: 15px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
+.nav-btn:hover {
+    background-color: #45a049;
+    transform: translateY(-2px);
+}
+
+/* Week Days Container */
 .week-days {
     display: flex;
+    flex-wrap: wrap; /* Allow wrapping to prevent overlap */
     justify-content: space-between;
     align-items: center;
     background-color: #66bb6a;
-    border-radius: 8px;
-    padding: 5px;
+    border-radius: 12px;
+    padding: 15px;
+    width: 100%;
 }
 
+/* Individual Week Days */
 .week-day {
     text-align: center;
-    flex: 1;
-    padding: 10px 5px;
+    flex: 1 0 14%; /* Flex-grow, flex-shrink, and base width */
+    padding: 15px 0; /* Vertical padding for better spacing */
     cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-sizing: border-box; /* Include padding in width calculations */
 }
 
+/* Hover effect for better interaction */
+.week-day:hover {
+    background-color: #80c781;
+    transform: translateY(-5px);
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Day Name Style */
 .week-day h4 {
     margin: 0;
     color: #fff;
+    font-size: 20px;
 }
 
+/* Date Style */
 .week-day p {
     margin: 0;
     color: #fff;
-    font-size: 12px;
-    line-height: 1.2;
-    white-space: pre-line; /* This ensures the date and month appear on separate lines */
+    font-size: 16px;
+    line-height: 1.6;
+    white-space: pre-line;
 }
 
+/* Active Day Highlight */
 .week-day.active {
     background-color: #ffbe30;
     color: #fff;
-    border-radius: 8px;
-    padding: 5px 0;
+    border-radius: 12px;
+    padding: 15px 0;
+    box-shadow: 0 5px 10px rgba(0, 0, 0, 0.1);
+    transform: scale(1.05);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
+/* Disabled Days */
 .week-day.disabled {
     color: #c0c0c0;
     cursor: not-allowed;
 }
 
+/* Subtle hover effect for disabled days */
+.week-day.disabled:hover {
+    background-color: #dcdcdc;
+}
+
+/* Media Query for Mobile Responsiveness */
+@media (max-width: 768px) {
+    .seven-day-calendar {
+        width: 95%;
+        padding: 10px;
+    }
+
+    .calendar-nav {
+        flex-direction: column; /* Stack nav buttons */
+        align-items: center;
+    }
+
+    .nav-btn {
+        font-size: 28px;
+        padding: 10px;
+        margin: 5px 0; /* Space between buttons */
+    }
+
+    .week-days {
+        flex-direction: row; /* Maintain row layout */
+        flex-wrap: wrap; /* Allow wrapping */
+        justify-content: space-between; /* Ensure space between days */
+    }
+
+    .week-day {
+        flex: 1 0 20%; /* Adjust base width for smaller screens */
+        padding: 10px; /* Adjust padding */
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-btn {
+        font-size: 24px; /* Smaller buttons */
+        padding: 8px; /* Adjusted padding */
+    }
+
+    .week-day h4 {
+        font-size: 18px; /* Smaller day name */
+    }
+
+    .week-day p {
+        font-size: 14px; /* Smaller date */
+    }
+
+    .week-day {
+        flex: 1 0 45%; /* Adjust for very small screens */
+    }
+}
 
 
 
+
+
+
+
+
+.dish-card .info {
+    display: flex;
+    flex-direction: column; /* Aligns the text and icons vertically */
+    gap: 8px; /* Adds spacing between items */
+}
+
+.dish-card .info p {
+    display: flex;
+    align-items: center;
+}
+
+.dish-card .info p i {
+    margin-right: 8px; /* Adds space between the icon and text */
+    color: #FFBE30;
+}
+.dish-info {
+    display: flex;
+    flex-direction: column; /* Aligns items vertically */
+    align-items: center; /* Centers the text and icons horizontally */
+    justify-content: center; /* Centers the content vertically if necessary */
+    text-align: center; /* Ensures the text is also centered */
+}
+
+.dish-info p {
+    display: flex;
+    align-items: center; /* Aligns the icon and text horizontally */
+    justify-content: center;
+    margin: 8px 0; /* Optional: add some margin between the paragraphs */
+}
+
+.dish-info p i {
+    margin-right: 8px; /* Adds space between the icon and text */
+}
+.note {
+    font-size: 14px; /* Adjust the font size as needed */
+    color: #666; /* Choose a color that fits your design */
+    margin-top: 10px; /* Space between the heading and the note */
+    text-align: left; /* Aligns text to the left */
+}
+.calendar-instructions {
+    font-size: 16px; /* Adjust font size as needed */
+    color: #333; /* Choose a color that fits your design */
+    margin-bottom: 10px; /* Space between the instructions and the calendar */
+    text-align: center; /* Aligns text to the right */
+    margin-top: 20px; /* Space above the instructions */
+}
+.budget-instruction {
+    font-size: 14px; /* Adjust font size */
+    color: #228540; /* Slightly lighter color */
+    text-align: center; /* Center the text */
+    margin-bottom: 15px; /* Space below the instruction */
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 2px solid #66BB6A; /* Green border */
+    width: 80%;
+    border-radius: 8px;
+}
+
+.close {
+    position: absolute;
+    top: 0px; /* Adjusts distance from the top */
+    right: 15px; /* Adjusts distance from the right */
+    color: #45a049;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+.close:hover,
+.close:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+/* Style for the message modal content */
+#messageContent {
+    text-align: center;
+    font-size: 18px;
+}
+
+#messageModal .modal-content {
+    text-align: center; /* Center content for this modal */
+    padding: 20px;
+    border-radius: 8px;
+    border: 2px solid #66BB6A; /* Green border */
+}
 
 
     </style>
@@ -359,7 +550,7 @@
                 maxBudget = parseInt(maxBudget, 10);
                 
                 if (minBudget > maxBudget) {
-                    alert("Please enter a valid minimum and maximum budget.");
+                    showMessageModal("Please enter a valid minimum and maximum budget.", "error");
                     event.preventDefault(); // Prevent form submission
                 }
             }
@@ -423,6 +614,8 @@
             </form>
         </section>
 
+        <p class="calendar-instructions">Instructions: Use the buttons to navigate through the weeks and select a date.</p>
+
         <section class="seven-day-calendar">
             <div class="calendar-nav">
                 <button class="nav-btn" id="prev-week">&#8249;</button>
@@ -436,15 +629,20 @@
 
         <section class="recommend">
             <h2>Recommended Dishes{% if selected_meal_type and selected_meal_type != 'Recommended Dishes' %} - {{ selected_meal_type }}{% endif %}</h2>
-            <div class="dish-grid">
+            <p class="note">Note: You can click the image for the information</p> <!-- Add your note here -->
+            <div class="dish-grid"  id="dish-grid">
                 {% for dish in dishes %}
                 <div class="dish-card" onclick="window.location.href='{% url 'homedish' dish.id %}?referrer={{ request.get_full_path }}&selected_date=' + encodeURIComponent(document.getElementById('saved_date').value)">
                     <div class="image-container">
                         <img src="{{ dish.dish_image.url }}" alt="{{ dish.dish_name }}">
                     </div>
                     <h3>{{ dish.dish_name }}</h3>
-                    <p>Preparation Time: {{ dish.preparation_time }}</p>
-                    <p>Cost: {{ dish.cost }}</p>
+                    <p class="prep-time">
+                        <i class="fas fa-clock" style="color: #FFBE30;"></i> Time: {{ dish.preparation_time }}
+                    </p>
+                    <p>
+                        <i class="fas fa-money-bill-wave" style="color: #FFBE30;"></i> Cost: {{ dish.cost }}
+                    </p>
                     <button type="button" onclick="event.stopPropagation(); openModal('{{ dish.id }}', '{{ selected_meal_type }}', '{{ min_budget }}', '{{ max_budget }}')">
                         <i class="fas fa-plus"></i>
                     </button>
@@ -473,55 +671,33 @@
 <!-- Community Picks Slideshow -->
 <section class="community-picks">
     <h2>Community Picks</h2>
-    <div class="slideshow-container">
-        <div class="slides">
-            <div class="slide">
-                {% for dish in community_picks_first_half %}
-                <div class="community-dish-card" onclick="window.location.href='{% url 'homedish' dish.id %}?referrer={{ request.get_full_path }}&selected_date=' + encodeURIComponent(document.getElementById('saved_date').value)">
-                    <!-- Added onclick for navigation -->
-                    <div class="image-container">
-                        <img src="{{ dish.dish_image.url }}" alt="{{ dish.dish_name }}">
-                    </div>
-                    <h3>{{ dish.dish_name }}</h3>
-                    <p class="prep-time">
-                        <i class="fas fa-clock" style="color: #FFBE30;"></i> Time: {{ dish.preparation_time }}
-                    </p>
-                    <p>
-                        <i class="fas fa-money-bill-wave" style="color: #FFBE30;"></i> Cost: {{ dish.cost }}
-                    </p>
-                    <p>
-                        <i class="fas fa-star" style="color: #FFBE30;"></i> Rating: {{ dish.avg_rating|floatformat:1 }}
-                    </p>
-                    
-
+    
+    <div class="slides">
+        {% for slide in slides %}
+        <div class="slide">
+            {% for dish in slide %}
+            <div class="community-dish-card" onclick="window.location.href='{% url 'homedish' dish.id %}?referrer={{ request.get_full_path }}&selected_date=' + encodeURIComponent(document.getElementById('saved_date').value)">
+                <div class="image-container">
+                    <img src="{{ dish.dish_image.url }}" alt="{{ dish.dish_name }}">
                 </div>
-                {% empty %}
-                <p>No community picks available.</p>
-                {% endfor %}
+                <h3>{{ dish.dish_name }}</h3>
+                <p class="prep-time">
+                    <i class="fas fa-clock" style="color: #FFBE30;"></i> Time: {{ dish.preparation_time }}
+                </p>
+                <p>
+                    <i class="fas fa-money-bill-wave" style="color: #FFBE30;"></i> Cost: {{ dish.cost }}
+                </p>
+                <p>
+                    <i class="fas fa-star" style="color: #FFBE30;"></i> Rating: {{ dish.avg_rating|floatformat:1 }}
+                </p>
             </div>
-            <div class="slide">
-                {% for dish in community_picks_second_half %}
-                <div class="community-dish-card" onclick="window.location.href='{% url 'homedish' dish.id %}?referrer={{ request.get_full_path }}'"> <!-- Added onclick for navigation -->
-                    <div class="image-container">
-                        <img src="{{ dish.dish_image.url }}" alt="{{ dish.dish_name }}">
-                    </div>
-                    <h3>{{ dish.dish_name }}</h3>
-                    <p class="prep-time">
-                        <i class="fas fa-clock" style="color: #FFBE30;"></i> Time: {{ dish.preparation_time }}
-                    </p>
-                    <p>
-                        <i class="fas fa-money-bill-wave" style="color: #FFBE30;"></i> Cost: {{ dish.cost }}
-                    </p>
-                    <p>
-                        <i class="fas fa-star" style="color: #FFBE30;"></i> Rating: {{ dish.avg_rating|floatformat:1 }}
-                    </p>
-                </div>
-                {% empty %}
-                <p>No community picks available.</p>
-                {% endfor %}
-            </div>
+            {% empty %}
+            <p>No community picks available.</p>
+            {% endfor %}
         </div>
+        {% endfor %}
     </div>
+    
     <div class="slideshow-pagination">
         <button class="prev" onclick="plusSlides(-1)">&#10094;</button>
         <button class="next" onclick="plusSlides(1)">&#10095;</button>
@@ -529,68 +705,74 @@
 </section>
 
 
+       <!-- Recipe Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2>Select Category</h2>
+            <form id="categoryForm" method="POST" action="{% url 'save_to_saved' %}">
+                {% csrf_token %}
+                <input type="hidden" name="dish_id" id="dish_id">
+                <input type="hidden" name="category" id="category">
+                <input type="hidden" name="meal_type" id="meal_type" value="{{ selected_meal_type }}">
+                <input type="hidden" name="min_budget" id="min_budget" value="{{ min_budget }}">
+                <input type="hidden" name="max_budget" id="max_budget" value="{{ max_budget }}">
+                <input type="hidden" name="saved_date" id="saved_date">
 
-
-
-
-
-        <!-- The Modal -->
-        <div id="myModal" class="modal">
-            <div class="modal-content">
-                <span class="close" onclick="closeModal()">&times;</span>
-                <h2>Select Category</h2>
-                <form id="categoryForm" method="POST" action="{% url 'save_to_saved' %}">
-                    {% csrf_token %}
-                    <input type="hidden" name="dish_id" id="dish_id">
-                    <input type="hidden" name="category" id="category">
-                    <input type="hidden" name="meal_type" id="meal_type" value="{{ selected_meal_type }}">
-                    <input type="hidden" name="min_budget" id="min_budget" value="{{ min_budget }}">
-                    <input type="hidden" name="max_budget" id="max_budget" value="{{ max_budget }}">
-                    <input type="hidden" name="saved_date" id="saved_date">
-                
-                    <div class="category-buttons">
-                        <button type="button" onclick="setCategory('Breakfast')">Breakfast</button>
-                        <button type="button" onclick="setCategory('Lunch')">Lunch</button>
-                        <button type="button" onclick="setCategory('Dinner')">Dinner</button>
-                    </div>
-                </form>
-                
-            </div>
-        </div>
-
-        <section class="what-to-cook">
-            <h2>What to Cook</h2>
-            <form id="mealTypeForm" method="GET" action="{% url 'home' %}">
-                <input type="hidden" name="min_budget" value="{{ min_budget }}">
-                <input type="hidden" name="max_budget" value="{{ max_budget }}">
-                <input type="hidden" name="meal_type" id="selectedMealTypes" value="{{ selected_meal_type }}">
-        
-                <button type="button" onclick="toggleMealType('Appetizer')" 
-                        {% if 'Appetizer' in selected_meal_type %}class="selected"{% endif %}>
-                    <i class="fas fa-utensils"></i> Appetizer
-                </button>
-                <button type="button" onclick="toggleMealType('Soup')" 
-                        {% if 'Soup' in selected_meal_type %}class="selected"{% endif %}>
-                        <i class="fas fa-mug-hot"></i> Soup
-                </button>
-                <button type="button" onclick="toggleMealType('Dessert')" 
-                        {% if 'Dessert' in selected_meal_type %}class="selected"{% endif %}>
-                    <i class="fas fa-cake"></i> Dessert
-                </button>
-                <button type="button" onclick="toggleMealType('Vegetable Dishes')" 
-                        {% if 'Vegetable Dishes' in selected_meal_type %}class="selected"{% endif %}>
-                    <i class="fas fa-carrot"></i> Vegetable Dishes
-                </button>
-                <button type="button" onclick="toggleMealType('Vegetable with Seafood')" 
-                        {% if 'Vegetable with Seafood' in selected_meal_type %}class="selected"{% endif %}>
-                    <i class="fas fa-fish"></i> Vegetable with Seafood
-                </button>
-                <button type="button" onclick="toggleMealType('Vegetable with Meat')" 
-                        {% if 'Vegetable with Meat' in selected_meal_type %}class="selected"{% endif %}>
-                    <i class="fas fa-drumstick-bite"></i> Vegetable with Meat
-                </button>
+                <div class="category-buttons">
+                    <button type="button" onclick="setCategory('Breakfast')">Breakfast</button>
+                    <button type="button" onclick="setCategory('Lunch')">Lunch</button>
+                    <button type="button" onclick="setCategory('Dinner')">Dinner</button>
+                </div>
             </form>
-        </section>
+        </div>
+    </div>
+
+    <!-- Message Modal -->
+<div id="messageModal" class="modal" >
+    <div class="modal-content">
+        <span class="close" onclick="closeMessageModal()">&times;</span>
+        <p id="messageContent"></p>
+    </div>
+</div>
+
+
+
+<section class="what-to-cook">
+    <h2>What to Cook</h2>
+    <form id="mealTypeForm" method="GET" action="{% url 'home' %}">
+        <input type="hidden" name="min_budget" value="{{ min_budget }}">
+        <input type="hidden" name="max_budget" value="{{ max_budget }}">
+        <input type="hidden" name="meal_type" id="selectedMealTypes" value="{{ selected_meal_type }}">
+    
+        <button type="button" onclick="toggleMealType('Soup and Pasta/Noodles')" 
+                {% if 'Soup and Pasta/Noodles' in selected_meal_type %}class="selected"{% endif %}>
+            <i class="fas fa-mug-hot"></i> Soup and Pasta/Noodles
+        </button>
+        <button type="button" onclick="toggleMealType('Appetizer')" 
+                {% if 'Appetizer' in selected_meal_type %}class="selected"{% endif %}>
+            <i class="fas fa-utensils"></i> Appetizer
+        </button>
+        <button type="button" onclick="toggleMealType('Dessert')" 
+                {% if 'Dessert' in selected_meal_type %}class="selected"{% endif %}>
+            <i class="fas fa-cake"></i> Dessert
+        </button>
+        <button type="button" onclick="toggleMealType('Vegetable Recipe')" 
+                {% if 'Vegetable Recipe' in selected_meal_type %}class="selected"{% endif %}>
+            <i class="fas fa-carrot"></i> Vegetable Recipe
+        </button>
+        <button type="button" onclick="toggleMealType('Meat Recipe')" 
+                {% if 'Meat Recipe' in selected_meal_type %}class="selected"{% endif %}>
+            <i class="fas fa-drumstick-bite"></i> Meat Recipe
+        </button>
+        <button type="button" onclick="toggleMealType('Seafood Recipe')" 
+                {% if 'Seafood Recipe' in selected_meal_type %}class="selected"{% endif %}>
+            <i class="fas fa-fish"></i> Seafood Recipe
+        </button>
+    </form>
+</section>
+
+        
     </main>
     <footer>
         <div class="footer-left">
@@ -632,19 +814,59 @@
             const data = await response.json();
         
             if (data.isAlreadySaved) {
-                alert("OOPS! Recipe already in the saved page");
+                showMessageModal("Oops! Recipe is already saved.", "error");
                 return;
             }
         
-            document.getElementById('category').value = category;
-            document.getElementById('categoryForm').submit();
-            alert("Recipe has been successfully saved!");
+             // Show success message
+    // Set the category value if it's not already saved
+    document.getElementById('category').value = category;
+
+    // Show success message
+    showMessageModal("Recipe has been successfully saved!", "success");
+
+    // We will not submit the form here; it will be submitted when the message modal is closed.
+
+    
+}
+        
+        function showMessageModal(message, type) {
+            const messageModal = document.getElementById('messageModal');
+            const messageContent = document.getElementById('messageContent');
+        
+            if (type === 'error') {
+                messageContent.style.color = 'red';
+            } else if (type === 'success') {
+                messageContent.style.color = 'green';
+            }
+        
+            messageContent.textContent = message;
+            messageModal.style.display = 'block';
         }
         
+        function closeMessageModal() {
+            const messageModal = document.getElementById('messageModal');
+            messageModal.style.display = 'none';
+        
+            // Check if the category value is set before submitting
+            const categoryValue = document.getElementById('category').value;
+        
+            if (categoryValue) {
+                // Only submit the form if there is a category value
+                document.getElementById('categoryForm').submit();
+            }
+        }
     
         window.onclick = function(event) {
-            if (event.target == document.getElementById('myModal')) {
+            const myModal = document.getElementById('myModal');
+            const messageModal = document.getElementById('messageModal');
+        
+            if (event.target == myModal) {
                 closeModal();
+            }
+        
+            if (event.target == messageModal) {
+                closeMessageModal();
             }
         }
     
@@ -675,20 +897,20 @@
 
 function showSlides() {
     let slides = document.getElementsByClassName("slides")[0];
-    let slideWidth = slides.children[0].offsetWidth;
+    let slideWidth = slides.children[0].offsetWidth; // Width of each slide
     slides.style.transform = `translateX(-${slideIndex * slideWidth}px)`;
 }
 
 function plusSlides(n) {
     let slides = document.getElementsByClassName("slides")[0];
-    let slideCount = slides.children.length;
-    
+    let slideCount = slides.children.length; // Total number of slides
+
     // Update the slide index but restrict it within valid range
     slideIndex += n;
     
-    if (slideIndex >= slideCount - 1) {
+    if (slideIndex >= slideCount) {
         slideIndex = slideCount - 1; // Restrict to last slide
-    } else if (slideIndex <= 0) {
+    } else if (slideIndex < 0) {
         slideIndex = 0; // Restrict to first slide
     }
     
@@ -818,6 +1040,22 @@ document.addEventListener("DOMContentLoaded", function() {
     generateWeekDays(displayedDate);
 });
 
+document.addEventListener('DOMContentLoaded', function() {
+    // Get the dish grid element
+    const dishGrid = document.getElementById('dish-grid');
+    
+    // Log the number of children in the dish grid
+    console.log('Number of dishes available:', dishGrid.children.length);
+    
+    // Check if there are one or zero dish cards
+    if (dishGrid.children.length <= 1) {
+        console.log('One or no dishes available. Refreshing the page...');
+        // Refresh the page if one or no dishes are available
+        location.reload();
+    } else {
+        console.log('More than one dish is available, no need to refresh.');
+    }
+});
         
     </script>
     

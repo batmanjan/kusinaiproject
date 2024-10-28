@@ -6,6 +6,100 @@
     <title>Verify OTP</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <style>
+
+        /* Input code fields */
+form div {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+form div input[type="text"] {
+    width: 100px;
+    height: 100px;
+    font-size: 24px;
+    text-align: center;
+    border: 2px solid #ddd;
+    border-radius: 15px;
+    transition: border-color 0.3s;
+}
+
+form div input[type="text"]:focus {
+    border-color: #45a049;
+    outline: none;
+}
+
+/* Buttons styling */
+button[type="submit"],
+button[type="button"] {
+    padding: 0.75em 1.5em;
+    font-size: 1em;
+    background-color: #66BB6A;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 25%; /* Adjust the width as needed */
+    display: block;
+    margin: 1em auto; /* Centers the button horizontally */
+}
+
+button[type="submit"]:hover,
+button[type="button"]:hover {
+    background-color: #45a049;
+}
+
+button[type="button"] {
+    background-color: #66BB6A;
+    margin-top: 10px;
+}
+
+button[type="button"]:hover {
+    background-color: #45a049;
+}
+        .modal {
+            display: none;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+        }
+    
+        .modal-content {
+            background-color: white;
+            padding: 20px;
+            border: 2px solid #66BB6A; /* Green border */
+            border-radius: 8px;
+            text-align: center;
+            position: relative;
+        }
+    
+        .close {
+        position: absolute;
+        top: -5px; /* Adjusts distance from the top */
+        right: 15px; /* Adjusts distance from the right */
+        color: #45a049;
+        font-size: 28px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: color 0.3s ease;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+    </style>
+    
 </head>
 <body>
     <main>
@@ -21,6 +115,15 @@
             <button type="submit">Submit Code</button>
             <button type="button" onclick="resendCode()">Resend Code</button>
         </form>
+
+        <!-- Message Modal -->
+        <div id="messageModal" class="modal" style="display:none;">
+            <div class="modal-content">
+                <span class="close" onclick="closeMessageModal()">&times;</span>
+                <p id="messageContent"></p>
+            </div>
+        </div>
+
     </main>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
@@ -33,7 +136,7 @@
                 });
             });
         });
-
+    
         function resendCode() {
             fetch("{% url 'resend_otp' %}", {
                 method: 'POST',
@@ -47,8 +150,19 @@
             })
             .then(response => response.json())
             .then(data => {
-                alert(data.message);
+                // Set the modal content
+                document.getElementById('messageContent').textContent = data.message;
+                // Open the modal
+                openMessageModal();
             });
+        }
+    
+        function openMessageModal() {
+            document.getElementById('messageModal').style.display = 'block';
+        }
+    
+        function closeMessageModal() {
+            document.getElementById('messageModal').style.display = 'none';
         }
     </script>
 </body>

@@ -10,38 +10,43 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <style>
-    body, html {
-        margin: 0;
-        padding: 0;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        background-color: #E8F5E9; /* Softer green background for a fresher look */
-        font-family: 'Montserrat', Arial, sans-serif;
-    }
-    
     main {
-        background-color: #FFFFFF;
-        padding: 30px;
-        border-radius: 15px;
-        width: 90%;
-        max-width: 450px;
-        box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.1);
-        text-align: left; /* Align text to the left */
-        transition: transform 0.3s ease, box-shadow 0.3s ease;
-    }
+            max-width: 600px;
+            margin: 100px auto; /* Increased top margin for better spacing */
+            padding: 30px;
+            background-color: #ffffff; /* Subtle background color */
+            border-radius: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+            font-family: 'Montserrat', sans-serif;
+        }
     
     main:hover {
         transform: scale(1.03);
         box-shadow: 0px 20px 40px rgba(0, 0, 0, 0.15);
     }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 20px; /* Adds space between header and progress circles */
+    }
+
+    .form-header h1 {
+        font-size: 26px;
+        color: #45a049;
+        margin: 0;
+    }
+
+    .form-header p {
+        font-size: 16px;
+        color: #555;
+        margin-top: 10px;
+    }
+
     
     h1 {
         font-size: 26px;
         font-weight: 700;
-        color: #2E7D32; /* Darker green for better contrast */
+        color: #43A047; /* Darker green for better contrast */
         margin-bottom: 25px;
         text-align: center; /* Center the heading */
         transition: color 0.3s ease;
@@ -55,7 +60,7 @@
     legend {
         font-size: 20px;
         font-weight: 600;
-        color: #388E3C;
+        color: #45a049;
         margin-bottom: 20px;
         transition: color 0.3s ease;
         text-align: center; /* Center the legend */
@@ -96,7 +101,7 @@
     }
     
     button {
-        background-color: #43A047;
+        background-color: #66BB6A;
         color: white;
         font-weight: 700;
         border: none;
@@ -111,7 +116,7 @@
     }
     
     button:hover {
-        background-color: #388E3C;
+        background-color: #45a049;
         transform: translateY(-3px);
         box-shadow: 0px 10px 20px rgba(0, 0, 0, 0.2);
     }
@@ -123,15 +128,15 @@
     
     textarea {
         width: 100%;
-        padding: 15px;
-        border: 1px solid #ccc;
+        padding: 5px;
+        border: 1px solid #45a049;
         border-radius: 10px;
         margin-top: 10px;
         transition: border-color 0.3s ease, box-shadow 0.3s ease;
     }
     
     textarea:focus {
-        border-color: #43A047;
+        border-color: #45a049;
         box-shadow: 0px 0px 5px rgba(67, 160, 71, 0.2);
     }
     
@@ -157,24 +162,164 @@
     }
     
     .progress-indicator.active {
-        background-color: #43A047;
+        background-color: #45a049;
         transform: scale(1.2);
     }
     
     .progress-indicator:hover {
         transform: scale(1.2);
     }
-    
-    
+
+    .progress-container {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    .progress-indicators {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+    }
+
+    .progress-indicator {
+        background-color: #fff;
+        border: 2px solid #45a049;
+        color: #45a049;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 0 7px;
+        font-size: 18px;
+        font-weight: 700;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+    }
+
+    .progress-indicator.active {
+        background-color: #45a049;
+        color: #fff;
+        transform: scale(1.2);
+    }
+
+    /* Container for the previous button */
+    .previous-button-container {
+        position: absolute;
+        top: 20px; /* Adjust vertical positioning */
+        left: 20px; /* Adjust horizontal positioning */
+        z-index: 1000; /* Ensure it's on top of other elements */
+    }
+
+    /* Styling for the previous button */
+    .previous-button {
+        background-color: #66BB6A;
+        color: white;
+        font-weight: 700;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        text-decoration: none;
+        font-size: 16px;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        display: inline-block;
+    }
+
+    .previous-button:hover {
+        background-color: #45a049;
+        transform: translateY(-2px);
+    }
+
+        /* Flexbox for horizontal alignment */
+    .button-container {
+        display: flex;
+        justify-content: space-between; /* Space between the buttons */
+        gap: 20px; /* Space between the buttons */
+        margin-top: 5px; /* Optional: add some margin above the buttons */
+    }
+
+    /* Ensure buttons take up equal width */
+    .button-container button {
+        flex: 1; /* Makes the buttons take up equal space */
+        padding: 15px 0; /* Adjust button padding for better appearance */
+    }
+
+    /* Modal container */
+#customModal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1000; /* Sit on top */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    background-color: rgba(0, 0, 0, 0.5); /* Black background with transparency */
+}
+
+/* Modal content box */
+#customModal > div {
+    background-color: #fff;
+    border: 2px solid #66BB6A; /* Green border */
+    margin: 15% auto; /* Center the modal vertically and horizontally */
+    padding: 20px;
+    border-radius: 8px;
+    width: 80%; /* Adjust width to fit content */
+    max-width: 400px; /* Max width for larger screens */
+    position: relative;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Add shadow to the modal */
+}
+
+/* Modal message */
+#modalMessage {
+    font-size: 16px;
+    text-align: center;
+}
+
+/* Close (X) button */
+#customModal span {
+    position: absolute;
+    top: -5px; /* Adjusts distance from the top */
+    right: 15px; /* Adjusts distance from the right */
+    color: #45a049;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: color 0.3s ease;
+}
+
+#customModal span:hover {
+    color: #000;
+    cursor: pointer;
+}
+
+
+
 </style>
+
 <body>
     {% if user.appuser.survey_completed %}
         <div class="previous-button-container">
-            <a href="{% url 'settings' %}" class="previous-button">Previous</a>
+            <a href="{% url 'settings' %}" class="previous-button">Back</a>
         </div>
     {% endif %}
     <main>
-        <h1>Survey - Step {{ current_step }} of {{ total_steps }}</h1>
+        <div class="form-header">
+            <h1>Meal Preferences</h1>
+            <p>Provide details to personalize recommended meals </p>
+        </div>
+        
+        <div class="progress-container">
+            <div class="progress-indicators">
+                <div class="progress-indicator {% if current_step == 1 %}active{% endif %}">1</div>
+                <div class="progress-indicator {% if current_step == 2 %}active{% endif %}">2</div>
+                <div class="progress-indicator {% if current_step == 3 %}active{% endif %}">3</div>
+                <div class="progress-indicator {% if current_step == 4 %}active{% endif %}">4</div>
+                <div class="progress-indicator {% if current_step == 5 %}active{% endif %}">5</div>
+            </div>
+
+        </div>
+        
         <form method="post">
             {% csrf_token %}
             <fieldset>
@@ -224,37 +369,46 @@
                 {% endif %}
             </div>
         </form>
+
+        <!-- Custom Modal HTML -->
+        <!-- Custom Modal HTML -->
+        <div id="customModal" style="display:none;">
+            <div>
+                <p id="modalMessage"></p>
+                <span onclick="closeModal()" style="cursor: pointer;">&times;</span>
+            </div>
+        </div>
+
+
     </main>
 
     <script>
         function goBack() {
             console.log("Back button clicked");  // Debug print to check if the function is triggered
             const form = document.querySelector('form');
-        
+    
             // Add a hidden input to indicate back action
             const backInput = document.createElement('input');
             backInput.type = 'hidden';
             backInput.name = 'back';
             backInput.value = 'true';
             form.appendChild(backInput);
-        
+    
             console.log("Submitting form with back input");  // Debug print before form submission
             // Submit the form
             form.submit();
         }
-        
+    
         document.addEventListener('DOMContentLoaded', function() {
             const form = document.querySelector('form');
             const currentStep = parseInt("{{ current_step }}", 10);
             const totalSteps = parseInt("{{ total_steps }}", 10);
-
-            
-        
+    
             if (currentStep === 4) {
                 const noneCheckbox = document.querySelector('input[name="step_4-allergies"][value="none"]');
                 const otherCheckboxes = document.querySelectorAll('input[name="step_4-allergies"]:not([value="none"])');
                 const otherAllergiesTextArea = document.getElementById('other_allergies');
-        
+    
                 function updateAllergies() {
                     if (noneCheckbox && noneCheckbox.checked) {
                         otherCheckboxes.forEach(checkbox => {
@@ -270,33 +424,31 @@
                         }
                     }
                 }
-
-                
-        
+    
                 function handleCheckboxChange() {
                     if (this !== noneCheckbox && this.checked) {
                         noneCheckbox.checked = false;
                     }
                     updateAllergies();
                 }
-        
+    
                 // Initialize on page load
                 updateAllergies();
-        
+    
                 if (noneCheckbox) {
                     noneCheckbox.addEventListener('change', function() {
                         updateAllergies();
                     });
                 }
-        
+    
                 otherCheckboxes.forEach(checkbox => {
                     checkbox.addEventListener('change', handleCheckboxChange);
                 });
             }
-        
+    
             form.addEventListener('submit', function(event) {
                 let isValid = true;
-        
+    
                 // Check required fields based on the current step
                 if (currentStep === 1) {
                     isValid = document.querySelector('input[name="step_1-family_size"]:checked') !== null;
@@ -308,24 +460,44 @@
                     const noneCheckbox = document.querySelector('input[name="step_4-allergies"][value="none"]');
                     const allergiesChecked = document.querySelectorAll('input[name="step_4-allergies"]:checked').length > 0;
                     const otherAllergiesFilled = document.getElementById('other_allergies').value.trim().length > 0;
-        
+    
                     // Check if either an allergy is selected, "None" is selected, or other_allergies is filled
                     isValid = allergiesChecked || (noneCheckbox && noneCheckbox.checked) || otherAllergiesFilled;
                 } else if (currentStep === 5) {
                     isValid = document.querySelector('input[name="step_5-cooking_skills"]:checked') !== null;
                 }
-        
+    
                 if (!isValid) {
                     event.preventDefault(); // Stop form submission if invalid
-                    alert("OOPS! Answer all questions please. Thank you!");
+                    openModal("OOPS! Answer all questions please. Thank you!");
                 } else if (currentStep === totalSteps) {
-                    alert("Survey form saved, Thank you for answering!");
+                    event.preventDefault(); // Stop form submission to show the modal first
+                    openModal("Survey form saved, Thank you for answering! Please close this modal to proceed.");
                 }
             });
         });
-
-
+    
+        function openModal(message) {
+            const modal = document.getElementById('customModal');
+            const modalMessage = document.getElementById('modalMessage');
+            modalMessage.textContent = message;
+            modal.style.display = 'block'; // Show the modal
+        }
+    
+        function closeModal() {
+            const modal = document.getElementById('customModal');
+            modal.style.display = 'none'; // Hide the modal
+    
+            // If it's the last step, submit the form after the modal is closed
+            const currentStep = parseInt("{{ current_step }}", 10);
+            const totalSteps = parseInt("{{ total_steps }}", 10);
+            if (currentStep === totalSteps) {
+                const form = document.querySelector('form');
+                form.submit(); // Submit the form after closing the modal
+            }
+        }
     </script>
+    
     
     
 </body>

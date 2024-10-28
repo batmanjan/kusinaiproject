@@ -65,18 +65,22 @@ class DishPlanAdmin(admin.ModelAdmin):
 
 @admin.register(CookedDish)
 class CookedDishAdmin(admin.ModelAdmin):
-    list_display = ('cooked_id', 'appuser_id', 'dish', 'rating')
-    list_filter = ('user', 'rating')
+    list_display = ('cooked_id', 'appuser_id', 'dish', 'rating', 'cooked', 'feedback_time')  # Add feedback_time here
+    list_filter = ('user', 'rating', 'cooked', 'feedback_time')  # Add feedback_time to the filter
     search_fields = ('user__username', 'dish__dish_name')
-    
 
     def cooked_id(self, obj):
         return obj.id
     cooked_id.short_description = 'COOKED_ID'
 
     def appuser_id(self, obj):
-        return obj.user.id  # Changed to use AppUser ID
+        return obj.user.id
     appuser_id.short_description = 'APPUSER_ID'
+
+    def feedback_time(self, obj):
+        return obj.feedback_time
+    feedback_time.short_description = 'FEEDBACK TIME'
+
 
 class DishAdminForm(forms.ModelForm):
     class Meta:
